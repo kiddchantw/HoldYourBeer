@@ -1,0 +1,214 @@
+openapi: 3.0.0
+info:
+  title: HoldYouBeer API
+  description: The official API for the HoldYouBeer application, serving both the iOS and Web clients.
+  version: 1.1.0
+
+paths:
+  # ... Authentication endpoints remain the same ...
+  /api/register:
+    post:
+      summary: Register a new user
+      tags:
+        - Authentication
+      # ... (content omitted for brevity)
+
+  /api/sanctum/token:
+    post:
+      summary: Request an API token (Login)
+      tags:
+        - Authentication
+      # ... (content omitted for brevity)
+
+  # ... Beer and Brand Endpoints ...
+  /api/beers:
+    get:
+      summary: Get my list of tracked beers
+      description: Returns a list of all unique beers the user has tracked, including the brand and how many times they've been consumed.
+      tags:
+        - Beers
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: sort
+          in: query
+          description: "Sort order. Default is by last tasted time, newest first. Use '-tasted_at' for explicit sorting."
+          required: false
+          schema:
+            type: string
+            example: "-tasted_at"
+        - name: brand_id
+          in: query
+          description: "Filter beers by a specific brand ID. Useful for series name suggestions."
+          required: false
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: A list of my beers.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Beer'
+    post:
+      summary: Add a new beer to track
+      description: Adds a new unique beer, potentially creating a new brand if it doesn't exist.
+      tags:
+        - Beers
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                brand_name:
+                  type: string
+                  example: "Guinness"
+                name:
+                  type: string
+                  example: "Draught"
+                style:
+                  type: string
+                  example: "Stout"
+      responses:
+        '201':
+          description: The new beer was created and added to the user's tracked list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Beer'
+
+  /api/beers/{id}/count_actions:
+    post:
+      summary: Increment or decrement the tasting count for a beer
+      description: The primary endpoint for modifying a beer count. The backend handles updating the count table and creating a log entry in a transaction.
+      tags:
+        - Beers
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum: [increment, decrement]
+                  example: "increment"
+      responses:
+        '200':
+          description: Action was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Beer' # Return the updated beer object
+
+  /api/beers/{id}/tasting_logs:
+    get:
+      summary: Get the tasting log for a specific beer
+      description: Returns a list of all tasting log events for a single beer.
+      tags:
+        - Beers
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of tasting log events.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TastingLog'
+
+  /api/brands:
+    get:
+      summary: Get all brands
+      tags:
+        - Brands
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of all available brands.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Brand'
+
+components:
+  schemas:
+    Brand:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Guinness"
+
+    Beer:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 10
+        name:
+          type: string
+          description: The specific name or series of the beer.
+          example: "Draught"
+        style:
+          type: string
+          example: "Stout"
+        brand:
+          $ref: '#/components/schemas/Brand'
+        tasting_count:
+          type: integer
+          description: How many times the current user has tasted this beer. This value is read from a dedicated count table for performance.
+          example: 5
+
+    TastingLog:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique ID of the log event.
+          example: 101
+        action:
+          type: string
+          enum: [increment, decrement, create]
+          description: The action that was performed.
+          example: "increment"
+        logged_at:
+          type: string
+          format: date-time
+          description: The timestamp of when the action was logged.
+          example: "2025-08-12T21:00:00Z"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
