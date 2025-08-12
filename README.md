@@ -97,9 +97,9 @@ php artisan key:generate
 DB_CONNECTION=pgsql
 DB_HOST=postgres
 DB_PORT=5432
-DB_DATABASE=default
+DB_DATABASE=holdyourbeer
 DB_USERNAME=default
-DB_PASSWORD=default
+DB_PASSWORD=secret
 
 # Run database migrations
 php artisan migrate
