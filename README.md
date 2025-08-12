@@ -1,4 +1,4 @@
-# HoldYouBeer
+# HoldYourBeer
 
 A simple application to track every beer you drink. Record the brand, the specific series/name, and automatically count how many times you've tasted each one.
 

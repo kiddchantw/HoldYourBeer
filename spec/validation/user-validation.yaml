@@ -1,0 +1,122 @@
+user_validation_rules:
+
+  registration:
+    endpoint: POST /api/register
+    fields:
+      name:
+        type: string
+        required: true
+        min_length: 1
+        max_length: 255
+        sanitization:
+          - trim_whitespace
+        validation_rules:
+          - required
+          - string
+          - max:255
+        error_messages:
+          required: "姓名欄位為必填項目。"
+          string: "姓名必須是字串格式。"
+          max: "姓名不得超過 255 個字元。"
+      
+      email:
+        type: string
+        required: true
+        format: email
+        max_length: 255
+        unique: true
+        unique_table: users
+        sanitization:
+          - trim_whitespace
+          - lowercase
+        validation_rules:
+          - required
+          - string
+          - email
+          - max:255
+          - unique:users,email
+        error_messages:
+          required: "電子郵件欄位為必填項目。"
+          string: "電子郵件必須是字串格式。"
+          email: "電子郵件格式不正確。"
+          max: "電子郵件不得超過 255 個字元。"
+          unique: "此電子郵件已被註冊。"
+      
+      password:
+        type: string
+        required: true
+        min_length: 8
+        max_length: 255
+        validation_rules:
+          - required
+          - string
+          - min:8
+          - max:255
+        security_rules:
+          - hash_before_store: bcrypt
+        error_messages:
+          required: "密碼欄位為必填項目。"
+          string: "密碼必須是字串格式。"
+          min: "密碼至少需要 8 個字元。"
+          max: "密碼不得超過 255 個字元。"
+      
+      password_confirmation:
+        type: string
+        required: true
+        confirmation_field: password
+        validation_rules:
+          - required
+          - string
+          - same:password
+        error_messages:
+          required: "密碼確認欄位為必填項目。"
+          string: "密碼確認必須是字串格式。"
+          same: "密碼確認與密碼不符。"
+
+  login:
+    endpoint: POST /api/sanctum/token
+    fields:
+      email:
+        type: string
+        required: true
+        format: email
+        sanitization:
+          - trim_whitespace
+          - lowercase
+        validation_rules:
+          - required
+          - string
+          - email
+        error_messages:
+          required: "電子郵件欄位為必填項目。"
+          string: "電子郵件必須是字串格式。"
+          email: "電子郵件格式不正確。"
+      
+      password:
+        type: string
+        required: true
+        validation_rules:
+          - required
+          - string
+        error_messages:
+          required: "密碼欄位為必填項目。"
+          string: "密碼必須是字串格式。"
+
+authentication_validation:
+  bearer_token:
+    required_for_endpoints:
+      - GET /api/beers
+      - POST /api/beers
+      - POST /api/beers/{id}/count_actions
+      - GET /api/beers/{id}/tasting_logs
+      - GET /api/brands
+    validation_rules:
+      - format: "Bearer {token}"
+      - token_length: 64
+      - token_exists_in: personal_access_tokens
+      - token_not_expired
+    error_messages:
+      missing: "存取令牌遺失，請重新登入。"
+      invalid_format: "存取令牌格式不正確。"
+      not_found: "存取令牌無效，請重新登入。"
+      expired: "存取令牌已過期，請重新登入。"

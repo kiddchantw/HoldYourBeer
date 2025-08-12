@@ -1,16 +1,21 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Standard API Error Response",
-  "description": "A standardized format for returning errors from the API.",
+  "description": "A standardized format for returning errors from the HoldYourBeer API.",
   "type": "object",
   "properties": {
     "message": {
       "description": "A human-readable summary of the error.",
       "type": "string",
-      "example": "The given data was invalid."
+      "examples": [
+        "The given data was invalid.",
+        "Unauthenticated.",
+        "Beer not found.",
+        "Cannot decrement count below zero."
+      ]
     },
     "errors": {
-      "description": "An object containing validation errors for specific fields.",
+      "description": "An object containing validation errors for specific fields (only present for validation errors).",
       "type": "object",
       "additionalProperties": {
         "type": "array",
@@ -18,18 +23,58 @@
           "type": "string"
         }
       },
-      "example": {
-        "email": [
-          "The email field is required.",
-          "The email must be a valid email address."
-        ],
-        "password": [
-          "The password must be at least 8 characters."
-        ]
-      }
+      "examples": [
+        {
+          "email": ["電子郵件欄位為必填項目。", "電子郵件格式不正確。"],
+          "password": ["密碼至少需要 8 個字元。"]
+        },
+        {
+          "action": ["計數不能減至負數。"]
+        },
+        {
+          "beer": ["您已經追蹤過此品牌的這款啤酒。"]
+        }
+      ]
+    },
+    "error_code": {
+      "description": "Internal error code for detailed tracking and debugging (optional).",
+      "type": "string",
+      "pattern": "^[A-Z]{3}_[0-9]{3}$",
+      "examples": ["VAL_001", "AUTH_001", "RES_002", "BIZ_001"]
+    },
+    "timestamp": {
+      "description": "ISO 8601 timestamp of when the error occurred (optional).",
+      "type": "string",
+      "format": "date-time",
+      "examples": ["2025-08-12T14:30:00Z"]
     }
   },
   "required": [
     "message"
+  ],
+  "examples": [
+    {
+      "message": "The given data was invalid.",
+      "errors": {
+        "name": ["姓名欄位為必填項目。"],
+        "email": ["電子郵件格式不正確。"]
+      },
+      "error_code": "VAL_001"
+    },
+    {
+      "message": "Unauthenticated.",
+      "error_code": "AUTH_001"
+    },
+    {
+      "message": "Beer not found.",
+      "error_code": "RES_002"
+    },
+    {
+      "message": "Cannot decrement count below zero.",
+      "errors": {
+        "action": ["計數不能減至負數。"]
+      },
+      "error_code": "BIZ_001"
+    }
   ]
 }

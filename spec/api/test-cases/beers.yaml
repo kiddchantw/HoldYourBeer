@@ -1,0 +1,346 @@
+beer_api_test_cases:
+
+  get_beers_list:
+    endpoint: GET /api/beers
+    authentication: required
+    
+    success_cases:
+      - name: "取得用戶啤酒列表 - 空列表"
+        precondition: "用戶已登入但尚未追蹤任何啤酒"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+        expected_response:
+          status: 200
+          body: []
+      
+      - name: "取得用戶啤酒列表 - 有數據"
+        precondition: "用戶已追蹤 2 款啤酒"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+        expected_response:
+          status: 200
+          body:
+            - id: 1
+              name: "Draught"
+              style: "Stout"
+              brand:
+                id: 1
+                name: "Guinness"
+              tasting_count: 3
+            - id: 2
+              name: "Extra Stout"
+              style: "Stout"
+              brand:
+                id: 1
+                name: "Guinness"
+              tasting_count: 1
+      
+      - name: "取得用戶啤酒列表 - 依品牌篩選"
+        precondition: "用戶追蹤多個品牌的啤酒"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+          query_params:
+            brand_id: 1
+        expected_response:
+          status: 200
+          body: 
+            - "@array_containing_only_brand_id_1"
+      
+      - name: "取得用戶啤酒列表 - 排序"
+        precondition: "用戶有多款啤酒"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+          query_params:
+            sort: "-tasted_at"
+        expected_response:
+          status: 200
+          body: "@array_sorted_by_tasted_at_desc"
+
+  add_new_beer:
+    endpoint: POST /api/beers
+    authentication: required
+    
+    success_cases:
+      - name: "新增啤酒 - 現有品牌"
+        precondition: "資料庫中已存在 Guinness 品牌"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+          body:
+            brand_name: "Guinness"
+            name: "Foreign Extra Stout"
+            style: "Stout"
+        expected_response:
+          status: 201
+          body:
+            id: "@integer"
+            name: "Foreign Extra Stout"
+            style: "Stout"
+            brand:
+              id: "@integer"
+              name: "Guinness"
+            tasting_count: 0
+      
+      - name: "新增啤酒 - 新品牌"
+        precondition: "資料庫中不存在 Asahi 品牌"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+          body:
+            brand_name: "Asahi"
+            name: "Super Dry"
+            style: "Lager"
+        expected_response:
+          status: 201
+          body:
+            id: "@integer"
+            name: "Super Dry"
+            style: "Lager"
+            brand:
+              id: "@integer"
+              name: "Asahi"
+            tasting_count: 0
+      
+      - name: "新增啤酒 - 無 style 欄位"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+          body:
+            brand_name: "Local Brewery"
+            name: "House Special"
+        expected_response:
+          status: 201
+          body:
+            id: "@integer"
+            name: "House Special"
+            style: null
+            brand:
+              id: "@integer"
+              name: "Local Brewery"
+            tasting_count: 0
+    
+    failure_cases:
+      - name: "新增重複啤酒"
+        precondition: "用戶已追蹤 Guinness Draught"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+          body:
+            brand_name: "Guinness"
+            name: "Draught"
+            style: "Stout"
+        expected_response:
+          status: 422
+          body:
+            message: "The given data was invalid."
+            errors:
+              beer: ["You have already added this beer to your tracking list."]
+      
+      - name: "缺少必要欄位"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+          body:
+            brand_name: "Guinness"
+        expected_response:
+          status: 422
+          body:
+            message: "The given data was invalid."
+            errors:
+              name: ["The name field is required."]
+      
+      - name: "品牌名稱過長"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+          body:
+            brand_name: "@string_longer_than_255_chars"
+            name: "Beer Name"
+        expected_response:
+          status: 422
+          body:
+            message: "The given data was invalid."
+            errors:
+              brand_name: ["The brand name may not be greater than 255 characters."]
+
+  beer_count_actions:
+    endpoint: POST /api/beers/{id}/count_actions
+    authentication: required
+    
+    success_cases:
+      - name: "增加計數"
+        precondition: "用戶追蹤啤酒 ID=1，目前計數為 2"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+          path_params:
+            id: 1
+          body:
+            action: "increment"
+        expected_response:
+          status: 200
+          body:
+            id: 1
+            name: "@string"
+            style: "@string"
+            brand: "@object"
+            tasting_count: 3
+      
+      - name: "減少計數"
+        precondition: "用戶追蹤啤酒 ID=1，目前計數為 3"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+          path_params:
+            id: 1
+          body:
+            action: "decrement"
+        expected_response:
+          status: 200
+          body:
+            id: 1
+            name: "@string"
+            style: "@string"
+            brand: "@object"
+            tasting_count: 2
+    
+    failure_cases:
+      - name: "減少計數至負數"
+        precondition: "用戶追蹤啤酒 ID=1，目前計數為 0"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+          path_params:
+            id: 1
+          body:
+            action: "decrement"
+        expected_response:
+          status: 422
+          body:
+            message: "Cannot decrement count below zero."
+            errors:
+              action: ["Count cannot be negative."]
+      
+      - name: "無效的 action 值"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+          path_params:
+            id: 1
+          body:
+            action: "invalid_action"
+        expected_response:
+          status: 422
+          body:
+            message: "The given data was invalid."
+            errors:
+              action: ["The selected action is invalid."]
+      
+      - name: "存取不屬於自己的啤酒"
+        precondition: "啤酒 ID=999 屬於其他用戶"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+          path_params:
+            id: 999
+          body:
+            action: "increment"
+        expected_response:
+          status: 404
+          body:
+            message: "Beer not found."
+      
+      - name: "啤酒不存在"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+          path_params:
+            id: 99999
+          body:
+            action: "increment"
+        expected_response:
+          status: 404
+          body:
+            message: "Beer not found."
+
+  get_tasting_logs:
+    endpoint: GET /api/beers/{id}/tasting_logs
+    authentication: required
+    
+    success_cases:
+      - name: "取得品嚐記錄 - 有記錄"
+        precondition: "用戶追蹤啤酒 ID=1，有 3 筆記錄"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+          path_params:
+            id: 1
+        expected_response:
+          status: 200
+          body:
+            - id: 1
+              action: "create"
+              logged_at: "2025-08-12T10:00:00Z"
+            - id: 2
+              action: "increment"
+              logged_at: "2025-08-12T11:00:00Z"
+            - id: 3
+              action: "increment"
+              logged_at: "2025-08-12T12:00:00Z"
+      
+      - name: "取得品嚐記錄 - 空記錄"
+        precondition: "用戶追蹤啤酒 ID=2，剛新增無記錄"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+          path_params:
+            id: 2
+        expected_response:
+          status: 200
+          body: []
+    
+    failure_cases:
+      - name: "存取不屬於自己的啤酒記錄"
+        precondition: "啤酒 ID=999 屬於其他用戶"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+          path_params:
+            id: 999
+        expected_response:
+          status: 404
+          body:
+            message: "Beer not found."
+
+  get_brands:
+    endpoint: GET /api/brands
+    authentication: required
+    
+    success_cases:
+      - name: "取得所有品牌列表"
+        precondition: "資料庫中有多個品牌"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+        expected_response:
+          status: 200
+          body:
+            - id: 1
+              name: "Guinness"
+            - id: 2
+              name: "Asahi"
+            - id: 3
+              name: "Heineken"
+      
+      - name: "取得品牌列表 - 空列表"
+        precondition: "資料庫中無品牌"
+        request:
+          headers:
+            Authorization: "Bearer valid_token"
+        expected_response:
+          status: 200
+          body: []

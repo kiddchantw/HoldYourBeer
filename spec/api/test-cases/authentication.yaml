@@ -1,0 +1,169 @@
+authentication_test_cases:
+  
+  user_registration:
+    endpoint: POST /api/register
+    
+    success_cases:
+      - name: "成功註冊新用戶"
+        request:
+          body:
+            name: "測試用戶"
+            email: "test@example.com"
+            password: "password123"
+            password_confirmation: "password123"
+        expected_response:
+          status: 201
+          body:
+            user:
+              id: "@integer"
+              name: "測試用戶"
+              email: "test@example.com"
+              email_verified_at: null
+              created_at: "@datetime"
+              updated_at: "@datetime"
+            token: "@string"
+    
+    failure_cases:
+      - name: "重複電子郵件註冊失敗"
+        precondition: "資料庫中已存在 test@example.com 用戶"
+        request:
+          body:
+            name: "另一個用戶"
+            email: "test@example.com"
+            password: "password123"
+            password_confirmation: "password123"
+        expected_response:
+          status: 422
+          body:
+            message: "The given data was invalid."
+            errors:
+              email: ["The email has already been taken."]
+      
+      - name: "密碼確認不符合"
+        request:
+          body:
+            name: "測試用戶"
+            email: "test2@example.com"
+            password: "password123"
+            password_confirmation: "password456"
+        expected_response:
+          status: 422
+          body:
+            message: "The given data was invalid."
+            errors:
+              password: ["The password confirmation does not match."]
+      
+      - name: "缺少必要欄位"
+        request:
+          body:
+            name: "測試用戶"
+            password: "password123"
+        expected_response:
+          status: 422
+          body:
+            message: "The given data was invalid."
+            errors:
+              email: ["The email field is required."]
+              password_confirmation: ["The password confirmation field is required."]
+
+  user_login:
+    endpoint: POST /api/sanctum/token
+    
+    success_cases:
+      - name: "成功登入取得令牌"
+        precondition: "資料庫中存在用戶 test@example.com with password 'password123'"
+        request:
+          body:
+            email: "test@example.com"
+            password: "password123"
+        expected_response:
+          status: 200
+          body:
+            user:
+              id: "@integer"
+              name: "@string"
+              email: "test@example.com"
+              email_verified_at: "@nullable_datetime"
+              created_at: "@datetime"
+              updated_at: "@datetime"
+            token: "@string"
+    
+    failure_cases:
+      - name: "錯誤密碼登入失敗"
+        precondition: "資料庫中存在用戶 test@example.com"
+        request:
+          body:
+            email: "test@example.com"
+            password: "wrongpassword"
+        expected_response:
+          status: 422
+          body:
+            message: "The given data was invalid."
+            errors:
+              email: ["These credentials do not match our records."]
+      
+      - name: "不存在用戶登入失敗"
+        request:
+          body:
+            email: "nonexistent@example.com"
+            password: "password123"
+        expected_response:
+          status: 422
+          body:
+            message: "The given data was invalid."
+            errors:
+              email: ["These credentials do not match our records."]
+      
+      - name: "缺少必要欄位"
+        request:
+          body:
+            email: "test@example.com"
+        expected_response:
+          status: 422
+          body:
+            message: "The given data was invalid."
+            errors:
+              password: ["The password field is required."]
+
+  protected_endpoint_access:
+    description: "測試需要認證的端點存取"
+    
+    success_cases:
+      - name: "有效令牌存取受保護端點"
+        precondition: "用戶已登入並持有有效 Bearer token"
+        request:
+          headers:
+            Authorization: "Bearer valid_token_here"
+          endpoint: "GET /api/beers"
+        expected_response:
+          status: 200
+          body: "@array"
+    
+    failure_cases:
+      - name: "無令牌存取受保護端點"
+        request:
+          endpoint: "GET /api/beers"
+        expected_response:
+          status: 401
+          body:
+            message: "Unauthenticated."
+      
+      - name: "無效令牌存取受保護端點"
+        request:
+          headers:
+            Authorization: "Bearer invalid_token"
+          endpoint: "GET /api/beers"
+        expected_response:
+          status: 401
+          body:
+            message: "Unauthenticated."
+      
+      - name: "過期令牌存取受保護端點"
+        request:
+          headers:
+            Authorization: "Bearer expired_token"
+          endpoint: "GET /api/beers"
+        expected_response:
+          status: 401
+          body:
+            message: "Unauthenticated."

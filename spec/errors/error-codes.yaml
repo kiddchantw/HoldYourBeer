@@ -1,0 +1,195 @@
+error_code_definitions:
+
+  authentication_errors:
+    AUTH_001:
+      http_status: 401
+      type: "authentication_failed"
+      message: "Unauthenticated."
+      description: "用戶未提供有效的認證令牌"
+      scenarios:
+        - "未提供 Authorization header"
+        - "提供無效的 Bearer token"
+        - "Token 已過期"
+        - "Token 不存在於資料庫中"
+      
+    AUTH_002:
+      http_status: 422
+      type: "invalid_credentials"
+      message: "The given data was invalid."
+      description: "登入憑證不正確"
+      scenarios:
+        - "電子郵件或密碼錯誤"
+        - "帳戶不存在"
+      error_details:
+        field_errors:
+          email: ["These credentials do not match our records."]
+
+  validation_errors:
+    VAL_001:
+      http_status: 422
+      type: "validation_failed"
+      message: "The given data was invalid."
+      description: "請求資料驗證失敗"
+      scenarios:
+        - "必填欄位遺失"
+        - "資料格式不正確"
+        - "資料長度超過限制"
+        - "不符合業務規則"
+      error_structure:
+        message: "The given data was invalid."
+        errors:
+          field_name: ["Error message 1", "Error message 2"]
+    
+    VAL_002:
+      http_status: 422
+      type: "duplicate_resource"
+      message: "The given data was invalid."
+      description: "資源重複"
+      scenarios:
+        - "電子郵件已被註冊"
+        - "用戶已追蹤相同的啤酒"
+      error_structure:
+        message: "The given data was invalid."
+        errors:
+          field_name: ["The field has already been taken."]
+
+  resource_errors:
+    RES_001:
+      http_status: 404
+      type: "resource_not_found"
+      message: "Not found."
+      description: "請求的資源不存在"
+      scenarios:
+        - "啤酒 ID 不存在"
+        - "品牌 ID 不存在"
+        - "用戶存取不屬於自己的資源"
+      
+    RES_002:
+      http_status: 404
+      type: "beer_not_found"
+      message: "Beer not found."
+      description: "找不到指定的啤酒"
+      scenarios:
+        - "啤酒 ID 不存在於 user_beer_counts 中"
+        - "啤酒不屬於當前用戶"
+
+  business_logic_errors:
+    BIZ_001:
+      http_status: 422
+      type: "invalid_count_operation"
+      message: "Cannot decrement count below zero."
+      description: "計數操作違反業務規則"
+      scenarios:
+        - "嘗試將計數減至負數"
+      error_structure:
+        message: "Cannot decrement count below zero."
+        errors:
+          action: ["Count cannot be negative."]
+    
+    BIZ_002:
+      http_status: 422
+      type: "beer_already_tracked"
+      message: "The given data was invalid."
+      description: "用戶已經追蹤此啤酒"
+      scenarios:
+        - "嘗試新增已追蹤的品牌+啤酒組合"
+      error_structure:
+        message: "The given data was invalid."
+        errors:
+          beer: ["You have already added this beer to your tracking list."]
+
+  server_errors:
+    SRV_001:
+      http_status: 500
+      type: "internal_server_error"
+      message: "Internal server error."
+      description: "伺服器內部錯誤"
+      scenarios:
+        - "資料庫連線失敗"
+        - "未預期的例外狀況"
+        - "第三方服務錯誤"
+      
+    SRV_002:
+      http_status: 503
+      type: "service_unavailable"
+      message: "Service temporarily unavailable."
+      description: "服務暫時無法使用"
+      scenarios:
+        - "資料庫維護中"
+        - "系統過載"
+        - "依賴服務離線"
+
+  rate_limiting_errors:
+    RATE_001:
+      http_status: 429
+      type: "rate_limit_exceeded"
+      message: "Too many requests."
+      description: "請求頻率超過限制"
+      scenarios:
+        - "API 呼叫頻率過高"
+        - "同一 IP 短時間內大量請求"
+      headers:
+        Retry-After: "60"
+
+error_response_format:
+  standard_structure:
+    message: "string - 主要錯誤訊息"
+    errors: "object - 詳細錯誤資訊 (僅驗證錯誤時提供)"
+    error_code: "string - 內部錯誤碼 (可選，用於詳細追蹤)"
+    timestamp: "string - 錯誤發生時間 (可選)"
+
+  examples:
+    authentication_error:
+      message: "Unauthenticated."
+    
+    validation_error:
+      message: "The given data was invalid."
+      errors:
+        name: ["The name field is required."]
+        email: ["The email field is required.", "The email must be a valid email address."]
+    
+    resource_not_found:
+      message: "Beer not found."
+    
+    business_logic_error:
+      message: "Cannot decrement count below zero."
+      errors:
+        action: ["Count cannot be negative."]
+
+error_logging_requirements:
+  log_levels:
+    authentication_errors: "warning"
+    validation_errors: "info"
+    resource_errors: "info"
+    business_logic_errors: "warning"
+    server_errors: "error"
+    rate_limiting_errors: "warning"
+  
+  log_context:
+    required_fields:
+      - user_id: "認證用戶的 ID (如果可用)"
+      - request_id: "請求的唯一識別碼"
+      - endpoint: "發生錯誤的 API 端點"
+      - method: "HTTP 方法"
+      - ip_address: "用戶 IP 位址"
+    
+    optional_fields:
+      - user_agent: "用戶代理字串"
+      - referer: "請求來源"
+      - request_body: "請求內容 (敏感資料需遮罩)"
+
+error_handling_guidelines:
+  security:
+    - "不在錯誤訊息中洩露敏感資訊"
+    - "避免暴露內部系統結構"
+    - "記錄但不回傳詳細的堆疊追蹤"
+  
+  user_experience:
+    - "提供清晰易懂的錯誤訊息"
+    - "使用繁體中文錯誤訊息"
+    - "提供具體的解決建議"
+  
+  development:
+    - "包含足夠資訊用於除錯"
+    - "保持錯誤格式的一致性"
+    - "支援國際化 (i18n)"

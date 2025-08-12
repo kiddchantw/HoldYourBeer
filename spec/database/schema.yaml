@@ -1,0 +1,283 @@
+database_schema:
+  name: hold_your_beer
+  engine: postgresql
+  version: "17"
+  charset: utf8mb4
+  collation: utf8mb4_unicode_ci
+
+tables:
+  users:
+    description: "用戶基本資料表"
+    columns:
+      id:
+        type: bigint
+        primary_key: true
+        auto_increment: true
+        unsigned: true
+      name:
+        type: varchar(255)
+        nullable: false
+        comment: "用戶名稱"
+      email:
+        type: varchar(255)
+        nullable: false
+        unique: true
+        comment: "用戶電子郵件"
+      email_verified_at:
+        type: timestamp
+        nullable: true
+      password:
+        type: varchar(255)
+        nullable: false
+        comment: "加密後的密碼"
+      remember_token:
+        type: varchar(100)
+        nullable: true
+      created_at:
+        type: timestamp
+        nullable: true
+      updated_at:
+        type: timestamp
+        nullable: true
+    indexes:
+      - name: users_email_unique
+        type: unique
+        columns: [email]
+
+  brands:
+    description: "啤酒品牌表"
+    columns:
+      id:
+        type: bigint
+        primary_key: true
+        auto_increment: true
+        unsigned: true
+      name:
+        type: varchar(255)
+        nullable: false
+        unique: true
+        comment: "品牌名稱"
+      created_at:
+        type: timestamp
+        nullable: true
+      updated_at:
+        type: timestamp
+        nullable: true
+    indexes:
+      - name: brands_name_unique
+        type: unique
+        columns: [name]
+
+  beers:
+    description: "啤酒產品表"
+    columns:
+      id:
+        type: bigint
+        primary_key: true
+        auto_increment: true
+        unsigned: true
+      brand_id:
+        type: bigint
+        nullable: false
+        unsigned: true
+        comment: "品牌ID"
+      name:
+        type: varchar(255)
+        nullable: false
+        comment: "啤酒名稱/系列名"
+      style:
+        type: varchar(100)
+        nullable: true
+        comment: "啤酒類型 (如: Stout, IPA)"
+      created_at:
+        type: timestamp
+        nullable: true
+      updated_at:
+        type: timestamp
+        nullable: true
+    indexes:
+      - name: beers_brand_id_index
+        type: index
+        columns: [brand_id]
+      - name: beers_brand_name_unique
+        type: unique
+        columns: [brand_id, name]
+    foreign_keys:
+      - name: beers_brand_id_foreign
+        column: brand_id
+        references: brands(id)
+        on_delete: cascade
+        on_update: cascade
+
+  user_beer_counts:
+    description: "用戶啤酒計數表 (優化效能用)"
+    columns:
+      id:
+        type: bigint
+        primary_key: true
+        auto_increment: true
+        unsigned: true
+      user_id:
+        type: bigint
+        nullable: false
+        unsigned: true
+        comment: "用戶ID"
+      beer_id:
+        type: bigint
+        nullable: false
+        unsigned: true
+        comment: "啤酒ID"
+      count:
+        type: integer
+        nullable: false
+        default: 0
+        comment: "品飲次數"
+      last_tasted_at:
+        type: timestamp
+        nullable: true
+        comment: "最後品飲時間"
+      created_at:
+        type: timestamp
+        nullable: true
+      updated_at:
+        type: timestamp
+        nullable: true
+    indexes:
+      - name: user_beer_counts_user_beer_unique
+        type: unique
+        columns: [user_id, beer_id]
+      - name: user_beer_counts_user_id_index
+        type: index
+        columns: [user_id]
+      - name: user_beer_counts_last_tasted_at_index
+        type: index
+        columns: [last_tasted_at]
+    foreign_keys:
+      - name: user_beer_counts_user_id_foreign
+        column: user_id
+        references: users(id)
+        on_delete: cascade
+        on_update: cascade
+      - name: user_beer_counts_beer_id_foreign
+        column: beer_id
+        references: beers(id)
+        on_delete: cascade
+        on_update: cascade
+
+  tasting_logs:
+    description: "品飲記錄表 (審計追蹤用)"
+    columns:
+      id:
+        type: bigint
+        primary_key: true
+        auto_increment: true
+        unsigned: true
+      user_id:
+        type: bigint
+        nullable: false
+        unsigned: true
+        comment: "用戶ID"
+      beer_id:
+        type: bigint
+        nullable: false
+        unsigned: true
+        comment: "啤酒ID"
+      action:
+        type: enum
+        values: [create, increment, decrement]
+        nullable: false
+        comment: "操作類型"
+      count_before:
+        type: integer
+        nullable: false
+        comment: "操作前計數"
+      count_after:
+        type: integer
+        nullable: false
+        comment: "操作後計數"
+      logged_at:
+        type: timestamp
+        nullable: false
+        default: current_timestamp
+        comment: "記錄時間"
+      created_at:
+        type: timestamp
+        nullable: true
+    indexes:
+      - name: tasting_logs_user_beer_index
+        type: index
+        columns: [user_id, beer_id]
+      - name: tasting_logs_logged_at_index
+        type: index
+        columns: [logged_at]
+      - name: tasting_logs_user_id_index
+        type: index
+        columns: [user_id]
+    foreign_keys:
+      - name: tasting_logs_user_id_foreign
+        column: user_id
+        references: users(id)
+        on_delete: cascade
+        on_update: cascade
+      - name: tasting_logs_beer_id_foreign
+        column: beer_id
+        references: beers(id)
+        on_delete: cascade
+        on_update: cascade
+
+  personal_access_tokens:
+    description: "Laravel Sanctum 個人存取令牌表"
+    columns:
+      id:
+        type: bigint
+        primary_key: true
+        auto_increment: true
+        unsigned: true
+      tokenable_type:
+        type: varchar(255)
+        nullable: false
+      tokenable_id:
+        type: bigint
+        nullable: false
+        unsigned: true
+      name:
+        type: varchar(255)
+        nullable: false
+      token:
+        type: varchar(64)
+        nullable: false
+        unique: true
+      abilities:
+        type: text
+        nullable: true
+      last_used_at:
+        type: timestamp
+        nullable: true
+      expires_at:
+        type: timestamp
+        nullable: true
+      created_at:
+        type: timestamp
+        nullable: true
+      updated_at:
+        type: timestamp
+        nullable: true
+    indexes:
+      - name: personal_access_tokens_tokenable_type_tokenable_id_index
+        type: index
+        columns: [tokenable_type, tokenable_id]
+      - name: personal_access_tokens_token_unique
+        type: unique
+        columns: [token]
+
+performance_considerations:
+  - "user_beer_counts 表用於快速查詢用戶啤酒列表，避免每次都聚合 tasting_logs"
+  - "tasting_logs 表保留完整的操作歷史，用於審計和詳細記錄查詢"
+  - "適當的索引設計支援常見查詢模式"
+  - "外鍵約束確保數據完整性"
+
+migration_notes:
+  - "使用 Laravel 的 migration 系統建立表格"
+  - "enum 類型在不同資料庫中的處理方式需要注意"
+  - "時間戳記使用 Laravel 的標準格式"
+  - "大量資料情況下考慮分表策略"
