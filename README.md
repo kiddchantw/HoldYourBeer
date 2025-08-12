@@ -30,7 +30,7 @@ This project uses Laradock for a consistent development environment. Follow thes
 
 ```bash
 git clone <your-repository-url>
-cd HoldYouBeer
+cd HoldYourBeer
 ```
 
 ### 2. Setup Laradock

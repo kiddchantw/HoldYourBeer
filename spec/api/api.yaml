@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: HoldYouBeer API
-  description: The official API for the HoldYouBeer application, serving both the iOS and Web clients.
+  description: The official API for the HoldYourBeer application, serving both the iOS and Web clients.
   version: 1.1.0
 
 paths:
