@@ -80,4 +80,23 @@ class BeerCreationTest extends TestCase
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['brand_id']);
     }
+
+    #[Test]
+    public function it_sets_the_tasting_count_to_1_when_a_new_beer_is_added(): void
+    {
+        $beerData = [
+            'name' => 'Test IPA',
+            'brand_id' => $this->brand->id,
+            'style' => 'IPA',
+        ];
+
+        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/beers', $beerData);
+
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('user_beer_counts', [
+            'user_id' => $this->user->id,
+            'beer_id' => $response->json('id'),
+            'count' => 1,
+        ]);
+    }
 }

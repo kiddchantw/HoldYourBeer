@@ -20,7 +20,7 @@ class BeerFactory extends Factory
         return [
             'name' => $this->faker->word(),
             'brand_id' => Brand::factory(),
-            'type' => $this->faker->randomElement(['IPA', 'Stout', 'Lager', 'Pilsner']),
+            'style' => $this->faker->randomElement(['IPA', 'Stout', 'Lager', 'Pilsner']),
         ];
     }
 }

@@ -1,3 +1,5 @@
+# Status: DONE
+# Test: tests/Feature/DashboardTest.php
 Feature: Viewing the Beer List
   In order to see my collection
   As a registered user

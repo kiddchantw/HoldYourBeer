@@ -1,3 +1,5 @@
+# Status: DONE
+# Test: tests/Feature/RegistrationTest.php
 Feature: User Registration
   In order to access the main application features
   As a new user

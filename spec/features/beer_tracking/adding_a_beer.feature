@@ -3,6 +3,8 @@ Feature: Adding a New Beer to the Collection
   As a registered user
   I want to add a new type of beer that I have tasted.
 
+  # Status: DONE (後端 API 已由 tests/Feature/BeerCreationTest.php 覆蓋)
+  # UI: DONE (UI 已由 app/Livewire/CreateBeer.php 和 resources/views/livewire/create-beer.blade.php 實現)
   Scenario: Adding a new beer with brand and series suggestions
     Given I am on the beer tracking screen
     And the following brands already exist in the system: "Guinness", "Brewdog", "Asahi"

@@ -136,3 +136,12 @@ To ensure the stability of the codebase, all developers should adhere to the fol
 2.  **Ensure All Tests Pass**: Only commit your changes if all tests are reporting a `PASS` status.
 
 > **Advanced Tip**: Consider setting up a Git pre-commit hook to automate this testing process. A hook can run the test suite automatically whenever you attempt to commit, and only allow the commit to be created if the tests pass. This is a great way to enforce code quality automatically.
+
+### Feature 狀態更新
+
+當您開始或完成一個功能時，請務必更新對應的 `.feature` 檔案中，相關 `Scenario` 上方的狀態註解。
+
+-   **`# Status: TODO`**: 尚未開始的功能。
+-   **`# Status: IN_PROGRESS`**: 正在開發中的功能。
+-   **`# Status: DONE`**: 已完成開發並有測試覆蓋的功能。您可以在後面附註測試檔案的路徑。
+-   **`# UI: TODO/DONE`**: 如果該功能涉及 UI，也請一併標示 UI 的進度。

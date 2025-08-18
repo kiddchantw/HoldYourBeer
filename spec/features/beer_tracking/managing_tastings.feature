@@ -1,3 +1,5 @@
+# Status: DONE
+# Test: tests/Feature/TastingTest.php
 Feature: Managing Tastings for a Beer
   In order to keep my tasting count accurate
   As a registered user

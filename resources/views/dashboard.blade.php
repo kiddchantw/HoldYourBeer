@@ -73,9 +73,17 @@
                                             @endif
                                         </div>
                                         <div class="flex-shrink-0 ml-4">
+                                            <form action="{{ route('tasting.decrement', $beerCount) }}" method="POST" class="inline">
+                                                @csrf
+                                                <button type="submit" class="px-2 py-1 text-xs font-medium text-red-600 bg-red-100 rounded-full hover:bg-red-200">-</button>
+                                            </form>
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                                 {{ $beerCount->count }}
                                             </span>
+                                            <form action="{{ route('tasting.increment', $beerCount) }}" method="POST" class="inline">
+                                                @csrf
+                                                <button type="submit" class="px-2 py-1 text-xs font-medium text-green-600 bg-green-100 rounded-full hover:bg-green-200">+</button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>

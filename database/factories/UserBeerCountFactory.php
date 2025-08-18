@@ -1,0 +1,28 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Beer;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\UserBeerCount>
+ */
+class UserBeerCountFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'user_id' => User::factory(),
+            'beer_id' => Beer::factory(),
+            'count' => $this->faker->numberBetween(1, 10),
+            'last_tasted_at' => $this->faker->dateTimeThisYear(),
+        ];
+    }
+}

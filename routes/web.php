@@ -15,11 +15,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
-    // Beer routes
-    Route::resource('beers', BeerController::class);
-    Route::get('/api/brands/suggestions', [BeerController::class, 'getBrandSuggestions'])->name('brands.suggestions');
-    Route::get('/api/beers/suggestions', [BeerController::class, 'getBeerSuggestions'])->name('beers.suggestions');
+
+    Route::post('/tasting/{userBeerCount}/increment', [\App\Http\Controllers\TastingController::class, 'increment'])->name('tasting.increment');
+    Route::post('/tasting/{userBeerCount}/decrement', [\App\Http\Controllers\TastingController::class, 'decrement'])->name('tasting.decrement');
 });
 
 require __DIR__.'/auth.php';
