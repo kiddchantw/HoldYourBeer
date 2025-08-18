@@ -117,3 +117,22 @@ This project follows a Spec-driven development methodology. All specifications f
 
 - **API Contract**: The OpenAPI specification can be found at `spec/api/api.yaml`.
 - **Feature Descriptions**: Human-readable feature descriptions (Gherkin) are located in `spec/features/`.
+
+---
+
+## Contribution Guidelines
+
+### Commit-First Checks
+
+To ensure the stability of the codebase, all developers should adhere to the following process before committing code:
+
+1.  **Run All Tests Locally**: Before every `git commit`, run the entire automated test suite to ensure your changes have not broken any existing functionality.
+
+    ```bash
+    # From the HoldYourBeer project root:
+    docker-compose -f ../../laradock/docker-compose.yml exec -w /var/www/side/HoldYourBeer workspace php artisan test
+    ```
+
+2.  **Ensure All Tests Pass**: Only commit your changes if all tests are reporting a `PASS` status.
+
+> **Advanced Tip**: Consider setting up a Git pre-commit hook to automate this testing process. A hook can run the test suite automatically whenever you attempt to commit, and only allow the commit to be created if the tests pass. This is a great way to enforce code quality automatically.
