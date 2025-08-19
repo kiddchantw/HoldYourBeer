@@ -4,9 +4,6 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Dashboard') }}
             </h2>
-            <a href="{{ route('beers.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Add a new beer
-            </a>
         </div>
     </x-slot>
 
