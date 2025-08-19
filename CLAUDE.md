@@ -10,13 +10,20 @@ HoldYourBeer is a Laravel-based beer tracking application that follows a **Spec-
 
 - **Backend**: Laravel 12 with PHP 8.3
 - **Frontend**: Livewire for web interface
-- **Database**: PostgreSQL 17
+- **Database**: PostgreSQL 17 (Development), SQLite memory (Testing)
 - **Development Environment**: Laradock (Docker-based)
+- **Testing & Coverage**: PHPUnit with PCOV for code coverage
 - **Design**: Mobile-first responsive design using Tailwind CSS
 
 ## Development Environment Setup
 
-This project uses Laradock for containerized development. Key commands:
+This project uses Laradock for containerized development with **dual environment configuration**:
+
+### Environment Configuration
+- **Development Environment (.env)**: Uses **PostgreSQL** for persistent data storage
+- **Testing Environment (.env.testing)**: Uses **SQLite memory database** for fast, isolated tests
+
+### Initial Setup Commands
 
 ```bash
 # Initial setup (from project root)
@@ -31,12 +38,45 @@ docker-compose up -d nginx postgres
 # Access workspace container for Laravel commands
 docker-compose exec workspace bash
 
-# Inside workspace container (/var/www)
+# Inside workspace container ({YOUR_CONTAINER_BASE_PATH})
 composer install
 cp .env.example .env
 php artisan key:generate
-# Configure .env with: DB_HOST=postgres, DB_PORT=5432, DB_DATABASE=default
+# Configure .env with: DB_HOST=postgres, DB_PORT=5432, DB_DATABASE={YOUR_DB_NAME}
 php artisan migrate
+```
+
+### Environment Files Setup
+
+### 開發環境設定
+
+> **本地開發設定**: 實際的資料庫帳密請參考 `my_dev_notes.md` → **「### Development Environment (.env)」** 區塊（此檔案不會上傳至雲端）
+> - `{YOUR_DB_NAME}` = `DB_DATABASE` 值
+> - `{YOUR_DB_USER}` = `DB_USERNAME` 值  
+> - `{YOUR_DB_PASSWORD}` = `DB_PASSWORD` 值
+
+**.env (Development)**
+```env
+DB_CONNECTION=pgsql
+DB_HOST=postgres
+DB_PORT=5432
+DB_DATABASE={YOUR_DB_NAME}
+DB_USERNAME={YOUR_DB_USER}
+DB_PASSWORD={YOUR_DB_PASSWORD}
+```
+
+### 測試環境設定
+
+> **測試環境設定**: 使用固定參數，不需修改（參考 `my_dev_notes.md` → **「### Testing Environment (.env.testing)」**）
+
+**.env.testing (Testing)**
+```env
+APP_ENV=testing
+DB_CONNECTION=sqlite
+DB_DATABASE=:memory:
+CACHE_DRIVER=array
+SESSION_DRIVER=array
+QUEUE_CONNECTION=sync
 ```
 
 Access application at: http://localhost
@@ -45,8 +85,28 @@ Access application at: http://localhost
 
 Since this is a Laravel project without package.json, use these Laravel/PHP commands:
 
+**IMPORTANT: All Laravel/PHP commands must be run inside the Laradock workspace container using this template:**
+
 ```bash
-# Inside workspace container
+# Command Template (run from project root)
+docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace <YOUR_COMMAND_HERE>
+
+# Examples:
+docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace composer install
+docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan migrate
+docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan test
+
+# Alternative: Enter container interactively
+docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace bash
+```
+
+> **實際路徑設定**: 具體的路徑請參考 `my_dev_notes.md` → **「## 本地路徑」** 區塊
+> - `{YOUR_PROJECT_PATH}` = 專案在 Docker 容器內的絕對路徑
+> - `{YOUR_LARADOCK_PATH}` = Laradock docker-compose.yml 的相對路徑
+
+**Standard Laravel Commands (to be run inside workspace container):**
+
+```bash
 composer install                    # Install PHP dependencies
 php artisan migrate                 # Run database migrations
 php artisan migrate:fresh --seed    # Reset and seed database
@@ -54,8 +114,10 @@ php artisan key:generate           # Generate application key
 php artisan serve                  # Development server (if not using Docker)
 
 # Testing (based on Definition of Done requirements)
-vendor/bin/pest                    # Unit tests (Pest/PHPUnit)
-vendor/bin/behat                   # Behavior tests for .feature files
+php artisan test                   # Run all tests with PHPUnit
+php artisan test --coverage       # Run tests with PCOV code coverage report
+vendor/bin/pest                   # Unit tests (Pest/PHPUnit) - alternative
+vendor/bin/behat                  # Behavior tests for .feature files
 dredd                             # API contract tests
 ```
 

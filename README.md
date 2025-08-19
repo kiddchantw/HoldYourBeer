@@ -73,6 +73,17 @@ docker-compose up -d nginx postgres
 
 ### 5. Setup Laravel Application
 
+> **本地開發設定**: 實際的資料庫帳密和專案路徑請參考 `my_dev_notes.md`（此檔案不會上傳至雲端）
+> 
+> **開發環境參數** (需要修改):
+> - `{YOUR_DB_NAME}` = 參考 `my_dev_notes.md` → **「### Development Environment (.env)」** 中的 `DB_DATABASE` 值
+> - `{YOUR_DB_USER}` = 參考 `my_dev_notes.md` → **「### Development Environment (.env)」** 中的 `DB_USERNAME` 值  
+> - `{YOUR_DB_PASSWORD}` = 參考 `my_dev_notes.md` → **「### Development Environment (.env)」** 中的 `DB_PASSWORD` 值
+> - `{YOUR_PROJECT_PATH}` = 參考 `my_dev_notes.md` → **「## 本地路徑」** 中的專案路徑
+> - `{YOUR_LARADOCK_PATH}` = 參考 `my_dev_notes.md` → **「## 本地路徑」** 中的 Laradock docker-compose.yml 路徑
+> 
+> **測試環境參數** (固定值，不需修改): SQLite memory 資料庫，參考 `my_dev_notes.md` → **「### Testing Environment (.env.testing)」**
+
 Enter the `workspace` container to run Laravel commands.
 
 ```bash
@@ -97,9 +108,9 @@ php artisan key:generate
 DB_CONNECTION=pgsql
 DB_HOST=postgres
 DB_PORT=5432
-DB_DATABASE=holdyourbeer
-DB_USERNAME=default
-DB_PASSWORD=secret
+DB_DATABASE={YOUR_DB_NAME}
+DB_USERNAME={YOUR_DB_USER}
+DB_PASSWORD={YOUR_DB_PASSWORD}
 
 # Run database migrations
 php artisan migrate
@@ -130,7 +141,7 @@ To ensure the stability of the codebase, all developers should adhere to the fol
 
     ```bash
     # From the HoldYourBeer project root:
-    docker-compose -f ../../laradock/docker-compose.yml exec -w /var/www/side/HoldYourBeer workspace php artisan test
+    docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan test
     ```
 
 2.  **Ensure All Tests Pass**: Only commit your changes if all tests are reporting a `PASS` status.

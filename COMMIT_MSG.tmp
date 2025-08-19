@@ -1,0 +1,22 @@
+Test: 全面增加測試覆蓋率並修復多個底層錯誤
+
+為專案增加了大量的功能測試和單元測試，使整體覆蓋率從 44.3% 提升至 83.0%。在增加測試的過程中，發現並修復了數個先前未被察覺的錯誤。
+
+### 錯誤修復
+- 修復了因 `beers.create` 路由未定義而導致的儀表板測試失敗問題。
+- 解決了因路由快取、設定檔錯誤導致 `/api/login` 路由無法被註冊的 `404` 問題。
+- 修正了 `routes/api.php` 中 `/api/login` 指向錯誤的控制器方法 (`token` 而非 `login`)。
+- 為 `Api/AuthController` 新增了遺失的 `logout` 方法實作。
+- 將遺失的 `/api/beers` 路由新增至 `routes/api.php` 中，並用 `auth:sanctum` 保護。
+- 修正了 `beers.create` 視圖，使其從舊的 `@extends` 語法更新為新的 `<x-app-layout>` 元件語法。
+- 填補了空的 `AdminFeatureTest.php` 檔案以消除測試執行時的警告。
+
+### 新增測試
+- **API 層**：為 `Api/AuthController` 新增了完整的功能測試，涵蓋註冊、登入、登出的成功與失敗路徑。
+- **前端元件**：為 `Livewire/CreateBeer` 元件新增了功能測試，涵蓋渲染、必填欄位驗證和成功儲存的路徑。
+- **資料模型**：為 `Brand`、`Beer` 和 `UserBeerCount` 模型新增了單元測試，使其測試覆蓋率全部達到 100%。
+
+### Docs主要變更
+- 將 `my_dev_notes.md` 從 `.gitignore` 中移除，使其納入版本控制。
+- 刪除了 `my_dev_notes.md` 中與 `README.md` 重複的「Full Local Development Setup」完整段落。
+- 在原地新增一個參考註記，指引使用者查閱 `README.md` 以獲取詳細的設定資訊，保持文件的一致性並減少維護成本。

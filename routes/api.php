@@ -4,17 +4,15 @@ use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// Authentication endpoints
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/sanctum/token', [AuthController::class, 'token']);
-
-// Protected routes
-use App\Http\Controllers\Api\BeerController;
+Route::controller(AuthController::class)->group(function () {
+    Route::post('/register', 'register');
+    Route::post('/login', 'token');
+});
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-
-    Route::post('/beers', [BeerController::class, 'store']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/beers', [\App\Http\Controllers\Api\BeerController::class, 'store']);
 });

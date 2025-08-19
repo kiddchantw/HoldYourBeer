@@ -4,7 +4,11 @@
 
 This project is a web application called "HoldYourBeer" for tracking beer consumption. Users can record the brand and name of beers they've tried, and the application automatically counts the number of times each beer has been tasted.
 
-The project is built on the Laravel framework (version 12) for the backend and uses a Livewire frontend. It utilizes PostgreSQL (version 17) as its database and requires PHP 8.3. The development environment is managed using Laradock.
+The project is built on the Laravel framework (version 12) for the backend and uses a Livewire frontend. It utilizes **dual database environment**:
+- **Development**: PostgreSQL (version 17) for persistent data storage
+- **Testing**: SQLite memory database for fast, isolated tests
+
+The application requires PHP 8.3, uses PHPUnit for testing with PCOV for code coverage, and the development environment is managed using Laradock.
 
 The application follows a spec-driven development approach, with API specifications in OpenAPI format and feature descriptions in Gherkin.
 
@@ -40,25 +44,70 @@ npm install
 composer run dev
 ```
 
-**4. Run Tests:**
+**4. Environment Configuration:**
+
+This project uses dual environment configuration:
+
+### 開發環境設定
+
+> **本地開發設定**: 實際的資料庫帳密請參考 `my_dev_notes.md` → **「### Development Environment (.env)」** 區塊（此檔案不會上傳至雲端）
+> - `{YOUR_DB_NAME}` = `DB_DATABASE` 值
+> - `{YOUR_DB_USER}` = `DB_USERNAME` 值  
+> - `{YOUR_DB_PASSWORD}` = `DB_PASSWORD` 值
+
+**.env (Development Environment)**
+```env
+DB_CONNECTION=pgsql
+DB_HOST=postgres
+DB_PORT=5432
+DB_DATABASE={YOUR_DB_NAME}
+DB_USERNAME={YOUR_DB_USER}
+DB_PASSWORD={YOUR_DB_PASSWORD}
+```
+
+### 測試環境設定
+
+> **測試環境設定**: 使用固定參數，不需修改（參考 `my_dev_notes.md` → **「### Testing Environment (.env.testing)」**）
+
+**.env.testing (Testing Environment)**
+```env
+APP_ENV=testing
+DB_CONNECTION=sqlite
+DB_DATABASE=:memory:
+CACHE_DRIVER=array
+SESSION_DRIVER=array
+QUEUE_CONNECTION=sync
+```
+
+**5. Run Tests:**
 
 All `php artisan` or test commands **must** be run inside the Laradock `workspace` container.
 
-Use the following command template from the `HoldYourBeer` project root:
+Use the following command template from the project root:
 
 ```bash
 # Command Template
-docker-compose -f ../../laradock/docker-compose.yml exec -w /var/www/side/HoldYourBeer workspace <YOUR_COMMAND_HERE>
+docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace <YOUR_COMMAND_HERE>
 ```
+
+> **實際路徑設定**: 具體的路徑請參考 `my_dev_notes.md` → **「## 本地路徑」** 區塊
+> - `{YOUR_PROJECT_PATH}` = 專案在 Docker 容器內的絕對路徑
+> - `{YOUR_LARADOCK_PATH}` = Laradock docker-compose.yml 的相對路徑
 
 ### Examples:
 
 ```bash
-# Run all automated tests
-docker-compose -f ../../laradock/docker-compose.yml exec -w /var/www/side/HoldYourBeer workspace php artisan test
+# Run all automated tests (automatically uses .env.testing with SQLite)
+docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan test
+
+# Run tests with PCOV code coverage report
+docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan test --coverage
 
 # Run tests in a specific file
-docker-compose -f ../../laradock/docker-compose.yml exec -w /var/www/side/HoldYourBeer workspace php artisan test --filter=BeerCreationTest
+docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan test --filter=BeerCreationTest
+
+# Run development commands (uses .env with PostgreSQL)
+docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan migrate
 ```
 
 ## Development Conventions

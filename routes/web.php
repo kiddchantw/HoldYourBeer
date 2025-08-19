@@ -18,6 +18,10 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/tasting/{userBeerCount}/increment', [\App\Http\Controllers\TastingController::class, 'increment'])->name('tasting.increment');
     Route::post('/tasting/{userBeerCount}/decrement', [\App\Http\Controllers\TastingController::class, 'decrement'])->name('tasting.decrement');
+
+    // Beer routes
+    Route::get('/beers/create', [BeerController::class, 'create'])->name('beers.create');
+    Route::post('/beers', [BeerController::class, 'store'])->name('beers.store');
 });
 
 require __DIR__.'/auth.php';
