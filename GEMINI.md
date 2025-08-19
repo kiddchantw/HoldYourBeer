@@ -50,10 +50,7 @@ This project uses dual environment configuration:
 
 ### 開發環境設定
 
-> **本地開發設定**: 實際的資料庫帳密請參考 `my_dev_notes.md` → **「### Development Environment (.env)」** 區塊（此檔案不會上傳至雲端）
-> - `{YOUR_DB_NAME}` = `DB_DATABASE` 值
-> - `{YOUR_DB_USER}` = `DB_USERNAME` 值  
-> - `{YOUR_DB_PASSWORD}` = `DB_PASSWORD` 值
+> **📋 變數對映**: 請參考 `my_dev_notes.md` → **「🔧 變數對映表 (Placeholder Variables)」** 來查找 `{YOUR_DB_NAME}`、`{YOUR_DB_USER}` 和 `{YOUR_DB_PASSWORD}` 的實際值（此檔案不會上傳至雲端）
 
 **.env (Development Environment)**
 ```env
@@ -90,9 +87,7 @@ Use the following command template from the project root:
 docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace <YOUR_COMMAND_HERE>
 ```
 
-> **實際路徑設定**: 具體的路徑請參考 `my_dev_notes.md` → **「## 本地路徑」** 區塊
-> - `{YOUR_PROJECT_PATH}` = 專案在 Docker 容器內的絕對路徑
-> - `{YOUR_LARADOCK_PATH}` = Laradock docker-compose.yml 的相對路徑
+> **📋 變數對映**: 請參考 `my_dev_notes.md` → **「🔧 變數對映表 (Placeholder Variables)」** 來查找 `{YOUR_PROJECT_PATH}` 和 `{YOUR_LARADOCK_PATH}` 的實際值
 
 ### Examples:
 

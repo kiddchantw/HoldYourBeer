@@ -1,0 +1,100 @@
+Feature: Multilingual Language Switching
+  In order to use the application in my preferred language
+  As a user
+  I want to switch between Chinese and English
+
+  # Status: TODO
+  # Test: tests/Feature/MultilingualSwitchingTest.php (需要建立)
+  # UI: 語言切換元件 (需要實作)
+  # Backend: 多語系支援 (需要實作)
+
+  Background:
+    Given I am on any page of the application
+    And the current language is set to English
+
+  Scenario: Switch language from English to Chinese
+    # 情境：從英文切換到中文
+    Given I am viewing the page in English
+    When I click on the language switcher
+    And I select "中文" from the language options
+    Then the page should reload
+    And all text should be displayed in Chinese
+    And the language switcher should show "English" as an option
+    And my language preference should be saved
+
+  Scenario: Switch language from Chinese to English
+    # 情境：從中文切換到英文
+    Given I am viewing the page in Chinese
+    When I click on the language switcher
+    And I select "English" from the language options
+    Then the page should reload
+    And all text should be displayed in English
+    And the language switcher should show "中文" as an option
+    And my language preference should be saved
+
+  Scenario: Language preference persistence across sessions
+    # 情境：語言偏好設定在會話間持續保存
+    Given I have set my language preference to Chinese
+    When I log out of the application
+    And I log back in
+    Then the application should remember my language preference
+    And all text should be displayed in Chinese
+
+  Scenario: Language switching on different page types
+    # 情境：在不同頁面類型上切換語言
+    Given I am on the dashboard page
+    When I switch the language to Chinese
+    Then the dashboard should display in Chinese
+    When I navigate to the beer creation page
+    Then the beer creation page should also display in Chinese
+    And the language preference should be maintained
+
+  Scenario: Language switching with form validation messages
+    # 情境：表單驗證訊息的語言切換
+    Given I am on a form page in English
+    When I submit the form with invalid data
+    Then I should see validation error messages in English
+    When I switch the language to Chinese
+    Then the validation error messages should be displayed in Chinese
+    And the form should maintain its current state
+
+  Scenario: Language switching with dynamic content
+    # 情境：動態內容的語言切換
+    Given I am viewing a list of beers in English
+    When I switch the language to Chinese
+    Then the beer names should remain unchanged
+    But the labels, buttons, and navigation should be in Chinese
+    And the data should not be affected by the language change
+
+  Scenario: Language switching accessibility
+    # 情境：語言切換的無障礙功能
+    Given I am using a screen reader
+    When I switch the language
+    Then the screen reader should announce the language change
+    And all interactive elements should have proper language attributes
+    And the focus should be maintained on the language switcher
+
+  Scenario: Language switching with browser language detection
+    # 情境：瀏覽器語言自動偵測
+    Given my browser is set to Chinese
+    When I first visit the application
+    Then the application should automatically detect my preferred language
+    And display content in Chinese by default
+    And the language switcher should show "English" as an option
+
+  Scenario: Language switching with URL parameters
+    # 情境：透過 URL 參數切換語言
+    Given I am on a page in English
+    When I manually change the URL to include "?lang=zh"
+    Then the page should reload
+    And all content should be displayed in Chinese
+    And the language switcher should reflect the current language
+
+  Scenario: Language switching with AJAX requests
+    # 情境：AJAX 請求的語言切換
+    Given I am on a page in Chinese
+    When I perform an AJAX action
+    Then the response should include Chinese text
+    When I switch to English and perform the same action
+    Then the response should include English text
+    And the language context should be maintained in API calls
