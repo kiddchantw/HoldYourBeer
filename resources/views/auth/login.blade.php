@@ -5,8 +5,8 @@
     <div class="w-full max-w-md">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">歡迎回來</h1>
-            <p class="text-gray-600">登入您的 HoldYourBeer 帳戶</p>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">Start Your Beer Collection</h3>
+            <p class="text-sm text-gray-500 mb-6">Begin tracking your favorite beers and discover new ones!</p>
         </div>
 
         <form method="POST" action="{{ route('login') }}" class="space-y-6">

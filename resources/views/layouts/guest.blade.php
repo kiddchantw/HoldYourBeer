@@ -21,7 +21,7 @@
             <!-- Logo with enhanced styling -->
             <div class="relative z-20 mb-6">
                 <a href="/" class="block transform hover:scale-105 transition-transform duration-300">
-                    <x-application-logo class="w-20 h-20 drop-shadow-lg" />
+                    <img src="{{ asset('icon_v1_removed_bg.png') }}" alt="Logo" class="w-20 h-20 drop-shadow-lg">
                 </a>
             </div>
 
