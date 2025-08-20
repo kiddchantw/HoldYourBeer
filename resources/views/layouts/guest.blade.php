@@ -15,14 +15,21 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
+        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 relative overflow-hidden">
+            <!-- Background with warm gradient and glow effect -->
+            <div class="absolute inset-0 bg-gradient-to-r from-yellow-100 via-amber-50 to-orange-100"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-yellow-200/30 via-amber-100/20 to-orange-200/30"></div>
+            
+            <!-- Glow effect behind the form -->
+            <div class="absolute inset-0 bg-gradient-radial from-yellow-200/40 via-transparent to-transparent"></div>
+            
+            <div class="relative z-20">
                 <a href="/">
                     <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
                 </a>
             </div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg relative z-20">
                 {{ $slot }}
             </div>
         </div>
