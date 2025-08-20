@@ -15,6 +15,7 @@ HoldYourBeer 應用程式提供以下核心功能：
 *   **新增啤酒品項**：允許用戶新增其個人庫存中尚未記錄的啤酒品牌和系列。
 *   **品嚐筆記管理**：為每款啤酒添加和查看詳細的品嚐日誌。
 *   **個人啤酒列表**：顯示用戶所有已追蹤啤酒的列表，包含品牌、名稱和品飲次數。
+*   **品飲歷史追蹤**：查看單一啤酒的詳細品飲時間軸，包含增減紀錄與筆記。
 *   **API 介面**：提供穩定的 API 供前端應用程式（iOS 和 Web）使用。
 
 ## 2. 目標與業務場景 (Goals & Business Scenarios)
@@ -35,6 +36,7 @@ HoldYourBeer 應用程式提供以下核心功能：
 *   **增加/減少啤酒品飲計數**：用戶品飲某款啤酒後，可以快速更新其品飲計數；若有誤操作，也可減少計數。
 *   **新增未記錄的啤酒**：用戶遇到新的啤酒品項時，可以將其新增到自己的追蹤列表中，並可選擇建立新的品牌資訊。
 *   **記錄品嚐筆記**：用戶可以為特定的啤酒添加詳細的品嚐日誌，記錄風味、場合等資訊。
+*   **查看品飲歷史**：使用者可以點擊任一款啤酒，查看其詳細的品飲時間軸，了解何時增加或減少了計數，以及當時的筆記。
 
 ## 3. 功能規格 (Functional Specifications)
 
@@ -49,6 +51,7 @@ HoldYourBeer 應用程式提供以下核心功能：
 *   **查看啤酒列表**：`/spec/features/beer_tracking/viewing_the_list.feature`
 *   **新增啤酒**：`/spec/features/beer_tracking/adding_a_beer.feature`
 *   **管理品嚐記錄**：`/spec/features/beer_tracking/managing_tastings.feature`
+*   **查看品飲歷史**：`/spec/features/beer_tracking/viewing_tasting_history.feature`
 
 ### 3.3 API 規格 (API Specifications)
 
@@ -78,6 +81,7 @@ API 錯誤回應遵循標準化 JSON 格式，詳細結構定義請參考 `/spec
     *   `/spec/features/beer_tracking/adding_a_beer.feature`
     *   `/spec/features/beer_tracking/managing_tastings.feature`
     *   `/spec/features/beer_tracking/viewing_the_list.feature`
+    *   `/spec/features/beer_tracking/viewing_tasting_history.feature`
 *   **系統流程圖**：
     *   `/docs/diagrams/flow-user-view-and-increment.md`
     *   `/docs/diagrams/flow-user-add-new-beer.md`

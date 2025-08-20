@@ -165,63 +165,84 @@ tables:
         on_update: cascade
 
   tasting_logs:
-    description: "品飲記錄表 (審計追蹤用)"
+    description: "品飲日誌表"
     columns:
       id:
         type: bigint
         primary_key: true
         auto_increment: true
         unsigned: true
+      user_beer_count_id:
+        type: bigint
+        nullable: false
+        unsigned: true
+        comment: "用戶啤酒計數ID"
       user_id:
         type: bigint
         nullable: false
         unsigned: true
-        comment: "用戶ID"
-      beer_id:
-        type: bigint
-        nullable: false
-        unsigned: true
-        comment: "啤酒ID"
+        comment: "用戶ID (備援，用於效能)"
       action:
         type: enum
-        values: [create, increment, decrement]
+        values: [initial, increment, decrement]
         nullable: false
         comment: "操作類型"
-      count_before:
-        type: integer
-        nullable: false
-        comment: "操作前計數"
-      count_after:
-        type: integer
-        nullable: false
-        comment: "操作後計數"
-      logged_at:
-        type: timestamp
-        nullable: false
-        default: current_timestamp
-        comment: "記錄時間"
       created_at:
         type: timestamp
         nullable: true
+      updated_at:
+        type: timestamp
+        nullable: true
     indexes:
-      - name: tasting_logs_user_beer_index
+      - name: tasting_logs_user_beer_count_id_index
         type: index
-        columns: [user_id, beer_id]
-      - name: tasting_logs_logged_at_index
-        type: index
-        columns: [logged_at]
+        columns: [user_beer_count_id]
       - name: tasting_logs_user_id_index
         type: index
         columns: [user_id]
     foreign_keys:
+      - name: tasting_logs_user_beer_count_id_foreign
+        column: user_beer_count_id
+        references: user_beer_counts(id)
+        on_delete: cascade
+        on_update: cascade
       - name: tasting_logs_user_id_foreign
         column: user_id
         references: users(id)
         on_delete: cascade
         on_update: cascade
-      - name: tasting_logs_beer_id_foreign
-        column: beer_id
-        references: beers(id)
+
+  tasting_notes:
+    description: "品飲筆記表"
+    columns:
+      id:
+        type: bigint
+        primary_key: true
+        auto_increment: true
+        unsigned: true
+      tasting_log_id:
+        type: bigint
+        nullable: false
+        unsigned: true
+        comment: "品飲日誌ID"
+      note:
+        type: varchar(150)
+        nullable: false
+        comment: "筆記內容"
+      created_at:
+        type: timestamp
+        nullable: true
+      updated_at:
+        type: timestamp
+        nullable: true
+    indexes:
+      - name: tasting_notes_tasting_log_id_index
+        type: index
+        columns: [tasting_log_id]
+    foreign_keys:
+      - name: tasting_notes_tasting_log_id_foreign
+        column: tasting_log_id
+        references: tasting_logs(id)
         on_delete: cascade
         on_update: cascade
 

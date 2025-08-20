@@ -17,3 +17,12 @@ Feature: Adding a New Beer to the Collection
     Then I should see "Hazy Jane" as a suggestion
     When I fill in the rest of the details and save
     Then the new beer should be added to my collection with a tasting count of 1
+
+  Scenario: Adding a new beer with a tasting note
+    Given I am on the "Add a new beer" page
+    When I fill in the brand as "Kirin"
+    And I fill in the name as "Lager"
+    And I write "A crisp and refreshing lager, perfect for a summer day." in the tasting note
+    And I save the new beer
+    Then the beer "Kirin Lager" should be in my collection
+    And it should have a tasting note "A crisp and refreshing lager, perfect for a summer day."

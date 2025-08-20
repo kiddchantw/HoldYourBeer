@@ -139,6 +139,7 @@ This project follows a comprehensive specification-first approach:
   - `beer_tracking/adding_a_beer.feature`
   - `beer_tracking/viewing_the_list.feature` 
   - `beer_tracking/managing_tastings.feature`
+  - `beer_tracking/viewing_tasting_history.feature`
 - `/spec/acceptance/definition-of-done.md` - Universal completion criteria
 - `/spec/format/error-response.json` - Standardized API error format
 
