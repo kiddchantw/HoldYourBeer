@@ -1,20 +1,21 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Dashboard') }}
-            </h2>
+            <div>
+                <p class="text-gray-600 text-lg">
+                    Welcome, {{ Auth::user()->name }}
+                    @if(Auth::user()->role === 'admin')
+                        <span class="text-sm text-gray-500">
+                            You are an administrator. <a href="{{ route('admin.dashboard') }}" class="text-indigo-600 hover:text-indigo-900">Go to Admin Dashboard</a>
+                        </span>
+                    @endif
+                </p>
+            </div>
         </div>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- Welcome Message -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div class="p-6 text-gray-900">
-                    Welcome, {{ Auth::user()->name }}
-                </div>
-            </div>
 
             <!-- Beer Collection Section -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">

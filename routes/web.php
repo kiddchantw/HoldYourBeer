@@ -3,6 +3,7 @@
 use App\Http\Controllers\BeerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SocialLoginController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -23,5 +24,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/beers/create', [BeerController::class, 'create'])->name('beers.create');
     Route::post('/beers', [BeerController::class, 'store'])->name('beers.store');
 });
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+    Route::get('/users', [DashboardController::class, 'users'])->name('admin.users.index');
+});
+
+Route::get('/auth/{provider}/redirect', [SocialLoginController::class, 'redirectToProvider'])->name('social.redirect');
+Route::get('/auth/{provider}/callback', [SocialLoginController::class, 'handleProviderCallback'])->name('social.callback');
 
 require __DIR__.'/auth.php';

@@ -49,6 +49,16 @@ Feature: Multilingual Language Switching
     Then the beer creation page should also display in Chinese
     And the language preference should be maintained
 
+  Scenario: Language switcher presence on main pages
+    # 情境：主要頁面必須有語言切換器
+    Given I am on the home page "http://holdyourbeer.test/"
+    Then I should see a language switcher component
+    And the language switcher should be visible in the navigation
+    When I navigate to the dashboard "http://holdyourbeer.test/dashboard"
+    Then I should also see the language switcher component
+    And the language switcher should be consistently positioned
+    And the language switcher should show the current language
+
   Scenario: Language switching with form validation messages
     # 情境：表單驗證訊息的語言切換
     Given I am on a form page in English
@@ -98,3 +108,23 @@ Feature: Multilingual Language Switching
     When I switch to English and perform the same action
     Then the response should include English text
     And the language context should be maintained in API calls
+
+  Scenario: Language switching on home page and dashboard
+    # 情境：首頁和儀表板的語言切換功能
+    Given I am on the home page "http://holdyourbeer.test/"
+    And the current language is English
+    When I switch the language to Chinese
+    Then the home page should display in Chinese
+    And the welcome message should be in Chinese
+    And the navigation menu should be in Chinese
+    When I navigate to the dashboard "http://holdyourbeer.test/dashboard"
+    Then the dashboard should also display in Chinese
+    And the dashboard title should be in Chinese
+    And the beer collection summary should be in Chinese
+    And the language switcher should show "English" as an option
+    When I switch back to English on the dashboard
+    Then the dashboard should display in English
+    And the language preference should be saved
+    When I return to the home page
+    Then the home page should also display in English
+    And the language preference should be consistent across pages
