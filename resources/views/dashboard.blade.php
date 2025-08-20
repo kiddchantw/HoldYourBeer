@@ -14,11 +14,14 @@
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-12 relative overflow-hidden">
+        <x-background />
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10">
 
             <!-- Beer Collection Section -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <!-- <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg"> -->
+            <div class="bg-white/60 backdrop-blur-sm overflow-hidden shadow-sm sm:rounded-lg">
+
                 <div class="p-6">
                     @if($trackedBeers->isEmpty())
                         <!-- Empty State -->
