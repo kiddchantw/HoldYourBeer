@@ -3,7 +3,7 @@ Feature: Third-Party Login
   As a user
   I want to be able to log in using third-party services like Google or Apple.
 
-  # Status: TODO
+  # Status: DONE (Test: tests/Feature/SocialLoginTest.php)
 
   Scenario: User logs in with Google
     Given I am on the login page

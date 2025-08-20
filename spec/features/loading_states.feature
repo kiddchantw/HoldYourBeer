@@ -3,9 +3,9 @@ Feature: Loading States and User Feedback
   As a user
   I want to see loading indicators when actions are being processed
 
-  # Status: TODO
-  # Test: tests/Feature/LoadingStatesTest.php (需要建立)
-  # UI: TODO (需要實作 loading 元件)
+  # Status: DONE
+  # Test: tests/Feature/LoadingStatesTest.php
+  # UI: DONE (已實作 loading 元件於 CreateBeer 表單)
 
   Background:
     Given I am a registered user
