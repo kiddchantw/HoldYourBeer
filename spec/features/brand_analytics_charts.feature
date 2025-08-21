@@ -83,6 +83,7 @@ Feature: Brand Analytics Charts and Consumption Patterns
     And the chart data should be accessible via keyboard navigation
     And color contrast should meet accessibility standards
 
+  # 場景: 當前頁面的導覽連結會正確突顯
   Scenario: Navigation link is properly highlighted when active
     Given I am on the charts page
     Then the "Charts" navigation link should be highlighted as active

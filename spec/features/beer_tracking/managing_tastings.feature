@@ -11,6 +11,7 @@ Feature: Managing Tastings for a Beer
     Then its tasting count should become 5
     And a new "increment" action should be in the tasting log for "Guinness Draught"
 
+  # 場景: 透過減量來更正錯誤的增量
   Scenario: Correcting a mistaken increment by decrementing
     Given I see "Guinness Draught" in my collection with a tasting count of 5
     When I press the "-1" button for "Guinness Draught"

@@ -66,6 +66,7 @@ Feature: Loading States and User Feedback
     Then the loading indicator should be removed
     And I should see the beer data
 
+  # 場景: 圖片上傳的載入狀態
   Scenario: Loading state for image uploads
     Given I am on the beer creation form
     When I select an image file to upload

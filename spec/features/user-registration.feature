@@ -15,6 +15,7 @@ Feature: User Registration
     Then I should be redirected to the "/dashboard" page
     And I should see the welcome message "Welcome, John Doe"
 
+  # 場景: 使用者嘗試使用已存在的信箱註冊
   Scenario: A user tries to register with an existing email
     Given a user with the email "existing.user@example.com" already exists
     When I try to register with the email "existing.user@example.com"

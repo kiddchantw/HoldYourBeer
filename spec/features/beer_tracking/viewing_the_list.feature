@@ -12,6 +12,7 @@ Feature: Viewing the Beer List
     Then I should see a prominent button inviting me to "Track my first beer"
     And I should not see a list of beers
 
+  # 場景: 查看已追蹤啤酒的排序列表及其計數
   Scenario: Viewing the sorted list of tracked beers with their counts
     Given I have tracked the following beers:
       | Brand     | Name      | Times Tasted | Last Tasted         |

@@ -29,6 +29,7 @@ Feature: Third-Party Login
     And after successful authentication, I should be logged in to my account
     And my user profile should be created or updated with Apple details
 
+  # 場景: 已有帳號的使用者透過第三方服務登入
   Scenario: User with existing email logs in with third-party service
     Given I have an existing account with email "test@example.com"
     And I am on the login page

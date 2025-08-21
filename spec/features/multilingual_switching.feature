@@ -53,10 +53,11 @@ Feature: Multilingual Language Switching
   Scenario: Language switcher presence on main pages
     # 情境：主要頁面必須有語言切換器
     Given I am on the home page "http://holdyourbeer.test/"
-    Then I should see a language switcher component
-    And the language switcher should be visible in the navigation
+    Then I should see a language switcher component in the navigation
+    And I should see a language switcher component in the footer
     When I navigate to the dashboard "http://holdyourbeer.test/dashboard"
-    Then I should also see the language switcher component
+    Then I should also see a language switcher component in the navigation
+    And I should also see a language switcher component in the footer
     And the language switcher should be consistently positioned
     And the language switcher should show the current language
 
@@ -93,12 +94,11 @@ Feature: Multilingual Language Switching
     And display content in Chinese by default
     And the language switcher should show "English" as an option
 
-  Scenario: Language switching with URL parameters
-    # 情境：透過 URL 參數切換語言
-    Given I am on a page in English
-    When I manually change the URL to include "?lang=zh"
-    Then the page should reload
-    And all content should be displayed in Chinese
+  Scenario: Language switching with URL prefix
+    # 情境：透過 URL 前綴切換語言
+    Given I am on the "/dashboard" page in English
+    When I navigate to the "/zh-TW/dashboard" URL
+    Then the page should display all content in Chinese
     And the language switcher should reflect the current language
 
   Scenario: Language switching with AJAX requests

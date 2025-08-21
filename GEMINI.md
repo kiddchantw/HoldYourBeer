@@ -14,96 +14,13 @@ The application follows a spec-driven development approach, with API specificati
 
 ## Building and Running
 
-The project uses Laradock for a consistent development environment. The following are the key commands for setting up and running the application:
+This project uses Laradock. For all local development settings, placeholder values, and the exact `docker-compose` commands for running tests, migrations, etc., please refer to the single source of truth:
 
-**1. Start the Docker Containers:**
+**➡️ `laradock_setting.md`**
 
-```bash
-# From the laradock directory
-docker-compose up -d nginx postgres
-```
+This file contains the command templates and all necessary variables.
 
-**2. Install Dependencies:**
-
-```bash
-# Enter the workspace container
-docker-compose exec workspace bash
-
-# Install PHP dependencies
-composer install
-
-# Install frontend dependencies
-npm install
-```
-
-**3. Run the Application:**
-
-```bash
-# From the workspace container
-# Run the development server
-composer run dev
-```
-
-**4. Environment Configuration:**
-
-This project uses dual environment configuration:
-
-### 開發環境設定
-
-> **📋 變數對映**: 請參考 `my_dev_notes.md` → **「🔧 變數對映表 (Placeholder Variables)」** 來查找 `{YOUR_DB_NAME}`、`{YOUR_DB_USER}` 和 `{YOUR_DB_PASSWORD}` 的實際值（此檔案不會上傳至雲端）
-
-**.env (Development Environment)**
-```env
-DB_CONNECTION=pgsql
-DB_HOST=postgres
-DB_PORT=5432
-DB_DATABASE={YOUR_DB_NAME}
-DB_USERNAME={YOUR_DB_USER}
-DB_PASSWORD={YOUR_DB_PASSWORD}
-```
-
-### 測試環境設定
-
-> **測試環境設定**: 使用固定參數，不需修改（參考 `my_dev_notes.md` → **「### Testing Environment (.env.testing)」**）
-
-**.env.testing (Testing Environment)**
-```env
-APP_ENV=testing
-DB_CONNECTION=sqlite
-DB_DATABASE=:memory:
-CACHE_DRIVER=array
-SESSION_DRIVER=array
-QUEUE_CONNECTION=sync
-```
-
-**5. Run Tests:**
-
-All `php artisan` or test commands **must** be run inside the Laradock `workspace` container.
-
-Use the following command template from the project root:
-
-```bash
-# Command Template
-docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace <YOUR_COMMAND_HERE>
-```
-
-> **📋 變數對映**: 請參考 `my_dev_notes.md` → **「🔧 變數對映表 (Placeholder Variables)」** 來查找 `{YOUR_PROJECT_PATH}` 和 `{YOUR_LARADOCK_PATH}` 的實際值
-
-### Examples:
-
-```bash
-# Run all automated tests (automatically uses .env.testing with SQLite)
-docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan test
-
-# Run tests with PCOV code coverage report
-docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan test --coverage
-
-# Run tests in a specific file
-docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan test --filter=BeerCreationTest
-
-# Run development commands (uses .env with PostgreSQL)
-docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan migrate
-```
+> **📝 Note for AI Assistants**: The `laradock_setting.md` file is available locally but excluded from git repository. Claude Code and Gemini CLI can access this file to get the actual path variables and command templates needed for development tasks.
 
 ## Development Conventions
 

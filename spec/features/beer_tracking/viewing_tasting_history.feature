@@ -11,6 +11,7 @@ Feature: Viewing the Tasting History for a Beer
       | initial     | 2025-08-20 10:00 | A crisp and refreshing lager, perfect for a summer day. |
       | increment   | 2025-08-21 18:30 |                                                      |
 
+  # 場景: 查看品飲歷史
   Scenario: Viewing the tasting history
     Given I am on the dashboard
     When I click on the "Kirin Lager" beer card

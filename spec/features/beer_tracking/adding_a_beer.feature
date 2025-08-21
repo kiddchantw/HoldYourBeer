@@ -18,6 +18,7 @@ Feature: Adding a New Beer to the Collection
     When I fill in the rest of the details and save
     Then the new beer should be added to my collection with a tasting count of 1
 
+  # 場景: 新增啤酒並附上評論
   Scenario: Adding a new beer with a tasting note
     Given I am on the "Add a new beer" page
     When I fill in the brand as "Kirin"

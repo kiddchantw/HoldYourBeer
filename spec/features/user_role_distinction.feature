@@ -18,6 +18,7 @@ Feature: User Role Distinction
     When I visit the admin panel
     Then I should see the administration options
 
+  # 場景: 一般使用者權限
   Scenario: Regular User Access
     Given I am a regular user
     When I attempt to visit the admin panel

@@ -26,3 +26,6 @@ dist/
 build/
 COMMIT_MSG.tmp
 
+# Local development configuration (not shared in repository)
+laradock_setting.md
+
