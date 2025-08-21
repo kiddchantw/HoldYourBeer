@@ -3,6 +3,16 @@ Feature: Third-Party Login
   As a user
   I want to be able to log in using third-party services like Google or Apple.
 
+  # Status: IMPLEMENTATION INCOMPLETE
+  # TODO: 需要去 Google Cloud Console 取得您自己的憑證
+  # 1. 前往 https://console.cloud.google.com/
+  # 2. 建立新專案或選擇現有專案
+  # 3. 啟用 Google+ API
+  # 4. 在「憑證」頁面建立 OAuth 2.0 用戶端 ID
+  # 5. 取得 Client ID 和 Client Secret
+  # 6. 設定授權的重新導向 URI (例如: http://localhost:8000/auth/google/callback)
+  # 7. 更新 .env 檔案中的 GOOGLE_CLIENT_ID 和 GOOGLE_CLIENT_SECRET
+
   # Status: DONE (Test: tests/Feature/SocialLoginTest.php)
 
   Scenario: User logs in with Google
