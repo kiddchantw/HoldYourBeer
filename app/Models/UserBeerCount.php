@@ -36,4 +36,12 @@ class UserBeerCount extends Model
     {
         return $this->belongsTo(Beer::class);
     }
+
+    /**
+     * Get the tasting logs for the beer count.
+     */
+    public function tastingLogs()
+    {
+        return $this->hasMany(TastingLog::class);
+    }
 }

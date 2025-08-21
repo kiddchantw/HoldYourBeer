@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
     // Beer routes
     Route::get('/beers/create', [BeerController::class, 'create'])->name('beers.create');
     Route::post('/beers', [BeerController::class, 'store'])->name('beers.store');
+    Route::get('/beers/{beer}/history', [\App\Http\Controllers\TastingController::class, 'history'])->name('beers.history');
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {

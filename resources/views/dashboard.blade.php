@@ -55,7 +55,7 @@
                         <!-- Beer Cards - Mobile First -->
                         <div class="space-y-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6 md:space-y-0">
                             @foreach($trackedBeers as $beerCount)
-                                <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition duration-150 ease-in-out">
+                                <a href="{{ route('beers.history', $beerCount->beer) }}" class="block bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition duration-150 ease-in-out">
                                     <div class="flex justify-between items-start">
                                         <div class="flex-1 min-w-0">
                                             <h4 class="text-lg font-medium text-gray-900 truncate">
@@ -87,7 +87,7 @@
                                             </form>
                                         </div>
                                     </div>
-                                </div>
+                                </a>
                             @endforeach
                         </div>
 

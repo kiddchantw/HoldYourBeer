@@ -40,8 +40,14 @@
 
         <div>
             <x-input-label for="style" :value="__('Style')" />
-            <x-text-input id="style" type="text" class="mt-1 block w-full" wire:model="style" placeholder="Enter beer style..." wire:loading.attr="disabled" wire:target="save" />
+            <x-text-input id="style" type="text" class="mt-1 block w-full" wire:model="style" placeholder="Enter beer style (Optional)..." wire:loading.attr="disabled" wire:target="save" />
             @error('style') <x-input-error :messages="$errors->get('style')" class="mt-2" /> @enderror
+        </div>
+
+        <div>
+            <x-input-label for="note" :value="__('Tasting Note (Optional)')" />
+            <textarea id="note" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" wire:model="note" placeholder="Enter a tasting note..."></textarea>
+            @error('note') <x-input-error :messages="$errors->get('note')" class="mt-2" /> @enderror
         </div>
 
         <div class="flex items-center gap-4">

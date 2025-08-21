@@ -107,6 +107,7 @@ docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_
 
 ## Development Conventions
 
+*   **Language Preference:** Whenever possible, respond in Traditional Chinese.
 *   **Spec-Driven Development:** All features are defined in the `/spec` directory before implementation.
 *   **Commit-First Checks:** Before committing any code, all tests must be run and pass.
 *   **Feature Status Updates:** The status of features should be updated in the corresponding `.feature` files.

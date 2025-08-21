@@ -1,4 +1,5 @@
 Feature: Viewing the Tasting History for a Beer
+  # UI Planning: Vertical timeline will be implemented using BladewindUI's timeline component.
   In order to see the timeline of my beer tasting
   As a registered user
   I want to view a detailed history for each beer in my collection.

@@ -4,6 +4,7 @@ Feature: Google Analytics Integration
   I want to integrate Google Analytics for comprehensive analytics
 
   # Status: TODO
+  # Design: DONE (docs/google_analytics_integration_design.md)
   # Test: tests/Feature/GoogleAnalyticsIntegrationTest.php (需要建立)
   # UI: Google Analytics 追蹤碼 (需要實作)
   # Backend: 事件追蹤 API (需要實作)

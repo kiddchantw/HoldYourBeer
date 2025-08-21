@@ -13,5 +13,10 @@ class TastingLog extends Model
         'user_beer_count_id',
         'action',
         'tasted_at',
+        'note',
+    ];
+
+    protected $casts = [
+        'tasted_at' => 'datetime',
     ];
 }

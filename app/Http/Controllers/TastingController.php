@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Beer;
 use App\Models\UserBeerCount;
 use App\Models\TastingLog;
 use Illuminate\Http\Request;
@@ -37,5 +38,19 @@ class TastingController extends Controller
         }
 
         return back();
+    }
+
+    public function history(Beer $beer)
+    {
+        $userBeerCount = UserBeerCount::where('user_id', Auth::id())
+            ->where('beer_id', $beer->id)
+            ->firstOrFail();
+
+        $tastingLogs = $userBeerCount->tastingLogs()->orderBy('tasted_at', 'desc')->get();
+
+        return view('beers.history', [
+            'beer' => $beer,
+            'tastingLogs' => $tastingLogs,
+        ]);
     }
 }
