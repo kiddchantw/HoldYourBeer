@@ -23,7 +23,7 @@ class BrandAnalyticsChartsTest extends TestCase
     #[Test]
     public function authenticated_user_can_access_charts_page()
     {
-        $response = $this->get(route('charts'));
+        $response = $this->get(route('charts', ['locale' => 'en']));
         $response->assertStatus(200);
         $response->assertSeeText('Brand Analytics Charts');
     }
@@ -31,7 +31,7 @@ class BrandAnalyticsChartsTest extends TestCase
     #[Test]
     public function chart_canvas_and_script_are_present_on_charts_page()
     {
-        $response = $this->get(route('charts'));
+        $response = $this->get(route('charts', ['locale' => 'en']));
         $response->assertStatus(200);
         // Removed assertions for specific HTML/JS content due to encoding issues.
         // This test now only verifies the page loads.
@@ -52,7 +52,7 @@ class BrandAnalyticsChartsTest extends TestCase
         $beer2 = Beer::factory()->create(['brand_id' => $brand2->id]);
         UserBeerCount::factory()->create(['user_id' => $user->id, 'beer_id' => $beer2->id, 'count' => 3]);
 
-        $response = $this->get(route('charts'));
+        $response = $this->get(route('charts', ['locale' => 'en']));
         $response->assertStatus(200);
         // Removed assertions for specific HTML/JS content due to encoding issues.
         // This test now only verifies the page loads.
@@ -62,7 +62,7 @@ class BrandAnalyticsChartsTest extends TestCase
     public function chart_handles_empty_data_gracefully()
     {
         // User has no beer consumption data
-        $response = $this->get(route('charts'));
+        $response = $this->get(route('charts', ['locale' => 'en']));
         $response->assertStatus(200);
         $response->assertSeeText('No brand consumption data available.');
     }

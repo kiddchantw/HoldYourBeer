@@ -141,61 +141,61 @@ This project follows a Spec-driven development methodology. All specifications f
 
 >用途：規範流程。它定義了開發者在為這個專案貢獻(contribute) 時，應該遵循的步驟、慣例和規則。它回答的是「How」的問題（我們該如何開發？）
 
-### Commit-First Checks
+### Feature Development Workflow
 
-To ensure the stability of the codebase, all developers should adhere to the following process before committing code:
+To maintain clarity, code quality, and avoid duplicate work, please follow this comprehensive process for every feature.
 
-1.  **Run All Tests Locally with Coverage**: Before every `git commit`, run the entire automated test suite with code coverage reporting to ensure changes are well-tested and have not broken existing functionality.
+**1. Before You Start: Specification & Planning**
 
+Before writing any code, ensure the groundwork is laid out.
+
+-   **Check for Existing Scenarios**: Review `spec/features/` to ensure a similar feature or scenario doesn't already exist.
+-   **Consult the Schema**: Refer to `spec/database/schema.yaml` to understand the required data structures.
+-   **Prepare Migrations**: Ensure a corresponding database migration file exists in `database/migrations/` for any new tables or columns.
+
+**2. During Development: Track Your Progress**
+
+As you work on the feature, keep the team informed by updating its status.
+
+-   **Update Feature Status**: In the corresponding `.feature` file, update the status header for the `Scenario`. Use the following format:
+
+    ```gherkin
+    # Status: TODO | IN_PROGRESS | DONE
+    # Design: docs/diagrams/your-feature-flow.md
+    # Test: tests/Feature/YourSpecificTest.php
+    # UI: TODO | DONE
+    # Backend: DONE
+    ```
+    -   **`# Status`**: The overall status of the feature.
+    -   **`# Design`**: Link to the design document or diagram.
+    -   **`# Test`**: Link to the primary test file.
+    -   **`# UI`**: The development status of the UI.
+    -   **`# Backend`**: The development status of the backend logic.
+
+> **重要提示**: 新增 `Scenario` 時，請務必在上方加上一行 `# 場景: ...` 的中文註解，以方便團隊成員快速理解。
+
+**3. Before You Finish: Definition of Done & Quality Checks**
+
+Before a feature can be considered complete and ready for review, it must meet all the following criteria.
+
+-   **Run All Tests**: Before every `git commit`, run the entire automated test suite with code coverage.
     ```bash
     # From the HoldYourBeer project root:
     docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan test --coverage
     ```
+-   **Ensure All Tests Pass**: Only commit if all tests report a `PASS` status.
 
-2.  **Ensure All Tests Pass**: Only commit your changes if all tests are reporting a `PASS` status. A high coverage percentage is encouraged.
+-   **Final Checklist (Definition of Done)**:
+    -   [ ] Corresponding `.feature` file exists and is reviewed.
+    -   [ ] API specification in `spec/api/api.yaml` updated if needed.
+    -   [ ] Design & documentation in `/docs` updated if needed.
+    -   [ ] Unit tests (Pest/PHPUnit) are written and passing.
+    -   [ ] Behavior tests (Behat) for the feature file are passing.
+    -   [ ] API contract tests (Dredd) are passing.
+    -   [ ] Responsive design works on mobile, tablet, and desktop.
+    -   [ ] CI/CD pipeline is green.
+    -   [ ] Code has been peer-reviewed and merged to main.
 
 > **Note**: This project uses **PCOV** for code coverage analysis. The `--coverage` flag will generate a text report directly in your terminal after the tests run.
 
-> **Advanced Tip**: Consider setting up a Git pre-commit hook to automate this testing process. A hook can run the test suite automatically whenever you attempt to commit, and only allow the commit to be created if the tests pass. This is a great way to enforce code quality automatically.
-
-### Definition of Done Requirements
-
-Every feature must meet these criteria:
-- Corresponding `.feature` file exists and reviewed
-- API specification updated in `api.yaml` if needed
-- Unit tests (Pest/PHPUnit) written and passing
-- Behavior tests (Behat) for feature file passing
-- API contract tests (Dredd) passing
-- Responsive design working on mobile/tablet/desktop
-- CI/CD pipeline green
-- Code peer-reviewed and merged to main
-
-### Feature 狀態更新
-
-當您開始或完成一個功能時，請務必更新對應的 `.feature` 檔案中，相關 `Scenario` 上方的狀態註解。
-
-使用以下格式來追蹤每個功能的進度：
-
-```gherkin
-# Status: TODO | IN_PROGRESS | DONE
-# Design: docs/diagrams/your-feature-flow.md
-# Test: tests/Feature/YourSpecificTest.php
-# UI: TODO | DONE
-# Backend: DONE
-```
-
--   **`# Status`**: 標示功能的整體狀態 (TODO, IN_PROGRESS, DONE)。
--   **`# Design`**: 連結到 `/docs` 目錄中對應的設計文件 (e.g., `docs/your-design-doc.md`) 或架構圖 (e.g., `docs/diagrams/your-feature-flow.md`)。
--   **`# Test`**: 連結到主要的測試檔案，例如 `tests/Feature/YourSpecificTest.php`。
--   **`# UI`**: 標示前端 UI 的開發進度。
--   **`# Backend`**: 標示後端邏輯的開發進度。
-
-> **重要提示**: 新增 `Scenario` 時，請務必在上方加上一行 `# 場景: ...` 的中文註解，以方便團隊成員快速理解。
-
-### Feature Development Process
-
-To maintain clarity and avoid duplicate work, please follow these steps when developing a new feature.
-
-1.  **Check for Existing Scenarios**: Before writing a new `.feature` file or adding a `Scenario`, please review the existing specifications in the `spec/features/` directory to ensure a similar scenario does not already exist.
-2.  **Consult the Schema**: Before implementation, always refer to the database schema defined in `spec/database/schema.yaml` to understand the required data structures.
-3.  **Create/Update Migrations**: Ensure that a corresponding database migration file exists in `database/migrations/` to reflect any new tables or columns required for your feature. This keeps the database synchronized with the application's needs.
+> **Advanced Tip**: Consider setting up a Git pre-commit hook to automate this testing process. This is a great way to enforce code quality automatically.

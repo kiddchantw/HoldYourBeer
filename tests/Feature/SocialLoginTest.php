@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\User as SocialiteUser;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class SocialLoginTest extends TestCase
 {
@@ -27,7 +28,7 @@ class SocialLoginTest extends TestCase
         return $socialiteUser;
     }
 
-    /** @test */
+    #[Test]
     public function user_can_login_with_google()
     {
         $this->mockSocialiteUser('google', 'google_id_123', 'Google User', 'google@example.com');
@@ -44,7 +45,7 @@ class SocialLoginTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function user_can_login_with_apple()
     {
         $this->mockSocialiteUser('apple', 'apple_id_123', 'Apple User', 'apple@example.com');
@@ -61,7 +62,7 @@ class SocialLoginTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function existing_user_can_link_google_account()
     {
         $user = User::factory()->create([
@@ -83,7 +84,7 @@ class SocialLoginTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function existing_user_can_link_apple_account()
     {
         $user = User::factory()->create([
@@ -105,7 +106,7 @@ class SocialLoginTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function social_login_redirects_to_login_on_failure()
     {
         Socialite::shouldReceive('driver')->with('google')->andReturnSelf();

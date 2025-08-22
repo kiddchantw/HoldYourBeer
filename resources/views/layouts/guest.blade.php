@@ -17,7 +17,7 @@
     <body class="font-sans text-gray-900 antialiased">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 relative overflow-hidden">
             <x-background />
-            
+
             <!-- Logo with enhanced styling -->
             <div class="relative z-20 mb-6">
                 <a href="/" class="block transform hover:scale-105 transition-transform duration-300">
@@ -27,6 +27,9 @@
 
             <!-- Form container with enhanced styling -->
             <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white/95 backdrop-blur-sm shadow-xl overflow-hidden sm:rounded-xl relative z-20 border border-white/30">
+                <div class="flex justify-end mb-3">
+                    <x-language-switcher />
+                </div>
                 {{ $slot }}
             </div>
         </div>

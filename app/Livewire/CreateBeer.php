@@ -135,7 +135,7 @@ class CreateBeer extends Component
 
             DB::commit();
 
-            return redirect()->route('dashboard')->with('success', $message);
+            return redirect()->route('localized.dashboard', ['locale' => app()->getLocale() ?: 'en'])->with('success', $message);
 
         } catch (\Exception $e) {
             DB::rollBack();

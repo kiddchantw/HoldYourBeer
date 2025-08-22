@@ -5,12 +5,13 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class AdminAccessTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function admin_can_access_admin_panel()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -23,7 +24,7 @@ class AdminAccessTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /** @test */
+    #[Test]
     public function regular_user_cannot_access_admin_panel()
     {
         $user = User::factory()->create(['role' => 'user']);
@@ -34,7 +35,7 @@ class AdminAccessTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
+    #[Test]
     public function guest_cannot_access_admin_panel()
     {
         $response = $this->get('/admin/dashboard');
@@ -42,7 +43,7 @@ class AdminAccessTest extends TestCase
         $response->assertStatus(302); // Redirect to login
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_view_user_list()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -52,7 +53,7 @@ class AdminAccessTest extends TestCase
 
         $this->actingAs($admin);
 
-        $response = $this->get(route('admin.users.index'));
+        $response = $this->get(route('admin.users.index', ['locale' => 'en']));
 
         $response->assertStatus(200);
         $response->assertSee('User Management');

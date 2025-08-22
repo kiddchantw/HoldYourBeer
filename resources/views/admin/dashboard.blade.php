@@ -1,9 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <div>
-
             <p class="text-gray-600 mt-1">
-                Welcome to the Admin Dashboard!
+                {{ __('Welcome to the Admin Dashboard!') }}
             </p>
         </div>
     </x-slot>
@@ -13,8 +12,8 @@
             <!-- Users List Section -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">All Users</h3>
-                    
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('All Users') }}</h3>
+
                     @php
                         $users = \App\Models\User::all()->map(function ($user) {
                             $registrationMethod = 'email';
@@ -37,11 +36,11 @@
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registration Method</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('ID') }}</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Name') }}</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Email') }}</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Registration Method') }}</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Created At') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -51,8 +50,8 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $user['name'] }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user['email'] }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                                {{ $user['registration_method'] === 'Google' ? 'bg-blue-100 text-blue-800' : 
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                {{ $user['registration_method'] === 'Google' ? 'bg-blue-100 text-blue-800' :
                                                    ($user['registration_method'] === 'Apple' ? 'bg-gray-100 text-gray-800' : 'bg-green-100 text-green-800') }}">
                                                 {{ $user['registration_method'] }}
                                             </span>

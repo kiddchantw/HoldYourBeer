@@ -93,7 +93,7 @@ class BeerController extends Controller
 
             DB::commit();
 
-            return redirect()->route('dashboard')->with('success', '新啤酒已成功加入您的追蹤列表！');
+            return redirect()->route('localized.dashboard', ['locale' => app()->getLocale() ?: 'en'])->with('success', '新啤酒已成功加入您的追蹤列表！');
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -139,7 +139,7 @@ class BeerController extends Controller
     public function getBrandSuggestions(Request $request)
     {
         $query = $request->get('q', '');
-        
+
         if (strlen($query) < 2) {
             return response()->json([]);
         }
@@ -159,7 +159,7 @@ class BeerController extends Controller
     {
         $brandId = $request->get('brand_id');
         $query = $request->get('q', '');
-        
+
         if (!$brandId || strlen($query) < 2) {
             return response()->json([]);
         }

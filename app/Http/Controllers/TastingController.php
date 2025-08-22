@@ -40,7 +40,7 @@ class TastingController extends Controller
         return back();
     }
 
-    public function history(Beer $beer)
+    public function history(string $locale, Beer $beer)
     {
         $userBeerCount = UserBeerCount::where('user_id', Auth::id())
             ->where('beer_id', $beer->id)

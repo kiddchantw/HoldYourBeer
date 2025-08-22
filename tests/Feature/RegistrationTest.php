@@ -17,7 +17,10 @@ class RegistrationTest extends TestCase
      */
     public function test_a_new_user_can_register()
     {
-        $response = $this->post('/register', [
+        // Disable CSRF protection for this test
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+
+        $response = $this->post('/en/register', [
             'name' => 'John Doe',
             'email' => 'john.doe@example.com',
             'password' => 'password',
@@ -25,7 +28,7 @@ class RegistrationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect('/dashboard');
+        $response->assertRedirect(route('localized.dashboard', ['locale' => 'en']));
     }
 
     /**
@@ -40,7 +43,10 @@ class RegistrationTest extends TestCase
             'email' => 'jane.doe@example.com',
         ]);
 
-        $response = $this->post('/register', [
+        // Disable CSRF protection for this test
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+
+        $response = $this->post('/en/register', [
             'name' => 'John Doe',
             'email' => 'jane.doe@example.com',
             'password' => 'password',

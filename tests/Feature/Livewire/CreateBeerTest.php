@@ -60,7 +60,7 @@ class CreateBeerTest extends TestCase
             ->set('style', 'Lager')
             ->call('save')
             ->assertHasNoErrors()
-            ->assertRedirect(route('dashboard'));
+            ->assertRedirect(route('localized.dashboard', ['locale' => 'en']));
 
         $this->assertDatabaseHas('brands', [
             'name' => 'New Awesome Brand'
@@ -88,7 +88,7 @@ class CreateBeerTest extends TestCase
             ->set('note', 'This is a test note.')
             ->call('save')
             ->assertHasNoErrors()
-            ->assertRedirect(route('dashboard'));
+            ->assertRedirect(route('localized.dashboard', ['locale' => 'en']));
 
         $this->assertDatabaseHas('tasting_logs', [
             'note' => 'This is a test note.',
@@ -110,7 +110,7 @@ class CreateBeerTest extends TestCase
             ->set('name', 'Existing Beer')
             ->call('save')
             ->assertHasNoErrors()
-            ->assertRedirect(route('dashboard'));
+            ->assertRedirect(route('localized.dashboard', ['locale' => 'en']));
 
         $this->assertDatabaseHas('user_beer_counts', [
             'user_id' => $user->id,
@@ -144,7 +144,7 @@ class CreateBeerTest extends TestCase
             ->set('note', 'Another tasting.')
             ->call('save')
             ->assertHasNoErrors()
-            ->assertRedirect(route('dashboard'));
+            ->assertRedirect(route('localized.dashboard', ['locale' => 'en']));
 
         $this->assertDatabaseHas('user_beer_counts', [
             'user_id' => $user->id,

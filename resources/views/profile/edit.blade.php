@@ -32,7 +32,7 @@
                             </p>
                         </header>
 
-                        <form method="POST" action="{{ route('logout') }}">
+                        <form method="POST" action="{{ route('localized.logout', ['locale' => app()->getLocale() ?: 'en']) }}">
                             @csrf
                             <x-danger-button>
                                 {{ __('Logout') }}

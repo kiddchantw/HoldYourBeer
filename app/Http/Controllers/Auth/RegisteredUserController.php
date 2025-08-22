@@ -45,6 +45,12 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // Get locale from the request path or default to 'en'
+        $locale = $request->segment(1);
+        if (!in_array($locale, ['en', 'zh-TW'])) {
+            $locale = 'en';
+        }
+
+        return redirect(route('localized.dashboard', ['locale' => $locale]));
     }
 }

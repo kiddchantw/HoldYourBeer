@@ -28,14 +28,12 @@
                     <p class="text-sm text-gray-500 mb-6">Begin tracking your favorite beers and discover new ones!</p>
 
 
-                    
+
                     @if (Route::has('login'))
                         <nav class="flex items-center justify-start gap-4 mt-4">
                             @auth
-                                <a
-                                    href="{{ url('/dashboard') }}"
-                                    class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal"
-                                >
+                                <a href="{{ route('localized.dashboard', ['locale' => 'en']) }}"
+                                   class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                     Dashboard
                                 </a>
                             @else

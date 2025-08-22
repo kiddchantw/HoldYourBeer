@@ -4,22 +4,22 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <img src="{{ asset('beer_white_bg.jpg') }}" alt="Logo" class="block h-9 w-auto">
+                <div class="shrink-0 flex items-center mr-4 sm:mr-6">
+                    <a href="{{ route('localized.dashboard', ['locale' => app()->getLocale() ?: 'en']) }}">
+                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                <div class="hidden space-x-6 sm:-my-px sm:ml-0 sm:flex">
+                    <x-nav-link :href="route('localized.dashboard', ['locale' => app()->getLocale() ?: 'en'])" :active="request()->routeIs('localized.dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('charts')" :active="request()->routeIs('charts')">
+                    <x-nav-link :href="route('charts', ['locale' => app()->getLocale() ?: 'en'])" :active="request()->routeIs('charts')">
                         {{ __('Charts') }}
                     </x-nav-link>
                     @if(Auth::user()->role === 'admin')
-                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                        <x-nav-link :href="route('admin.dashboard', ['locale' => app()->getLocale() ?: 'en'])" :active="request()->routeIs('admin.dashboard')">
                             {{ __('Admin') }}
                         </x-nav-link>
                     @endif
@@ -28,6 +28,7 @@
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
+                <x-language-switcher />
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
@@ -42,15 +43,15 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
+                        <x-dropdown-link :href="route('profile.edit', ['locale' => app()->getLocale() ?: 'en'])">
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
+                        <form method="POST" action="{{ route('localized.logout', ['locale' => app()->getLocale() ?: 'en']) }}">
                             @csrf
 
-                            <x-dropdown-link :href="route('logout')"
+                            <x-dropdown-link :href="route('localized.logout', ['locale' => app()->getLocale() ?: 'en'])"
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
@@ -75,14 +76,14 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+            <x-responsive-nav-link :href="route('localized.dashboard', ['locale' => app()->getLocale() ?: 'en'])" :active="request()->routeIs('localized.dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('charts')" :active="request()->routeIs('charts')">
+            <x-responsive-nav-link :href="route('charts', ['locale' => app()->getLocale() ?: 'en'])" :active="request()->routeIs('charts')">
                 {{ __('Charts') }}
             </x-responsive-nav-link>
             @if(Auth::user()->role === 'admin')
-                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                <x-responsive-nav-link :href="route('admin.dashboard', ['locale' => app()->getLocale() ?: 'en'])" :active="request()->routeIs('admin.dashboard')">
                     {{ __('Admin') }}
                 </x-responsive-nav-link>
             @endif
@@ -96,20 +97,24 @@
             </div>
 
             <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
+                <x-responsive-nav-link :href="route('profile.edit', ['locale' => app()->getLocale() ?: 'en'])">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('localized.logout', ['locale' => app()->getLocale() ?: 'en']) }}">
                     @csrf
 
-                    <x-responsive-nav-link :href="route('logout')"
+                    <x-responsive-nav-link :href="route('localized.logout', ['locale' => app()->getLocale() ?: 'en'])"
                             onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
                 </form>
+
+                <div class="mt-3 space-y-1">
+                    <x-language-switcher />
+                </div>
             </div>
         </div>
     </div>

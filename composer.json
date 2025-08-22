@@ -12,6 +12,7 @@
         "laravel/socialite": "^5.23",
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^3.6",
+        "mcamara/laravel-localization": "^2.3",
         "mkocansey/bladewind": "^3.1"
     },
     "require-dev": {

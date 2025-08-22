@@ -5,11 +5,15 @@
     <div class="w-full max-w-md">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h3 class="text-lg font-medium text-gray-900 mb-2">Start Your Beer Collection</h3>
-            <p class="text-sm text-gray-500 mb-6">Begin tracking your favorite beers and discover new ones!</p>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">{{ __('Start Your Beer Collection') }}</h3>
+            <p class="text-sm text-gray-500 mb-6">{{ __('Begin tracking your favorite beers and discover new ones!') }}</p>
         </div>
 
-        <form method="POST" action="{{ route('login') }}" class="space-y-6">
+        @php
+            $loginPostRoute = request()->route()->getName() === 'localized.login' ? 'localized.login' : 'login';
+            $loginPostParams = request()->route()->getName() === 'localized.login' ? ['locale' => app()->getLocale()] : [];
+        @endphp
+        <form method="POST" action="{{ route($loginPostRoute, $loginPostParams) }}" class="space-y-6">
             @csrf
 
             <!-- Email Address -->
@@ -21,15 +25,15 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
                         </svg>
                     </div>
-                    <x-text-input id="email" 
-                        class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition duration-200" 
-                        type="email" 
-                        name="email" 
-                        :value="old('email')" 
-                        required 
-                        autofocus 
-                        autocomplete="username" 
-                        placeholder="輸入您的電子郵件" />
+                    <x-text-input id="email"
+                        class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition duration-200"
+                        type="email"
+                        name="email"
+                        :value="old('email')"
+                        required
+                        autofocus
+                        autocomplete="username"
+                        placeholder="{{ __('Email') }}" />
                 </div>
                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
@@ -43,13 +47,13 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
                     </div>
-                    <x-text-input id="password" 
-                        class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition duration-200" 
+                    <x-text-input id="password"
+                        class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition duration-200"
                         type="password"
                         name="password"
-                        required 
-                        autocomplete="current-password" 
-                        placeholder="輸入您的密碼" />
+                        required
+                        autocomplete="current-password"
+                        placeholder="{{ __('Password') }}" />
                 </div>
                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
@@ -60,7 +64,7 @@
                     <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-amber-600 shadow-sm focus:ring-amber-500 focus:ring-offset-0" name="remember">
                     <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
                 </label>
-                
+
                 @if (Route::has('password.request'))
                     <a class="text-sm text-amber-600 hover:text-amber-700 font-medium transition duration-200" href="{{ route('password.request') }}">
                         {{ __('Forgot your password?') }}
@@ -84,13 +88,18 @@
                     <div class="w-full border-t border-gray-300"></div>
                 </div>
                 <div class="relative flex justify-center text-sm">
-                    <span class="px-2 bg-white text-gray-500">或使用以下方式登入</span>
+                    <span class="px-2 bg-white text-gray-500">{{ __('Or sign in with') }}</span>
                 </div>
             </div>
 
             <!-- Social Login Buttons -->
             <div class="grid grid-cols-2 gap-4">
-                <a href="{{ route('social.redirect', ['provider' => 'google']) }}" 
+                @php
+                    $socialRoute = request()->route()->getName() === 'localized.login' ? 'localized.social.redirect' : 'social.redirect';
+                    $routeParams = request()->route()->getName() === 'localized.login' ? ['locale' => app()->getLocale()] : [];
+                @endphp
+
+                <a href="{{ route($socialRoute, array_merge($routeParams, ['provider' => 'google'])) }}"
                    class="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl shadow-sm bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md transition duration-200 group">
                     <svg class="w-5 h-5 mr-2 text-red-500" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -100,8 +109,8 @@
                     </svg>
                     <span class="font-medium">Google</span>
                 </a>
-                
-                <a href="{{ route('social.redirect', ['provider' => 'apple']) }}" 
+
+                <a href="{{ route($socialRoute, array_merge($routeParams, ['provider' => 'apple'])) }}"
                    class="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl shadow-sm bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md transition duration-200 group">
                     <svg class="w-5 h-5 mr-2 text-gray-800" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
@@ -113,9 +122,13 @@
             <!-- Sign Up Link -->
             <div class="text-center pt-6">
                 <p class="text-sm text-gray-600">
-                    還沒有帳戶？ 
-                    <a href="{{ route('register') }}" class="font-medium text-amber-600 hover:text-amber-700 transition duration-200">
-                        立即註冊
+                    {{ __('Don\'t have an account?') }}
+                    @php
+                        $registerRoute = request()->route()->getName() === 'localized.login' ? 'localized.register' : 'register';
+                        $registerParams = request()->route()->getName() === 'localized.login' ? ['locale' => app()->getLocale()] : [];
+                    @endphp
+                    <a href="{{ route($registerRoute, $registerParams) }}" class="font-medium text-amber-600 hover:text-amber-700 transition duration-200">
+                        {{ __('Sign up now') }}
                     </a>
                 </p>
             </div>

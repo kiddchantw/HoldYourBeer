@@ -28,7 +28,13 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Get locale from the request path or default to 'en'
+        $locale = $request->segment(1);
+        if (!in_array($locale, ['en', 'zh-TW'])) {
+            $locale = 'en';
+        }
+
+        return redirect()->intended(route('localized.dashboard', ['locale' => $locale]));
     }
 
     /**
@@ -42,6 +48,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        // Get locale from the request path or default to 'en'
+        $locale = $request->segment(1);
+        if (!in_array($locale, ['en', 'zh-TW'])) {
+            $locale = 'en';
+        }
+
+        return redirect('/' . $locale);
     }
 }

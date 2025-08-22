@@ -3,11 +3,11 @@ Feature: Multilingual Language Switching
   As a user
   I want to switch between Chinese and English
 
-  # Status: TODO
+  # Status: IN PROGRESS
   # Design: DONE (docs/multilingual_switching_design.md)
-  # Test: tests/Feature/MultilingualSwitchingTest.php (需要建立)
-  # UI: 語言切換元件 (需要實作)
-  # Backend: 多語系支援 (需要實作)
+  # Test: tests/Feature/MultilingualSwitchingTest.php (FAILING)
+  # UI: 語言切換元件 (DONE)
+  # Backend: 多語系支援 (IN PROGRESS - tests are failing)
 
   Background:
     Given I am on any page of the application

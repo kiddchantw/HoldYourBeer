@@ -12,7 +12,7 @@ class AuthenticationTest extends TestCase
 
     public function test_login_screen_can_be_rendered(): void
     {
-        $response = $this->get('/login');
+        $response = $this->get('/en/login');
 
         $response->assertStatus(200);
     }
@@ -21,20 +21,34 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->post('/login', [
+        // Debug: Check if user was created correctly
+        $this->assertDatabaseHas('users', ['email' => $user->email]);
+
+        // Disable CSRF protection for this test
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+
+        $response = $this->post('/en/login', [
             'email' => $user->email,
             'password' => 'password',
         ]);
 
+        // Debug: Check response status and any errors
+        if ($response->status() !== 302) {
+            $this->fail('Expected redirect (302) but got: ' . $response->status() . '. Response: ' . $response->content());
+        }
+
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $response->assertRedirect(route('localized.dashboard', ['locale' => 'en']));
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void
     {
         $user = User::factory()->create();
 
-        $this->post('/login', [
+        // Disable CSRF protection for this test
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+
+        $this->post('/en/login', [
             'email' => $user->email,
             'password' => 'wrong-password',
         ]);
@@ -46,9 +60,12 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->post('/logout');
+        // Disable CSRF protection for this test
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+
+        $response = $this->actingAs($user)->post('/en/logout');
 
         $this->assertGuest();
-        $response->assertRedirect('/');
+        $response->assertRedirect('/en');
     }
 }

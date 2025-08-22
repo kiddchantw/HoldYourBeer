@@ -17,7 +17,7 @@ class BeerControllerTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->get(route('beers.create'));
+        $response = $this->actingAs($user)->get(route('beers.create', ['locale' => 'en']));
 
         $response->assertStatus(200);
         $response->assertViewIs('beers.create');
@@ -28,9 +28,9 @@ class BeerControllerTest extends TestCase
      */
     public function test_guest_is_redirected_from_create_page(): void
     {
-        $response = $this->get(route('beers.create'));
+        $response = $this->get(route('beers.create', ['locale' => 'en']));
 
-        $response->assertRedirect(route('login'));
+        $response->assertRedirect(route('localized.login', ['locale' => 'en']));
     }
 
     /**
@@ -46,9 +46,9 @@ class BeerControllerTest extends TestCase
             'style' => 'IPA',
         ];
 
-        $response = $this->actingAs($user)->post(route('beers.store'), $beerData);
+        $response = $this->actingAs($user)->post(route('beers.store', ['locale' => 'en']), $beerData);
 
-        $response->assertRedirect(route('dashboard'));
+        $response->assertRedirect(route('localized.dashboard', ['locale' => 'en']));
         $response->assertSessionHas('success');
 
         $this->assertDatabaseHas('brands', [
