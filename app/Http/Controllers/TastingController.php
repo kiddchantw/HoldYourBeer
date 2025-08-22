@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TastingController extends Controller
 {
-    public function increment(UserBeerCount $userBeerCount)
+    public function increment($locale, UserBeerCount $userBeerCount)
     {
         $userBeerCount->increment('count');
         $userBeerCount->update(['last_tasted_at' => now()]);
@@ -24,7 +24,7 @@ class TastingController extends Controller
         return back();
     }
 
-    public function decrement(UserBeerCount $userBeerCount)
+    public function decrement($locale, UserBeerCount $userBeerCount)
     {
         if ($userBeerCount->count > 0) {
             $userBeerCount->decrement('count');
@@ -40,8 +40,12 @@ class TastingController extends Controller
         return back();
     }
 
-    public function history(string $locale, Beer $beer)
+    public function history(Request $request,$locale, $beerId)
     {
+
+        // Manual model binding since automatic binding doesn't work in locale prefixed routes
+        $beer = Beer::findOrFail($beerId);
+
         $userBeerCount = UserBeerCount::where('user_id', Auth::id())
             ->where('beer_id', $beer->id)
             ->firstOrFail();

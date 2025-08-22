@@ -1,6 +1,13 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('localized.register', ['locale' => app()->getLocale() ?: 'en']) }}">
-        @csrf
+    <div class="w-full max-w-md">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h3 class="text-lg font-medium text-gray-900 mb-2">{{ __('Start Your Beer Collection') }}</h3>
+            <p class="text-sm text-gray-500 mb-6">{{ __('Begin tracking your favorite beers and discover new ones!') }}</p>
+        </div>
+
+        <form method="POST" action="{{ route('localized.register', ['locale' => app()->getLocale() ?: 'en']) }}">
+            @csrf
 
         <!-- Name -->
         <div>
@@ -44,9 +51,10 @@
                 {{ __('Already registered?') }}
             </a>
 
-            <x-primary-button class="ms-4">
+            <x-beer-button class="ms-4">
                 {{ __('Register') }}
-            </x-primary-button>
+            </x-beer-button>
         </div>
     </form>
+    </div>
 </x-guest-layout>

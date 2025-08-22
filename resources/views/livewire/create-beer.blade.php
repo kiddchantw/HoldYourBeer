@@ -49,12 +49,13 @@
             <textarea id="note" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" wire:model="note" placeholder="Enter a tasting note..."></textarea>
             @error('note') <x-input-error :messages="$errors->get('note')" class="mt-2" /> @enderror
         </div>
+        <br>
 
         <div class="flex items-center gap-4">
-            <x-primary-button wire:loading.attr="disabled" wire:target="save">
+            <x-beer-button wire:loading.attr="disabled" wire:target="save" class="w-full">
                 <span wire:loading.remove wire:target="save">{{ __('Save Beer') }}</span>
                 <span wire:loading wire:target="save">{{ __('Saving...') }}</span>
-            </x-primary-button>
+            </x-beer-button>
         </div>
     </div>
 </form>

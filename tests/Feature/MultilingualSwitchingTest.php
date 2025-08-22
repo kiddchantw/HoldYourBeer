@@ -21,7 +21,7 @@ class MultilingualSwitchingTest extends TestCase
             ->assertSee('儀表板');
 
         $this->actingAs($user)
-            ->get('/dashboard')
+            ->get('/en/dashboard')
             ->assertSee('Dashboard');
     }
 
@@ -32,7 +32,7 @@ class MultilingualSwitchingTest extends TestCase
 
         $this->actingAs($user)
             ->get('/')
-            ->assertRedirect('/dashboard');
+            ->assertRedirect('/en/dashboard');
     }
 
     #[Test]
@@ -41,7 +41,7 @@ class MultilingualSwitchingTest extends TestCase
         $user = User::factory()->create();
 
         // Test English dashboard has language switcher
-        $response = $this->actingAs($user)->get('/dashboard');
+        $response = $this->actingAs($user)->get('/en/dashboard');
         $response->assertSee('EN'); // Current language indicator
         $response->assertSee('繁體中文'); // Option to switch to Chinese
 

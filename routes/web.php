@@ -17,7 +17,7 @@ Route::get('/', function () {
 });
 
 // Routes with locale prefix
-Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale']], function() {
+Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale'], 'where' => ['locale' => 'en|zh-TW']], function() {
     Route::get('/', function () {
         // If user is not authenticated, redirect to login
         if (!\Illuminate\Support\Facades\Auth::check()) {
@@ -39,7 +39,7 @@ Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale']], function()
         Route::post('login', [\App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'store']);
     });
 
-    Route::middleware('auth')->group(function () {
+    Route::middleware(['auth.locale','auth'])->group(function () {
         Route::post('logout', [\App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'destroy'])
             ->name('localized.logout');
 
@@ -54,7 +54,7 @@ Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale']], function()
             ->name('verification.send');
     });
 
-    Route::middleware('auth')->group(function () {
+    Route::middleware(['auth.locale', 'auth'])->group(function () {
         Route::get('/charts', [ChartsController::class, 'index'])->name('charts');
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -67,8 +67,8 @@ Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale']], function()
         // Beer routes
         Route::get('/beers/create', [BeerController::class, 'create'])->name('beers.create');
         Route::post('/beers', [BeerController::class, 'store'])->name('beers.store');
-        Route::get('/beers/{beer}/history', [\App\Http\Controllers\TastingController::class, 'history'])
-            ->whereNumber('beer')
+        Route::get('/beer-history/{beerId}', [\App\Http\Controllers\TastingController::class, 'history'])
+            ->whereNumber('beerId')
             ->name('beers.history');
     });
 
@@ -83,6 +83,44 @@ Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale']], function()
     Route::get('/auth/{provider}/callback', [SocialLoginController::class, 'handleProviderCallback'])->name('localized.social.callback');
 });
 
+// Non-localized admin routes to avoid locale-collision on "/admin/*"
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard.fallback');
+});
+
 // Social login routes (without locale prefix)
 Route::get('/auth/{provider}/redirect', [SocialLoginController::class, 'redirectToProvider'])->name('social.redirect');
 Route::get('/auth/{provider}/callback', [SocialLoginController::class, 'handleProviderCallback'])->name('social.callback');
+
+// ------------------------------------------------------------------
+// Fallback non-localized routes (default English) for tests/BC
+// ------------------------------------------------------------------
+
+// Dashboard
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+
+// Auth (login/register/forgot/reset/verify/confirm) - classic routes
+require __DIR__.'/auth.php';
+
+// Authenticated area
+Route::middleware('auth')->group(function () {
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit.fallback');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update.fallback');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy.fallback');
+    Route::put('/password', [\App\Http\Controllers\Auth\PasswordController::class, 'update'])->name('password.update.fallback');
+
+    // Charts
+    Route::get('/charts', [ChartsController::class, 'index'])->name('charts.fallback');
+
+    // Tasting actions
+    Route::post('/tasting/{userBeerCount}/increment', [\App\Http\Controllers\TastingController::class, 'increment'])->name('tasting.increment.fallback');
+    Route::post('/tasting/{userBeerCount}/decrement', [\App\Http\Controllers\TastingController::class, 'decrement'])->name('tasting.decrement.fallback');
+
+    // Beers
+    Route::get('/beers/create', [BeerController::class, 'create'])->name('beers.create.fallback');
+    Route::post('/beers', [BeerController::class, 'store'])->name('beers.store.fallback');
+    Route::get('/beer-history/{beerId}', [\App\Http\Controllers\TastingController::class, 'history'])->whereNumber('beerId')->name('beers.history.fallback');
+});

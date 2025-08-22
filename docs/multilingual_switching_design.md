@@ -11,8 +11,8 @@ We will use the `mcamara/laravel-localization` package to handle routing and loc
 ### 2.1. Package Configuration
 
 - After installing the package, we will publish its configuration file to `config/laravellocalization.php`.
-- In this file, we will define the supported locales: `en` and `zh_TW`.
-- We will configure `hideDefaultLocaleInURL` to `true` to have cleaner URLs for the default language (e.g., `/dashboard` instead of `/en/dashboard`).
+- In this file, we will define the supported locales: `en` and `zh-TW`.
+- We will configure `hideDefaultLocaleInURL` to `false`. This ensures that the locale is always present in the URL (e.g., `/en/dashboard`, `/zh-TW/dashboard`) for consistency.
 
 ### 2.2. Language Files
 
@@ -20,25 +20,22 @@ We will use the `mcamara/laravel-localization` package to handle routing and loc
 
 ### 2.3. Middleware
 
-- The package provides its own set of middleware. We will apply the `LaravelLocalizationRoutes`, `LaravelLocalizationRedirectFilter`, and `LocaleSessionRedirect` middleware to our `web` routes in `app/Http/Kernel.php`.
-- This eliminates the need for a custom `SetLocale.php` middleware, as the package will handle locale detection from the URL, session, or browser headers automatically.
+- A custom middleware `app/Http/Middleware/SetLocale.php` is used.
+- This middleware is registered in `bootstrap/app.php` with the alias `setLocale`.
+- It is responsible for reading the `{locale}` parameter from the URL and setting the application's locale accordingly.
 
 ### 2.4. Routing
 
-- All frontend routes in `routes/web.php` will be wrapped in a route group provided by the package.
+- All frontend routes in `routes/web.php` are wrapped in a route group that includes the `{locale}` prefix.
   ```php
   // routes/web.php
-  Route::group([
-      'prefix' => LaravelLocalization::setLocale(),
-      'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
-  ], function() {
+  Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale'], 'where' => ['locale' => 'en|zh-TW']], function() {
       // Define all web routes here
-      Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+      Route::get('/dashboard', [DashboardController::class, 'index'])->name('localized.dashboard');
       // ... other routes
   });
   ```
-- This setup automatically handles localized URLs like `/dashboard` (for English, the default) and `/zh-TW/dashboard` (for Chinese).
-- We no longer need a dedicated `GET /language/{locale}` route for switching languages.
+- This setup ensures that all user-facing web pages are explicitly localized.
 
 ### 2.5. Language Switcher Component
 

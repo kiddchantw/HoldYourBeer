@@ -62,7 +62,7 @@ POSTGRES_VERSION=17
 From within the `laradock` directory, run the following command to build and start the necessary containers.
 
 ```bash
-docker-compose up -d nginx postgres
+docker-compose up -d nginx postgres workspace
 ```
 
 ### 5. Setup Laravel Application

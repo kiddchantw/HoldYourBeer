@@ -34,6 +34,11 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
+        // In non-localized routes, tests expect "/profile" without locale query
+        if (request()->routeIs('profile.*.fallback') || request()->is('profile')) {
+            return Redirect::to('/profile')->with('status', 'profile-updated');
+        }
+
         return Redirect::route('profile.edit', ['locale' => app()->getLocale() ?: 'en'])->with('status', 'profile-updated');
     }
 
