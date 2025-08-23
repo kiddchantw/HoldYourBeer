@@ -4,7 +4,7 @@ Feature: Multilingual Language Switching
   I want to switch between Chinese and English
 
   # Status: DONE
-  # Design: DONE (docs/multilingual_switching_design.md)
+  # Design: DONE (docs/designs/multilingual_switching_design.md)
   # Test: tests/Feature/MultilingualSwitchingTest.php (PASSING)
   # UI: 語言切換元件 (DONE)
   # Backend: 多語系支援 (DONE)

@@ -24,7 +24,7 @@ class TastingController extends Controller
         return back();
     }
 
-    public function decrement($locale, UserBeerCount $userBeerCount)
+    public function decrement(UserBeerCount $userBeerCount, $locale = null)
     {
         if ($userBeerCount->count > 0) {
             $userBeerCount->decrement('count');

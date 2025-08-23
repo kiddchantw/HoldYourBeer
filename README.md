@@ -124,7 +124,22 @@ You should now be able to access the application in your browser at [http://loca
 
 This project follows a Spec-driven development methodology. All specifications for behavior, APIs, and design are located in the `/spec` and `/docs` directories.
 
-- **Design & Documentation (`/docs`)**: The `/docs` directory contains all high-level project documentation, including product requirements (`prd.md`), detailed feature designs (e.g., `loading_states_design.md`), and architectural diagrams located in the `docs/diagrams` subdirectory. This serves as the central repository for understanding the project's goals and architecture.
+- **Design & Documentation (`/docs`)**: The `/docs` directory contains all high-level project documentation, including product requirements (`prd.md`), detailed feature designs, and architectural diagrams. This serves as the central repository for understanding the project's goals and architecture.
+
+  為了讓結構更清晰，`/docs` 目錄的組織方式如下：
+
+  - **產品需求文件 (位於 `/docs/prd.md`)**:
+    - 作為整個專案的最高層級文件，定義了產品的目標、功能規格與業務場景，是理解專案「為何做」與「做什麼」的起點。
+
+  - **高階設計文件 (位於 `/docs/designs`)**:
+    - 針對一個完整、獨立的功能模組，內容較宏觀，描述整個功能的技術選型、實作策略、路由、中介軟體、前後端如何配合等。
+    - 可視為某個大功能的「**總體設計藍圖**」。
+
+  - **流程圖與實作細節 (位於 `/docs/diagrams`)**:
+    - 針對一個更具體的流程或頁面，內容更聚焦於細節。
+    - **流程圖 (`flow-*.md`)**: 使用 Mermaid.js 語法，描繪使用者操作的每一步或後端處理的環節。
+    - **頁面設計 (`*_design.md`)**: 描述某個頁面的元件構成、數據傳遞與開發挑戰。
+    - 可視為總體設計藍圖下的「**詳細施工圖**」。
 
 - **Technical Specifications (`/spec`)**: This directory contains detailed technical specifications, broken down as follows:
     - `acceptance/`: Defines the criteria for when a feature is considered complete.
