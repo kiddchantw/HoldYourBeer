@@ -82,7 +82,7 @@
 
                                     <!-- 右側：計數器控制 -->
                                     <div class="p-4 flex items-center justify-center">
-                                            <form action="{{ route('tasting.decrement', ['userBeerCount' => $beerCount, 'locale' => app()->getLocale() ?: 'en']) }}" method="POST" class="flex-1 h-full">
+                                            <form action="{{ route('tasting.decrement', ['id' => $beerCount->id, 'locale' => app()->getLocale() ?: 'en']) }}" method="POST" class="flex-1 h-full">
                                                 @csrf
                                                 <button type="submit" class="w-full h-full text-3xl font-semibold text-red-700 bg-red-100 hover:bg-red-200 rounded-md">-</button>
                                             </form>
@@ -93,7 +93,7 @@
                                                     </span>
                                                 </span>
                                             </div>
-                                            <form action="{{ route('tasting.increment', ['userBeerCount' => $beerCount, 'locale' => app()->getLocale() ?: 'en']) }}" method="POST" class="flex-1 h-full">
+                                            <form action="{{ route('tasting.increment', ['id' => $beerCount->id, 'locale' => app()->getLocale() ?: 'en']) }}" method="POST" class="flex-1 h-full">
                                                 @csrf
                                                 <button type="submit" class="w-full h-full text-3xl font-semibold text-green-700 bg-green-100 hover:bg-green-200 rounded-md">+</button>
                                             </form>

@@ -16,7 +16,7 @@ class TastingTest extends TestCase
         $user = User::factory()->create();
         $userBeerCount = UserBeerCount::factory()->create(['user_id' => $user->id, 'count' => 1]);
 
-        $response = $this->actingAs($user)->post(route('tasting.increment.fallback', $userBeerCount));
+        $response = $this->actingAs($user)->post(route('tasting.increment', ['locale' => 'en', 'id' => $userBeerCount->id]));
 
         $response->assertRedirect();
         $this->assertDatabaseHas('user_beer_counts', ['id' => $userBeerCount->id, 'count' => 2]);
@@ -28,7 +28,7 @@ class TastingTest extends TestCase
         $user = User::factory()->create();
         $userBeerCount = UserBeerCount::factory()->create(['user_id' => $user->id, 'count' => 2]);
 
-        $response = $this->actingAs($user)->post(route('tasting.decrement.fallback', $userBeerCount));
+        $response = $this->actingAs($user)->post(route('tasting.decrement', ['locale' => 'en', 'id' => $userBeerCount->id]));
 
         $response->assertRedirect();
         $this->assertDatabaseHas('user_beer_counts', ['id' => $userBeerCount->id, 'count' => 1]);
@@ -40,7 +40,7 @@ class TastingTest extends TestCase
         $user = User::factory()->create();
         $userBeerCount = UserBeerCount::factory()->create(['user_id' => $user->id, 'count' => 0]);
 
-        $response = $this->actingAs($user)->post(route('tasting.decrement.fallback', $userBeerCount));
+        $response = $this->actingAs($user)->post(route('tasting.decrement', ['locale' => 'en', 'id' => $userBeerCount->id]));
 
         $response->assertRedirect();
         $this->assertDatabaseHas('user_beer_counts', ['id' => $userBeerCount->id, 'count' => 0]);

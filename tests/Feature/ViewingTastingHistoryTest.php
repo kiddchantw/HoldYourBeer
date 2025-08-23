@@ -41,7 +41,7 @@ class ViewingTastingHistoryTest extends TestCase
         ]);
 
         // Act: Authenticate as the user and visit the tasting history page
-        $response = $this->actingAs($user)->get(route('beers.history.fallback', ['beer' => $beer->id]));
+        $response = $this->actingAs($user)->get(route('beers.history', ['locale' => 'en', 'beerId' => $beer->id]));
 
         // Assert: The response is successful
         $response->assertStatus(200);

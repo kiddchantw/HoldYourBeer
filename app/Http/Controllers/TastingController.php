@@ -10,8 +10,9 @@ use Illuminate\Support\Facades\Auth;
 
 class TastingController extends Controller
 {
-    public function increment($locale, UserBeerCount $userBeerCount)
+    public function increment($locale, $id)
     {
+        $userBeerCount = UserBeerCount::findOrFail($id);
         $userBeerCount->increment('count');
         $userBeerCount->update(['last_tasted_at' => now()]);
 
@@ -24,8 +25,9 @@ class TastingController extends Controller
         return back();
     }
 
-    public function decrement(UserBeerCount $userBeerCount, $locale = null)
+    public function decrement($locale, $id)
     {
+        $userBeerCount = UserBeerCount::findOrFail($id);
         if ($userBeerCount->count > 0) {
             $userBeerCount->decrement('count');
             $userBeerCount->update(['last_tasted_at' => now()]);
@@ -54,6 +56,7 @@ class TastingController extends Controller
 
         return view('beers.history', [
             'beer' => $beer,
+            'userBeerCount' => $userBeerCount,
             'tastingLogs' => $tastingLogs,
         ]);
     }

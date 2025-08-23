@@ -61,8 +61,8 @@ Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale'], 'where' => 
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
         Route::put('password', [\App\Http\Controllers\Auth\PasswordController::class, 'update'])->name('password.update');
 
-        Route::post('/tasting/{userBeerCount}/increment', [\App\Http\Controllers\TastingController::class, 'increment'])->name('tasting.increment');
-        Route::post('/tasting/{userBeerCount}/decrement', [\App\Http\Controllers\TastingController::class, 'decrement'])->name('tasting.decrement');
+        Route::post('/tasting/{id}/increment', [\App\Http\Controllers\TastingController::class, 'increment'])->name('tasting.increment');
+        Route::post('/tasting/{id}/decrement', [\App\Http\Controllers\TastingController::class, 'decrement'])->name('tasting.decrement');
 
         // Beer routes
         Route::get('/beers/create', [BeerController::class, 'create'])->name('beers.create');
@@ -116,8 +116,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/charts', [ChartsController::class, 'index'])->name('charts.fallback');
 
     // Tasting actions
-    Route::post('/tasting/{userBeerCount}/increment', [\App\Http\Controllers\TastingController::class, 'increment'])->name('tasting.increment.fallback');
-    Route::post('/tasting/{userBeerCount}/decrement', [\App\Http\Controllers\TastingController::class, 'decrement'])->name('tasting.decrement.fallback');
+    Route::post('/tasting/{id}/increment', [\App\Http\Controllers\TastingController::class, 'increment'])->name('tasting.increment.fallback');
+    Route::post('/tasting/{id}/decrement', [\App\Http\Controllers\TastingController::class, 'decrement'])->name('tasting.decrement.fallback');
 
     // Beers
     Route::get('/beers/create', [BeerController::class, 'create'])->name('beers.create.fallback');

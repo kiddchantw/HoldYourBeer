@@ -10,6 +10,27 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10">
             <div class="bg-white/60 backdrop-blur-sm overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
+                    <!-- Action Buttons -->
+                    <div class="mb-6 flex space-x-4">
+                        <form action="{{ route('tasting.increment', ['id' => $userBeerCount->id, 'locale' => app()->getLocale()]) }}" method="POST" class="inline">
+                            @csrf
+                            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                + Increment
+                            </button>
+                        </form>
+
+                        <form action="{{ route('tasting.decrement', ['id' => $userBeerCount->id, 'locale' => app()->getLocale()]) }}" method="POST" class="inline">
+                            @csrf
+                            <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                - Decrement
+                            </button>
+                        </form>
+
+                        <div class="text-gray-600 font-medium">
+                            Current Count: {{ $userBeerCount->count }}
+                        </div>
+                    </div>
+
                     <div class="flow-root">
                         <ul class="-mb-8">
                             @foreach($tastingLogs as $log)
@@ -20,11 +41,31 @@
                                         @endif
                                         <div class="relative flex space-x-3">
                                             <div>
-                                                <span class="h-8 w-8 rounded-full bg-gray-400 flex items-center justify-center ring-8 ring-white">
-                                                    <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-                                                    </svg>
-                                                </span>
+                                                @if($log->action === 'initial')
+                                                    <span class="h-8 w-8 rounded-full bg-gray-400 flex items-center justify-center ring-8 ring-white">
+                                                        <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                        </svg>
+                                                    </span>
+                                                @elseif($log->action === 'increment')
+                                                    <span class="h-8 w-8 rounded-full bg-gray-400 flex items-center justify-center ring-8 ring-white">
+                                                        <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                                                        </svg>
+                                                    </span>
+                                                @elseif($log->action === 'decrement')
+                                                    <span class="h-8 w-8 rounded-full bg-gray-400 flex items-center justify-center ring-8 ring-white">
+                                                        <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                            <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+                                                        </svg>
+                                                    </span>
+                                                @else
+                                                    <span class="h-8 w-8 rounded-full bg-gray-400 flex items-center justify-center ring-8 ring-white">
+                                                        <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                                        </svg>
+                                                    </span>
+                                                @endif
                                             </div>
                                             <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
                                                 <div>

@@ -28,7 +28,7 @@ class DashboardTest extends TestCase
         $beer3 = Beer::factory()->create(['brand_id' => $brand3->id, 'name' => 'Super Dry']);
         UserBeerCount::factory()->create(['user_id' => $user->id, 'beer_id' => $beer3->id, 'count' => 8, 'last_tasted_at' => '2025-08-11 18:00:00']);
 
-        $response = $this->actingAs($user)->get('/dashboard');
+        $response = $this->actingAs($user)->get('/en/dashboard');
 
         $response->assertStatus(200);
         $response->assertSeeInOrder(['Punk IPA', 'Super Dry', 'Draught']);
@@ -41,7 +41,7 @@ class DashboardTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->get('/dashboard');
+        $response = $this->actingAs($user)->get('/en/dashboard');
 
         $response->assertStatus(200);
         $response->assertSee('Track my first beer');
