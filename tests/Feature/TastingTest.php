@@ -46,4 +46,28 @@ class TastingTest extends TestCase
         $this->assertDatabaseHas('user_beer_counts', ['id' => $userBeerCount->id, 'count' => 0]);
         $this->assertDatabaseMissing('tasting_logs', ['user_beer_count_id' => $userBeerCount->id, 'action' => 'decrement']);
     }
+
+    public function test_concurrent_increments_are_handled_correctly()
+    {
+        $user = User::factory()->create();
+        $userBeerCount = UserBeerCount::factory()->create(['user_id' => $user->id, 'count' => 1]);
+
+        // Simulate concurrent requests by running multiple increments
+        $responses = [];
+        for ($i = 0; $i < 3; $i++) {
+            $responses[] = $this->actingAs($user)->post(route('tasting.increment', ['locale' => 'en', 'id' => $userBeerCount->id]));
+        }
+
+        // All responses should be successful
+        foreach ($responses as $response) {
+            $response->assertRedirect();
+        }
+
+        // Final count should be exactly 4 (1 + 3 increments)
+        $this->assertDatabaseHas('user_beer_counts', ['id' => $userBeerCount->id, 'count' => 4]);
+
+        // Should have exactly 3 increment logs
+        $this->assertDatabaseCount('tasting_logs', 3);
+        $this->assertDatabaseHas('tasting_logs', ['user_beer_count_id' => $userBeerCount->id, 'action' => 'increment']);
+    }
 }

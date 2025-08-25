@@ -1,5 +1,8 @@
 # Status: DONE
+# Design: docs/diagrams/flow-backend-count-action.md
 # Test: tests/Feature/TastingTest.php
+# UI: DONE
+# Backend: DONE
 Feature: Managing Tastings for a Beer
   In order to keep my tasting count accurate
   As a registered user

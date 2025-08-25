@@ -87,7 +87,7 @@ paths:
   /api/beers/{id}/count_actions:
     post:
       summary: Increment or decrement the tasting count for a beer
-      description: The primary endpoint for modifying a beer count. The backend handles updating the count table and creating a log entry in a transaction.
+      description: The primary endpoint for modifying a beer count. The backend handles updating the count table and creating a log entry in a database transaction with row-level locking (lockForUpdate) to ensure data consistency and prevent race conditions.
       tags:
         - Beers
       security:

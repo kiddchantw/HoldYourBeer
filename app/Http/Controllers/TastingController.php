@@ -7,28 +7,35 @@ use App\Models\UserBeerCount;
 use App\Models\TastingLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TastingController extends Controller
 {
     public function increment($locale, $id)
     {
-        $userBeerCount = UserBeerCount::findOrFail($id);
-        $userBeerCount->increment('count');
-        $userBeerCount->update(['last_tasted_at' => now()]);
+        DB::transaction(function () use ($id) {
+            $userBeerCount = UserBeerCount::whereKey($id)->lockForUpdate()->firstOrFail();
+            $userBeerCount->increment('count');
+            $userBeerCount->update(['last_tasted_at' => now()]);
 
-        TastingLog::create([
-            'user_beer_count_id' => $userBeerCount->id,
-            'action' => 'increment',
-            'tasted_at' => now(),
-        ]);
+            TastingLog::create([
+                'user_beer_count_id' => $userBeerCount->id,
+                'action' => 'increment',
+                'tasted_at' => now(),
+            ]);
+        });
 
         return back();
     }
 
     public function decrement($locale, $id)
     {
-        $userBeerCount = UserBeerCount::findOrFail($id);
-        if ($userBeerCount->count > 0) {
+        DB::transaction(function () use ($id) {
+            $userBeerCount = UserBeerCount::whereKey($id)->lockForUpdate()->firstOrFail();
+            if ($userBeerCount->count <= 0) {
+                return;
+            }
+
             $userBeerCount->decrement('count');
             $userBeerCount->update(['last_tasted_at' => now()]);
 
@@ -37,7 +44,7 @@ class TastingController extends Controller
                 'action' => 'decrement',
                 'tasted_at' => now(),
             ]);
-        }
+        });
 
         return back();
     }
