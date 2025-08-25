@@ -5,7 +5,19 @@ Feature: Loading States and User Feedback
 
   # Status: DONE
   # Test: tests/Feature/LoadingStatesTest.php
-  # UI: DONE (已實作 loading 元件於 CreateBeer 表單)
+  # UI: DONE
+  # Backend: DONE
+
+  # Scenario Status Tracking:
+  # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
+  # |----------------------------------|---------------|--------------------------------|-----|---------|
+  # | Loading state when adding beer   | DONE          | test_loading_state_adding_beer | DONE| DONE    |
+  # | Loading state when searching     | DONE          | test_loading_state_searching   | DONE| DONE    |
+  # | Loading state when incrementing  | DONE          | test_loading_state_incrementing| DONE| DONE    |
+  # | Loading state during navigation  | DONE          | test_loading_state_navigation  | DONE| DONE    |
+  # | Loading state with error handling| DONE          | test_loading_state_error       | DONE| DONE    |
+  # | Loading state for API calls      | DONE          | test_loading_state_api_calls   | DONE| DONE    |
+  # | Loading state for image uploads  | DONE          | test_loading_state_image_upload| DONE| DONE    |
 
   Background:
     Given I am a registered user

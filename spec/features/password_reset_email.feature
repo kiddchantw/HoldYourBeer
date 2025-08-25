@@ -4,10 +4,22 @@ Feature: Password Reset Email Functionality
   As a user who forgot my password
   I want to receive a password reset email
 
-  # Status: TODO
-  # Test: tests/Feature/PasswordResetEmailTest.php (需要建立)
-  # UI: 忘記密碼頁面 (已實作)
-  # Backend: PasswordResetLinkController (已實作)
+  # Status: IN_PROGRESS
+  # Test: tests/Feature/PasswordResetEmailTest.php
+  # UI: DONE
+  # Backend: DONE
+
+  # Scenario Status Tracking:
+  # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
+  # |----------------------------------|---------------|--------------------------------|-----|---------|
+  # | Successfully request reset      | DONE          | test_successful_reset_request  | DONE| DONE    |
+  # | Email contains correct info     | DONE          | test_email_contains_correct_info| DONE| DONE    |
+  # | Non-existent email handling     | DONE          | test_nonexistent_email         | DONE| DONE    |
+  # | Rate limiting                    | TODO          | test_rate_limiting             | TODO| TODO    |
+  # | Special characters in email     | TODO          | test_special_characters        | TODO| TODO    |
+  # | Delivery failure handling       | TODO          | test_delivery_failure          | TODO| TODO    |
+  # | Inactive account handling       | TODO          | test_inactive_account          | TODO| TODO    |
+  # | Audit logging                    | TODO          | test_audit_logging             | TODO| TODO    |
 
   Background:
     Given I am on the forgot password page

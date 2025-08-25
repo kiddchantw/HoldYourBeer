@@ -4,10 +4,23 @@ Feature: Multilingual Language Switching
   I want to switch between Chinese and English
 
   # Status: DONE
-  # Design: DONE (docs/designs/multilingual_switching_design.md)
-  # Test: tests/Feature/MultilingualSwitchingTest.php (PASSING)
-  # UI: 語言切換元件 (DONE)
-  # Backend: 多語系支援 (DONE)
+  # Test: tests/Feature/MultilingualSwitchingTest.php
+  # UI: DONE
+  # Backend: DONE
+
+  # Scenario Status Tracking:
+  # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
+  # |----------------------------------|---------------|--------------------------------|-----|---------|
+  # | Switch to Chinese                | DONE          | test_switch_to_chinese         | DONE| DONE    |
+  # | Switch to English                | DONE          | test_switch_to_english          | DONE| DONE    |
+  # | Language persistence             | DONE          | test_language_persistence      | DONE| DONE    |
+  # | Different page types             | DONE          | test_different_page_types      | DONE| DONE    |
+  # | Language switcher presence       | DONE          | test_language_switcher_presence| DONE| DONE    |
+  # | Form validation messages         | DONE          | test_form_validation_messages  | DONE| DONE    |
+  # | Dynamic content switching        | DONE          | test_dynamic_content_switching | DONE| DONE    |
+  # | Accessibility features           | DONE          | test_accessibility_features     | DONE| DONE    |
+  # | Browser language detection       | DONE          | test_browser_language_detection| DONE| DONE    |
+  # | URL prefix switching             | DONE          | test_url_prefix_switching      | DONE| DONE    |
 
   Background:
     Given I am on any page of the application

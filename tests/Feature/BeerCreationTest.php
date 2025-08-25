@@ -8,6 +8,19 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
+/**
+ * @covers \spec\features\beer_tracking\adding_a_beer.feature
+ *
+ * Scenarios covered:
+ * - Adding a new beer with brand and series suggestions
+ * - Adding a new beer with a tasting note
+ *
+ * Test coverage:
+ * - API endpoint validation
+ * - Authentication requirements
+ * - Database state verification
+ * - Tasting count initialization
+ */
 class BeerCreationTest extends TestCase
 {
     use RefreshDatabase;

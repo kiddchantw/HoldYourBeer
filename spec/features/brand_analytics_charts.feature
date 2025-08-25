@@ -3,10 +3,24 @@ Feature: Brand Analytics Charts and Consumption Patterns
   As a registered user
   I want to view charts and analytics about my beer consumption by brand
 
-  # Status: DONE
+  # Status: IN_PROGRESS
   # Test: tests/Feature/BrandAnalyticsChartsTest.php
-  # UI: DONE (已實作 Chart.js 圖表元件和導覽列按鈕)
-  # Backend: DONE (已實作 ChartsController 數據處理)
+  # UI: DONE
+  # Backend: IN_PROGRESS
+
+  # Scenario Status Tracking:
+  # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
+  # |----------------------------------|---------------|--------------------------------|-----|---------|
+  # | Navigation link access          | DONE          | test_navigation_link_access    | DONE| DONE    |
+  # | Brand preference chart          | DONE          | test_brand_preference_chart    | DONE| DONE    |
+  # | Chart data updates              | DONE          | test_chart_data_updates       | DONE| DONE    |
+  # | Empty data handling             | DONE          | test_empty_data_handling      | DONE| DONE    |
+  # | Mobile responsiveness           | DONE          | test_mobile_responsiveness    | DONE| DONE    |
+  # | Chart interaction tooltips      | DONE          | test_chart_interaction        | DONE| DONE    |
+  # | Chart type switching            | TODO          | test_chart_type_switching     | TODO| TODO    |
+  # | Data export functionality       | TODO          | test_data_export              | TODO| TODO    |
+  # | Accessibility features          | TODO          | test_accessibility            | TODO| TODO    |
+  # | Navigation highlighting         | TODO          | test_navigation_highlighting | TODO| TODO    |
 
   Background:
     Given I am a registered user

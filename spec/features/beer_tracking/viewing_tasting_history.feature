@@ -1,8 +1,17 @@
 Feature: Viewing the Tasting History for a Beer
-  # UI Planning: Vertical timeline will be implemented using BladewindUI's timeline component.
   In order to see the timeline of my beer tasting
   As a registered user
   I want to view a detailed history for each beer in my collection.
+
+  # Status: IN_PROGRESS
+  # Test: tests/Feature/ViewingTastingHistoryTest.php
+  # UI: IN_PROGRESS
+  # Backend: DONE
+
+  # Scenario Status Tracking:
+  # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
+  # |----------------------------------|---------------|--------------------------------|-----|---------|
+  # | Viewing tasting history          | IN_PROGRESS   | test_viewing_tasting_history  | IN_PROGRESS| DONE    |
 
   Background:
     Given I have a beer "Kirin Lager" in my collection

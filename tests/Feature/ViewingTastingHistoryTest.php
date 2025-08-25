@@ -10,6 +10,21 @@ use App\Models\UserBeerCount;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @covers \spec\features\beer_tracking\viewing_tasting_history.feature
+ *
+ * Scenarios covered:
+ * - Viewing tasting history for a specific beer
+ * - Displaying tasting notes and timestamps
+ * - Showing increment actions in history
+ *
+ * Test coverage:
+ * - Tasting history page access
+ * - Beer information display
+ * - Tasting log entries display
+ * - Date formatting
+ * - User authentication requirements
+ */
 class ViewingTastingHistoryTest extends TestCase
 {
     use RefreshDatabase;

@@ -1,5 +1,13 @@
 # Status: DONE
 # Test: tests/Feature/DashboardTest.php
+# UI: DONE
+# Backend: DONE
+
+# Scenario Status Tracking:
+# | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
+# |----------------------------------|---------------|--------------------------------|-----|---------|
+# | Empty state viewing              | DONE          | test_empty_state_viewing       | DONE| DONE    |
+# | Sorted list with counts          | DONE          | test_sorted_list_with_counts   | DONE| DONE    |
 Feature: Viewing the Beer List
   In order to see my collection
   As a registered user

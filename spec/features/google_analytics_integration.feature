@@ -4,11 +4,22 @@ Feature: Google Analytics Integration
   I want to integrate Google Analytics for comprehensive analytics
 
   # Status: TODO
-  # Design: DONE (docs/google_analytics_integration_design.md)
-  # Test: tests/Feature/GoogleAnalyticsIntegrationTest.php (需要建立)
-  # UI: Google Analytics 追蹤碼 (需要實作)
-  # Backend: 事件追蹤 API (需要實作)
-  # Config: GOOGLE_ANALYTICS_ID 環境變數
+  # Test: tests/Feature/GoogleAnalyticsIntegrationTest.php
+  # UI: TODO
+  # Backend: TODO
+
+  # Scenario Status Tracking:
+  # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
+  # |----------------------------------|---------------|--------------------------------|-----|---------|
+  # | Page view tracking               | TODO          | test_page_view_tracking        | TODO| TODO    |
+  # | User authentication tracking     | TODO          | test_user_authentication_tracking| TODO| TODO    |
+  # | Beer creation tracking           | TODO          | test_beer_creation_tracking    | TODO| TODO    |
+  # | Beer count increment tracking   | TODO          | test_beer_count_increment_tracking| TODO| TODO    |
+  # | Search behavior tracking         | TODO          | test_search_behavior_tracking  | TODO| TODO    |
+  # | Error tracking                   | TODO          | test_error_tracking            | TODO| TODO    |
+  # | User engagement tracking         | TODO          | test_user_engagement_tracking | TODO| TODO    |
+  # | Conversion funnel tracking       | TODO          | test_conversion_funnel_tracking| TODO| TODO    |
+  # | Performance monitoring           | TODO          | test_performance_monitoring    | TODO| TODO    |
 
   Background:
     Given Google Analytics is properly configured

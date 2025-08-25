@@ -1,8 +1,13 @@
 # Status: DONE
-# Design: docs/diagrams/flow-backend-count-action.md
 # Test: tests/Feature/TastingTest.php
 # UI: DONE
 # Backend: DONE
+
+# Scenario Status Tracking:
+# | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
+# |----------------------------------|---------------|--------------------------------|-----|---------|
+# | Incrementing count               | DONE          | test_incrementing_count        | DONE| DONE    |
+# | Correcting with decrement        | DONE          | test_correcting_with_decrement | DONE| DONE    |
 Feature: Managing Tastings for a Beer
   In order to keep my tasting count accurate
   As a registered user

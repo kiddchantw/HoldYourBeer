@@ -7,6 +7,27 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
+/**
+ * @covers \spec\features\multilingual_switching.feature
+ *
+ * Scenarios covered:
+ * - Switch language from English to Chinese
+ * - Switch language from Chinese to English
+ * - Language preference persistence across sessions
+ * - Language switching on different page types
+ * - Language switcher presence on main pages
+ * - Language switching with form validation messages
+ * - Language switching with dynamic content
+ * - Language switching accessibility
+ * - Language switching with browser language detection
+ * - Language switching with URL prefix
+ *
+ * Test coverage:
+ * - Language switching functionality
+ * - URL locale handling
+ * - Language switcher component display
+ * - Redirect behavior for unset locale
+ */
 class MultilingualSwitchingTest extends TestCase
 {
     use RefreshDatabase;

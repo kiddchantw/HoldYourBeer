@@ -1,6 +1,17 @@
 Feature: User Role Distinction
 
   # Status: DONE
+  # Test: tests/Feature/AdminFeatureTest.php
+  # UI: DONE
+  # Backend: DONE
+
+  # Scenario Status Tracking:
+  # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
+  # |----------------------------------|---------------|--------------------------------|-----|---------|
+  # | Administrator views user list    | DONE          | test_admin_views_user_list    | DONE| DONE    |
+  # | Administrator Access             | DONE          | test_administrator_access      | DONE| DONE    |
+  # | Regular User Access              | DONE          | test_regular_user_access       | DONE| DONE    |
+
   In order to manage the application effectively
   As an administrator
   I need to have different permissions than a regular user
