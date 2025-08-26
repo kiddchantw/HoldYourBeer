@@ -8,6 +8,20 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
+/**
+ * @covers \spec\features\beer_tracking\adding_a_beer.feature
+ * @covers \spec\features\brand_analytics_charts.feature
+ *
+ * Scenarios covered:
+ * - Brand model relationships and data integrity
+ * - Brand-beer associations
+ * - Brand collection management
+ *
+ * Test coverage:
+ * - Brand-Beer relationship validation
+ * - Brand model association integrity
+ * - Collection handling for brand-related beers
+ */
 class BrandTest extends TestCase
 {
     use RefreshDatabase;

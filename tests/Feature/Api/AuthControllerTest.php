@@ -9,6 +9,25 @@ use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
+/**
+ * @covers \spec\features\user-registration.feature
+ * @covers \spec\api\api.yaml (Authentication endpoints)
+ *
+ * Scenarios covered:
+ * - API user registration
+ * - API user login with token generation
+ * - API user logout
+ * - API authentication validation
+ * - API error handling for invalid credentials
+ *
+ * Test coverage:
+ * - API registration endpoint functionality
+ * - Bearer token generation and validation
+ * - API login endpoint with Sanctum authentication
+ * - API logout token revocation
+ * - API validation error responses
+ * - JSON response structure validation
+ */
 class AuthControllerTest extends TestCase
 {
     use RefreshDatabase;

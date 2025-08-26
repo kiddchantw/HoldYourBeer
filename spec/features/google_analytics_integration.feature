@@ -3,12 +3,10 @@ Feature: Google Analytics Integration
   As a system administrator
   I want to integrate Google Analytics for comprehensive analytics
 
-  # Status: TODO
-  # Test: tests/Feature/GoogleAnalyticsIntegrationTest.php
-  # UI: TODO
-  # Backend: TODO
-
-  # Scenario Status Tracking:
+  # 1. Status: TODO
+  # 2. Design: docs/diagrams/google-analytics-integration-flow.md
+  # 3. Test: tests/Feature/GoogleAnalyticsIntegrationTest.php
+  # 4. Scenario Status Tracking:
   # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
   # |----------------------------------|---------------|--------------------------------|-----|---------|
   # | Page view tracking               | TODO          | test_page_view_tracking        | TODO| TODO    |

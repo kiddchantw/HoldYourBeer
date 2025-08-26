@@ -3,12 +3,10 @@ Feature: Loading States and User Feedback
   As a user
   I want to see loading indicators when actions are being processed
 
-  # Status: DONE
-  # Test: tests/Feature/LoadingStatesTest.php
-  # UI: DONE
-  # Backend: DONE
-
-  # Scenario Status Tracking:
+  # 1. Status: DONE
+  # 2. Design: docs/diagrams/loading-states-flow.md
+  # 3. Test: tests/Feature/LoadingStatesTest.php
+  # 4. Scenario Status Tracking:
   # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
   # |----------------------------------|---------------|--------------------------------|-----|---------|
   # | Loading state when adding beer   | DONE          | test_loading_state_adding_beer | DONE| DONE    |

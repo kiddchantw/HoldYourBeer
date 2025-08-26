@@ -4,6 +4,13 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Basic example test for PHPUnit framework validation
+ *
+ * Test coverage:
+ * - PHPUnit framework functionality
+ * - Basic assertion testing
+ */
 class ExampleTest extends TestCase
 {
     /**

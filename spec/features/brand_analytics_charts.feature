@@ -3,12 +3,10 @@ Feature: Brand Analytics Charts and Consumption Patterns
   As a registered user
   I want to view charts and analytics about my beer consumption by brand
 
-  # Status: IN_PROGRESS
-  # Test: tests/Feature/BrandAnalyticsChartsTest.php
-  # UI: DONE
-  # Backend: IN_PROGRESS
-
-  # Scenario Status Tracking:
+  # 1. Status: IN_PROGRESS
+  # 2. Design: docs/diagrams/brand-analytics-charts-flow.md
+  # 3. Test: tests/Feature/BrandAnalyticsChartsTest.php
+  # 4. Scenario Status Tracking:
   # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
   # |----------------------------------|---------------|--------------------------------|-----|---------|
   # | Navigation link access          | DONE          | test_navigation_link_access    | DONE| DONE    |

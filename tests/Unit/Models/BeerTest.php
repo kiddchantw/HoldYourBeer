@@ -10,6 +10,23 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
+/**
+ * @covers \spec\features\beer_tracking\adding_a_beer.feature
+ * @covers \spec\features\beer_tracking\viewing_the_list.feature
+ * @covers \spec\features\beer_tracking\managing_tastings.feature
+ *
+ * Scenarios covered:
+ * - Beer model relationships and data integrity
+ * - Beer-brand associations
+ * - User tasting count calculations
+ * - Beer collection management
+ *
+ * Test coverage:
+ * - Beer-Brand relationship validation
+ * - Beer-UserBeerCount relationship
+ * - Tasting count retrieval for users
+ * - Model association integrity
+ */
 class BeerTest extends TestCase
 {
     use RefreshDatabase;

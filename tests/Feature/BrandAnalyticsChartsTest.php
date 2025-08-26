@@ -10,6 +10,21 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
+/**
+ * @covers \spec\features\brand_analytics_charts.feature
+ *
+ * Scenarios covered:
+ * - Brand analytics charts display
+ * - Chart data visualization for user consumption
+ * - Empty data handling
+ * - User authentication requirements
+ *
+ * Test coverage:
+ * - Charts page accessibility
+ * - Brand consumption data visualization
+ * - Chart canvas and script presence
+ * - Graceful handling of empty data sets
+ */
 class BrandAnalyticsChartsTest extends TestCase
 {
     use RefreshDatabase;

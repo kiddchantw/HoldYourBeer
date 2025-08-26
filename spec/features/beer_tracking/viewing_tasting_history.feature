@@ -3,12 +3,10 @@ Feature: Viewing the Tasting History for a Beer
   As a registered user
   I want to view a detailed history for each beer in my collection.
 
-  # Status: IN_PROGRESS
-  # Test: tests/Feature/ViewingTastingHistoryTest.php
-  # UI: IN_PROGRESS
-  # Backend: DONE
-
-  # Scenario Status Tracking:
+  # 1. Status: IN_PROGRESS
+  # 2. Design: docs/diagrams/viewing-tasting-history-flow.md
+  # 3. Test: tests/Feature/ViewingTastingHistoryTest.php
+  # 4. Scenario Status Tracking:
   # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
   # |----------------------------------|---------------|--------------------------------|-----|---------|
   # | Viewing tasting history          | IN_PROGRESS   | test_viewing_tasting_history  | IN_PROGRESS| DONE    |

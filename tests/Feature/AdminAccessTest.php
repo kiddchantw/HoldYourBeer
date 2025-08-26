@@ -7,6 +7,22 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
+/**
+ * @covers \spec\features\user_role_distinction.feature
+ *
+ * Scenarios covered:
+ * - Admin panel access control
+ * - User role validation  
+ * - Admin user management functionality
+ * - Guest access restriction
+ *
+ * Test coverage:
+ * - Admin authentication and authorization
+ * - Role-based access control
+ * - Admin dashboard accessibility
+ * - User management interface
+ * - Guest redirect behavior
+ */
 class AdminAccessTest extends TestCase
 {
     use RefreshDatabase;

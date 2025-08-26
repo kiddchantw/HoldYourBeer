@@ -4,12 +4,10 @@ Feature: Password Reset Email Functionality
   As a user who forgot my password
   I want to receive a password reset email
 
-  # Status: IN_PROGRESS
-  # Test: tests/Feature/PasswordResetEmailTest.php
-  # UI: DONE
-  # Backend: DONE
-
-  # Scenario Status Tracking:
+  # 1. Status: IN_PROGRESS
+  # 2. Design: docs/diagrams/password-reset-email-flow.md
+  # 3. Test: tests/Feature/PasswordResetEmailTest.php
+  # 4. Scenario Status Tracking:
   # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
   # |----------------------------------|---------------|--------------------------------|-----|---------|
   # | Successfully request reset      | DONE          | test_successful_reset_request  | DONE| DONE    |

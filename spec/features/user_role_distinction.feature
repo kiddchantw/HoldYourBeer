@@ -1,20 +1,17 @@
 Feature: User Role Distinction
+  In order to manage the application effectively
+  As an administrator
+  I need to have different permissions than a regular user
 
-  # Status: DONE
-  # Test: tests/Feature/AdminFeatureTest.php
-  # UI: DONE
-  # Backend: DONE
-
-  # Scenario Status Tracking:
+  # 1. Status: DONE
+  # 2. Design: docs/diagrams/user-role-distinction-flow.md
+  # 3. Test: tests/Feature/AdminFeatureTest.php
+  # 4. Scenario Status Tracking:
   # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
   # |----------------------------------|---------------|--------------------------------|-----|---------|
   # | Administrator views user list    | DONE          | test_admin_views_user_list    | DONE| DONE    |
   # | Administrator Access             | DONE          | test_administrator_access      | DONE| DONE    |
   # | Regular User Access              | DONE          | test_regular_user_access       | DONE| DONE    |
-
-  In order to manage the application effectively
-  As an administrator
-  I need to have different permissions than a regular user
 
   Scenario: Administrator views user list
     # Status: IMPLEMENTED

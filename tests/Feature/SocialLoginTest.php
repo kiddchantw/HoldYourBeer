@@ -10,6 +10,23 @@ use Laravel\Socialite\Two\User as SocialiteUser;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
+/**
+ * @covers \spec\features\third_party_login.feature
+ *
+ * Scenarios covered:
+ * - User login with Google account
+ * - User login with Apple account  
+ * - Existing user linking Google account
+ * - Existing user linking Apple account
+ * - Social login failure handling
+ *
+ * Test coverage:
+ * - OAuth authentication flow
+ * - Social provider integration
+ * - Account linking functionality
+ * - Error handling for failed authentication
+ * - User data synchronization with social providers
+ */
 class SocialLoginTest extends TestCase
 {
     use RefreshDatabase;

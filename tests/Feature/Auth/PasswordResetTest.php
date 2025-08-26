@@ -8,6 +8,22 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
+/**
+ * @covers \spec\features\password_reset_email.feature
+ *
+ * Scenarios covered:
+ * - Password reset link request
+ * - Password reset email notification
+ * - Password reset form rendering
+ * - Password reset with valid token
+ *
+ * Test coverage:
+ * - Password reset form accessibility
+ * - Email notification system
+ * - Reset token validation
+ * - Password update functionality
+ * - Post-reset redirection
+ */
 class PasswordResetTest extends TestCase
 {
     use RefreshDatabase;

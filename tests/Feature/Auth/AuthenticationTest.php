@@ -6,6 +6,23 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @covers \spec\features\user-registration.feature
+ *
+ * Scenarios covered:
+ * - Web-based user authentication
+ * - Login form accessibility
+ * - User credential validation
+ * - Authentication state management
+ * - User logout functionality
+ *
+ * Test coverage:
+ * - Login screen rendering
+ * - User authentication flow
+ * - Invalid password handling
+ * - User logout process
+ * - Authentication middleware functionality
+ */
 class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;

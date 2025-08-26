@@ -9,6 +9,21 @@ use App\Models\UserBeerCount;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @covers \spec\features\beer_tracking\viewing_the_list.feature
+ *
+ * Scenarios covered:
+ * - Viewing beer collection on dashboard
+ * - Beer list sorting by last tasted date
+ * - Empty state display when no beers exist
+ * - Beer collection visualization
+ *
+ * Test coverage:
+ * - Dashboard beer list rendering
+ * - Chronological ordering of beers
+ * - Empty state messaging
+ * - User-specific beer collection display
+ */
 class DashboardTest extends TestCase
 {
     use RefreshDatabase;

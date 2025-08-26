@@ -6,6 +6,23 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @covers \spec\features\user-registration.feature (Profile management aspects)
+ *
+ * Scenarios covered:
+ * - User profile information display
+ * - Profile information update
+ * - Email verification handling
+ * - User account deletion
+ * - Password verification for account deletion
+ *
+ * Test coverage:
+ * - Profile page accessibility
+ * - User information update functionality
+ * - Email verification state management
+ * - Account deletion with password confirmation
+ * - Security validation for profile changes
+ */
 class ProfileTest extends TestCase
 {
     use RefreshDatabase;

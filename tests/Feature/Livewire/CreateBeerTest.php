@@ -13,6 +13,26 @@ use Livewire\Livewire;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
+/**
+ * @covers \spec\features\beer_tracking\adding_a_beer.feature
+ * @covers \spec\features\beer_tracking\managing_tastings.feature
+ * @covers \spec\features\loading_states.feature
+ *
+ * Scenarios covered:
+ * - Adding new beers with brand creation
+ * - Adding existing beers to user collection
+ * - Adding beers with tasting notes
+ * - Incrementing count for already tracked beers
+ * - Form validation for required fields
+ *
+ * Test coverage:
+ * - Livewire component rendering
+ * - Beer creation with brand handling
+ * - Tasting note functionality
+ * - Existing beer tracking
+ * - Count increment for re-tracked beers
+ * - Form validation and error handling
+ */
 class CreateBeerTest extends TestCase
 {
     use RefreshDatabase;

@@ -1,17 +1,16 @@
-# Status: DONE
-# Test: tests/Feature/DashboardTest.php
-# UI: DONE
-# Backend: DONE
-
-# Scenario Status Tracking:
-# | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
-# |----------------------------------|---------------|--------------------------------|-----|---------|
-# | Empty state viewing              | DONE          | test_empty_state_viewing       | DONE| DONE    |
-# | Sorted list with counts          | DONE          | test_sorted_list_with_counts   | DONE| DONE    |
 Feature: Viewing the Beer List
   In order to see my collection
   As a registered user
   I want to view a list of all the beers I have tracked.
+
+  # 1. Status: DONE
+  # 2. Design: docs/diagrams/viewing-beer-list-flow.md
+  # 3. Test: tests/Feature/DashboardTest.php
+  # 4. Scenario Status Tracking:
+  # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
+  # |----------------------------------|---------------|--------------------------------|-----|---------|
+  # | Empty state viewing              | DONE          | test_empty_state_viewing       | DONE| DONE    |
+  # | Sorted list with counts          | DONE          | test_sorted_list_with_counts   | DONE| DONE    |
 
   Scenario: Viewing the beer list for the first time (empty state)
     Given I am logged in

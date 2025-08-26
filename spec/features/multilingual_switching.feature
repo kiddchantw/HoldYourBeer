@@ -3,12 +3,10 @@ Feature: Multilingual Language Switching
   As a user
   I want to switch between Chinese and English
 
-  # Status: DONE
-  # Test: tests/Feature/MultilingualSwitchingTest.php
-  # UI: DONE
-  # Backend: DONE
-
-  # Scenario Status Tracking:
+  # 1. Status: DONE
+  # 2. Design: docs/diagrams/multilingual-switching-flow.md
+  # 3. Test: tests/Feature/MultilingualSwitchingTest.php
+  # 4. Scenario Status Tracking:
   # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
   # |----------------------------------|---------------|--------------------------------|-----|---------|
   # | Switch to Chinese                | DONE          | test_switch_to_chinese         | DONE| DONE    |

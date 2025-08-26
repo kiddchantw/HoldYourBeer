@@ -1,17 +1,16 @@
-# Status: DONE
-# Test: tests/Feature/TastingTest.php
-# UI: DONE
-# Backend: DONE
-
-# Scenario Status Tracking:
-# | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
-# |----------------------------------|---------------|--------------------------------|-----|---------|
-# | Incrementing count               | DONE          | test_incrementing_count        | DONE| DONE    |
-# | Correcting with decrement        | DONE          | test_correcting_with_decrement | DONE| DONE    |
 Feature: Managing Tastings for a Beer
   In order to keep my tasting count accurate
   As a registered user
   I want to be able to increment and decrement the tasting count for a beer.
+
+  # 1. Status: DONE
+  # 2. Design: docs/diagrams/managing-tastings-flow.md
+  # 3. Test: tests/Feature/TastingTest.php
+  # 4. Scenario Status Tracking:
+  # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
+  # |----------------------------------|---------------|--------------------------------|-----|---------|
+  # | Incrementing count               | DONE          | test_incrementing_count        | DONE| DONE    |
+  # | Correcting with decrement        | DONE          | test_correcting_with_decrement | DONE| DONE    |
 
   Scenario: Incrementing the count of an existing beer
     Given I see "Guinness Draught" in my collection with a tasting count of 4

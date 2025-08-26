@@ -7,6 +7,21 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
+/**
+ * @covers \spec\features\password_reset_email.feature (Password management aspects)
+ *
+ * Scenarios covered:
+ * - Password update functionality
+ * - Current password validation
+ * - Password confirmation validation
+ * - Security checks for password changes
+ *
+ * Test coverage:
+ * - Password update process
+ * - Current password verification
+ * - Password hash validation
+ * - Error handling for invalid passwords
+ */
 class PasswordUpdateTest extends TestCase
 {
     use RefreshDatabase;

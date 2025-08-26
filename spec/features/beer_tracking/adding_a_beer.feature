@@ -3,12 +3,10 @@ Feature: Adding a New Beer to the Collection
   As a registered user
   I want to add a new type of beer that I have tasted.
 
-  # Status: DONE
-  # Test: tests/Feature/BeerCreationTest.php
-  # UI: DONE
-  # Backend: DONE
-
-  # Scenario Status Tracking:
+  # 1. Status: DONE
+  # 2. Design: docs/diagrams/beer-adding-flow.md
+  # 3. Test: tests/Feature/BeerCreationTest.php
+  # 4. Scenario Status Tracking:
   # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
   # |----------------------------------|---------------|--------------------------------|-----|---------|
   # | Adding with brand suggestions    | DONE          | test_adding_with_suggestions   | DONE| DONE    |

@@ -9,6 +9,20 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
+/**
+ * @covers \spec\features\beer_tracking\managing_tastings.feature
+ * @covers \spec\features\beer_tracking\viewing_tasting_history.feature
+ *
+ * Scenarios covered:
+ * - User beer count relationships
+ * - Count tracking data integrity
+ * - User-beer association management
+ *
+ * Test coverage:
+ * - UserBeerCount-User relationship validation
+ * - UserBeerCount-Beer relationship validation
+ * - Model association integrity for counting system
+ */
 class UserBeerCountTest extends TestCase
 {
     use RefreshDatabase;

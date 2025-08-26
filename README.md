@@ -209,6 +209,43 @@ What other approaches were considered?
 
 ### 1. Development Process - 開發流程
 
+#### Spec Automation Tools - 規格自動化工具
+
+本專案提供自動化工具來維護規格與測試的同步，大幅減少手動維護的工作量：
+
+**Available Commands - 可用指令**:
+```bash
+# 檢查規格與測試的一致性
+php artisan spec:check
+
+# 自動同步規格文件與測試文件
+php artisan spec:sync
+
+# 在 Laradock 環境中使用
+docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan spec:check
+```
+
+**Key Features - 主要功能**:
+- 🔍 **自動檢查**: 驗證 `.feature` 文件與測試文件的對應關係
+- 🔄 **智能同步**: 根據測試文件自動更新狀態追蹤表格
+- 📊 **覆蓋率報告**: 產生規格覆蓋率統計
+- 🏃 **安全預覽**: `--dry-run` 模式安全檢視變更
+- ⚙️ **CI/CD 整合**: `--strict` 和 `--ci` 模式支援自動化流程
+
+**Usage Examples - 使用範例**:
+```bash
+# 每日開發流程
+php artisan spec:check                    # 檢查當前狀況
+php artisan spec:sync --dry-run           # 預覽同步變更
+php artisan spec:sync                     # 執行同步
+
+# CI/CD 整合
+php artisan spec:check --strict           # 嚴格檢查，不一致時返回錯誤碼
+php artisan spec:check --ci               # 輸出 JSON 格式報告
+```
+
+> **📖 詳細使用指南**: 請參考 [`docs/spec-automation.md`](docs/spec-automation.md) 獲得完整的使用說明、疑難排解和最佳實踐。
+
 #### Feature Development Workflow
 
 To maintain clarity, code quality, and avoid duplicate work, please follow this comprehensive process for every feature.
@@ -253,8 +290,18 @@ Follow TDD principles: write tests first, then implement the minimal code to pas
 As you work on the feature, keep the team informed by updating its status.
 開發時請即時更新狀態，讓團隊知悉進度。
 
--   **Update Feature Status**: In the corresponding `.feature` file, update the status using the table format below:
-    - 在對應的 `.feature` 檔，使用以下表格格式更新狀態：
+-   **Automated Status Tracking**: 使用自動化工具來維護狀態追蹤：
+    ```bash
+    # 開發過程中檢查狀態
+    php artisan spec:check
+    
+    # 完成測試後自動同步狀態
+    php artisan spec:sync --dry-run    # 先預覽
+    php artisan spec:sync              # 執行同步
+    ```
+
+-   **Status Table Format**: The automation tools maintain this standard format:
+    - 自動化工具會維護以下標準格式：
 
     ```gherkin
     # 1. Status: TODO | IN_PROGRESS | DONE
@@ -267,18 +314,14 @@ As you work on the feature, keep the team informed by updating its status.
     # | Scenario 2 description          | IN_PROGRESS   | test_scenario_2                | DONE| TODO    |
     # | Scenario 3 description          | TODO          | test_scenario_3                | TODO| TODO    |
     ```
-    -   **`# Status`**: The overall status of the feature.
-        - 整體狀態：TODO（待開始）、IN_PROGRESS（進行中）、DONE（已完成）
-    -   **`# Design`**: Link to the design document or diagram.
-        - 設計文件或流程圖連結
-    -   **`# Test`**: Link to the primary test file.
-        - 主要測試檔連結
-    -   **`# UI`**: The development status of the UI.
-        - UI 開發狀態：TODO（待開始）、IN_PROGRESS（進行中）、DONE（已完成）
-    -   **`# Backend`**: The development status of the backend logic.
-        - 後端開發狀態：TODO（待開始）、IN_PROGRESS（進行中）、DONE（已完成）
-    -   **Scenario Status Tracking**: Table format for tracking individual scenario progress.
-        - 情境狀態追蹤：表格格式用於追蹤個別情境進度。
+    -   **`# Status`**: The overall status of the feature (auto-inferred from tests)
+        - 整體狀態：根據測試結果自動推斷
+    -   **`# Design`**: Link to the design document or diagram (auto-generated path)
+        - 設計文件連結：自動生成路徑
+    -   **`# Test`**: Link to the primary test file (auto-detected or inferred)
+        - 測試檔連結：自動偵測或推斷
+    -   **Scenario Status Tracking**: Auto-updated based on test methods
+        - 情境狀態追蹤：根據測試方法自動更新
 
 > **重要提示**: 新增 `Scenario` 時，請務必在上方加上一行 `# 場景: ...` 的中文註解，以方便團隊成員快速理解。
 
@@ -322,6 +365,18 @@ As you write tests, document the relationship between test classes and spec scen
 Before a feature can be considered complete and ready for review, it must meet all the following criteria.
 功能在送審前必須符合以下所有條件。
 
+-   **Automated Spec-Test Validation**: 使用自動化工具驗證規格與測試的一致性：
+    ```bash
+    # 嚴格檢查 - CI/CD 整合必備
+    php artisan spec:check --strict
+    
+    # 如果檢查失敗，先同步規格狀態
+    php artisan spec:sync
+    
+    # 在 Laradock 環境中
+    docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan spec:check --strict
+    ```
+
 -   **Run All Tests**: Before every `git commit`, run the entire automated test suite with code coverage.
     - 每次 `git commit` 前都要執行完整自動化測試並產生覆蓋率。
     - **Minimum Coverage**: 80% for new features, 90% for critical paths
@@ -334,11 +389,12 @@ Before a feature can be considered complete and ready for review, it must meet a
     php artisan test --coverage --filter=YourTestClass
     
     # For coverage report in Laradock:
-    docker-compose -f laradock/docker-compose.yml exec -w /var/www workspace php artisan test --coverage
+    docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan test --coverage
     ```
     > **注意**: 在 Laradock 環境中，請參考 `laradock_setting.md` 了解完整的指令執行方式。
--   **Ensure All Tests Pass**: Only commit if all tests report a `PASS` status.
-    - 僅在所有測試皆通過時才進行提交。
+    
+-   **Ensure All Tests Pass**: Only commit if all tests report a `PASS` status and spec validation passes.
+    - 僅在所有測試皆通過且規格驗證成功時才進行提交。
 -   **Git Workflow**: Follow conventional commit format and branch naming.
     - **Git 工作流程**: 遵循常規提交格式與分支命名。
     ```bash
@@ -355,8 +411,12 @@ Before a feature can be considered complete and ready for review, it must meet a
 
 -   **Final Checklist (Definition of Done)**:
     - 完成檢查清單：
-    -   [ ] Corresponding `.feature` file exists and is reviewed.
-        - 對應的 `.feature` 檔已存在且完成審閱。
+    -   [ ] **Spec-Test Validation**: `php artisan spec:check --strict` passes without errors.
+        - **規格測試驗證**：`php artisan spec:check --strict` 執行無錯誤。
+    -   [ ] Corresponding `.feature` file exists and status is auto-synced.
+        - 對應的 `.feature` 檔已存在且狀態已自動同步。
+    -   [ ] Test files have proper `@covers` annotations linking to spec files.
+        - 測試檔案具備正確的 `@covers` 註解連結到規格檔案。
     -   [ ] API specification in `spec/api/api.yaml` updated if needed.
         - 必要時已更新 `spec/api/api.yaml`。
     -   [ ] Design & documentation in `/docs` updated if needed.
@@ -377,8 +437,23 @@ Before a feature can be considered complete and ready for review, it must meet a
 > **Note**: This project uses **PCOV** for code coverage analysis. The `--coverage` flag will generate a text report directly in your terminal after the tests run.
 > 本專案使用 **PCOV** 進行覆蓋率分析；加入 `--coverage` 會在終端機輸出報告。
 
-> **Advanced Tip**: Consider setting up a Git pre-commit hook to automate this testing process. This is a great way to enforce code quality automatically.
-> 建議設定 Git pre-commit hook 自動執行測試，以自動化維持程式碼品質。
+> **Advanced Tip**: Consider setting up a Git pre-commit hook to automate spec validation and testing:
+> 建議設定 Git pre-commit hook 自動執行規格驗證與測試：
+>
+> ```bash
+> #!/bin/bash
+> # .git/hooks/pre-commit
+> 
+> # Run spec validation
+> php artisan spec:check --strict
+> if [ $? -ne 0 ]; then
+>     echo "❌ Spec validation failed. Run 'php artisan spec:sync' to fix."
+>     exit 1
+> fi
+> 
+> # Run tests
+> php artisan test --coverage --min=80
+> ```
 
 ### 2. Code Standards - 程式碼標準
 

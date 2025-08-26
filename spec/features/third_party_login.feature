@@ -3,12 +3,10 @@ Feature: Third-Party Login
   As a user
   I want to be able to log in using third-party services like Google or Apple.
 
-  # Status: IN_PROGRESS
-  # Test: tests/Feature/SocialLoginTest.php
-  # UI: DONE
-  # Backend: IN_PROGRESS
-
-  # Scenario Status Tracking:
+  # 1. Status: IN_PROGRESS
+  # 2. Design: docs/diagrams/third-party-login-flow.md
+  # 3. Test: tests/Feature/SocialLoginTest.php
+  # 4. Scenario Status Tracking:
   # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
   # |----------------------------------|---------------|--------------------------------|-----|---------|
   # | Google login                     | IN_PROGRESS   | test_google_login              | DONE| IN_PROGRESS|

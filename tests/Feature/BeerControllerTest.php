@@ -6,6 +6,23 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @covers \spec\features\beer_tracking\adding_a_beer.feature
+ * @covers \spec\features\beer_tracking\viewing_the_list.feature
+ *
+ * Scenarios covered:
+ * - Beer creation page access
+ * - Beer and brand storage functionality
+ * - Authentication requirements for beer management
+ * - Guest access control
+ *
+ * Test coverage:
+ * - Beer creation form accessibility
+ * - Database persistence for beers and brands
+ * - User authentication validation
+ * - Initial tasting count setup
+ * - Route protection for guest users
+ */
 class BeerControllerTest extends TestCase
 {
     use RefreshDatabase;

@@ -9,6 +9,21 @@ use Livewire\Livewire;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
+/**
+ * @covers \spec\features\loading_states.feature
+ *
+ * Scenarios covered:
+ * - Loading states during beer creation
+ * - Loading spinner visibility
+ * - Button disabled state during operations
+ * - Input field disabled state during operations
+ *
+ * Test coverage:
+ * - Livewire loading state management
+ * - UI feedback during async operations
+ * - Form element state during loading
+ * - Loading message display
+ */
 class LoadingStatesTest extends TestCase
 {
     use RefreshDatabase;

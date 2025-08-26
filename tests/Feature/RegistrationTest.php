@@ -6,6 +6,19 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @covers \spec\features\user-registration.feature
+ *
+ * Scenarios covered:
+ * - A new user registers with valid credentials
+ * - A user tries to register with an existing email
+ *
+ * Test coverage:
+ * - User registration validation
+ * - Duplicate email prevention
+ * - Authentication state after registration
+ * - Dashboard redirection after successful registration
+ */
 class RegistrationTest extends TestCase
 {
     use RefreshDatabase;

@@ -7,6 +7,20 @@ use App\Models\UserBeerCount;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @covers \spec\features\beer_tracking\managing_tastings.feature
+ *
+ * Scenarios covered:
+ * - Incrementing the count of an existing beer
+ * - Correcting a mistaken increment by decrementing
+ *
+ * Test coverage:
+ * - Tasting count increment functionality
+ * - Tasting count decrement functionality
+ * - Tasting log creation for tracking changes
+ * - Preventing decrement below zero
+ * - Concurrent operation handling with proper locking
+ */
 class TastingTest extends TestCase
 {
     use RefreshDatabase;

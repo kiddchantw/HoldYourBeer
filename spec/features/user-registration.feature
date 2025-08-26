@@ -1,17 +1,16 @@
-# Status: DONE
-# Test: tests/Feature/RegistrationTest.php
-# UI: DONE
-# Backend: DONE
-
-# Scenario Status Tracking:
-# | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
-# |----------------------------------|---------------|--------------------------------|-----|---------|
-# | New user registration           | DONE          | test_new_user_registration     | DONE| DONE    |
-# | Duplicate email registration    | DONE          | test_duplicate_email_registration| DONE| DONE    |
 Feature: User Registration
   In order to access the main application features
   As a new user
   I want to be able to create an account
+
+  # 1. Status: DONE
+  # 2. Design: docs/diagrams/user-registration-flow.md
+  # 3. Test: tests/Feature/RegistrationTest.php
+  # 4. Scenario Status Tracking:
+  # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
+  # |----------------------------------|---------------|--------------------------------|-----|---------|
+  # | New user registration           | DONE          | test_new_user_registration     | DONE| DONE    |
+  # | Duplicate email registration    | DONE          | test_duplicate_email_registration| DONE| DONE    |
 
   Scenario: A new user registers with valid credentials
     Given I am on the registration page

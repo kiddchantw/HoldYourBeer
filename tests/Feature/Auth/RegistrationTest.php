@@ -5,6 +5,20 @@ namespace Tests\Feature\Auth;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @covers \spec\features\user-registration.feature
+ *
+ * Scenarios covered:
+ * - New user registration form accessibility
+ * - User registration with valid credentials
+ * - Authentication state after successful registration
+ *
+ * Test coverage:
+ * - Registration screen rendering
+ * - User account creation process
+ * - Post-registration authentication
+ * - Dashboard redirection after registration
+ */
 class RegistrationTest extends TestCase
 {
     use RefreshDatabase;
