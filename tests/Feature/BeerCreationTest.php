@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
- * @covers \spec\features\beer_tracking\adding_a_beer.feature
+ * Related specifications: spec/features/beer_tracking/adding_a_beer.feature
  *
  * Scenarios covered:
  * - Adding a new beer with brand and series suggestions

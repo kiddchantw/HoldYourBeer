@@ -10,8 +10,8 @@ use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
- * @covers \spec\features\beer_tracking\managing_tastings.feature
- * @covers \spec\features\beer_tracking\viewing_tasting_history.feature
+ * Related specifications: spec/features/beer_tracking/managing_tastings.feature
+ * Related specifications: spec/features/beer_tracking/viewing_tasting_history.feature
  *
  * Scenarios covered:
  * - User beer count relationships

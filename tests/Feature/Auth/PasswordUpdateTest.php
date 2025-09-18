@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 /**
- * @covers \spec\features\password_reset_email.feature (Password management aspects)
+ * Related specifications: spec/features/password_reset_email.feature (Password management aspects)
  *
  * Scenarios covered:
  * - Password update functionality

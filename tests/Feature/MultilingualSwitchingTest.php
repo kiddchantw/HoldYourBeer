@@ -8,7 +8,7 @@ use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
- * @covers \spec\features\multilingual_switching.feature
+ * Related specifications: spec/features/multilingual_switching.feature
  *
  * Scenarios covered:
  * - Switch language from English to Chinese

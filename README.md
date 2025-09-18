@@ -388,7 +388,10 @@ Before a feature can be considered complete and ready for review, it must meet a
     # For specific test files:
     php artisan test --coverage --filter=YourTestClass
     
-    # For coverage report in Laradock:
+    # For coverage report in Laradock (推薦使用 PHPUnit):
+    docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace ./vendor/bin/phpunit --coverage-text
+    
+    # 或使用 artisan test (可能無法顯示詳細覆蓋率):
     docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan test --coverage
     ```
     > **注意**: 在 Laradock 環境中，請參考 `laradock_setting.md` 了解完整的指令執行方式。
@@ -434,8 +437,17 @@ Before a feature can be considered complete and ready for review, it must meet a
     -   [ ] Code has been peer-reviewed and merged to main.
         - 程式碼已完成同儕審查並合併至 main。
 
-> **Note**: This project uses **PCOV** for code coverage analysis. The `--coverage` flag will generate a text report directly in your terminal after the tests run.
-> 本專案使用 **PCOV** 進行覆蓋率分析；加入 `--coverage` 會在終端機輸出報告。
+> **Note**: This project uses **PCOV** for code coverage analysis. 
+> 本專案使用 **PCOV** 進行覆蓋率分析。
+> 
+> **重要提醒**: 由於 Laravel 12 的 `php artisan test --coverage` 指令可能無法正確顯示 PCOV 覆蓋率報告，建議直接使用 PHPUnit：
+> ```bash
+> # 推薦使用 - 直接 PHPUnit 指令
+> docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace ./vendor/bin/phpunit --coverage-text
+> 
+> # 或者使用 artisan test（可能不會顯示覆蓋率詳細資訊）
+> docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan test --coverage
+> ```
 
 > **Advanced Tip**: Consider setting up a Git pre-commit hook to automate spec validation and testing:
 > 建議設定 Git pre-commit hook 自動執行規格驗證與測試：

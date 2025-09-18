@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
- * @covers \spec\features\beer_tracking\viewing_the_list.feature
+ * Related specifications: spec/features/beer_tracking/viewing_the_list.feature
  *
  * Scenarios covered:
  * - Viewing beer collection on dashboard

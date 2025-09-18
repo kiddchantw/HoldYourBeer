@@ -10,7 +10,7 @@ use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
- * @covers \spec\features\loading_states.feature
+ * Related specifications: spec/features/loading_states.feature
  *
  * Scenarios covered:
  * - Loading states during beer creation

@@ -10,8 +10,8 @@ use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
- * @covers \spec\features\user-registration.feature
- * @covers \spec\api\api.yaml (Authentication endpoints)
+ * Related specifications: spec/features/user-registration.feature
+ * Related specifications: spec/api/api.yaml (Authentication endpoints)
  *
  * Scenarios covered:
  * - API user registration

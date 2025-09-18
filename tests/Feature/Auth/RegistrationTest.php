@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
- * @covers \spec\features\user-registration.feature
+ * Related specifications: spec/features/user-registration.feature
  *
  * Scenarios covered:
  * - New user registration form accessibility

@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
- * @covers \spec\features\user-registration.feature (Profile management aspects)
+ * Related specifications: spec/features/user-registration.feature (Profile management aspects)
  *
  * Scenarios covered:
  * - User profile information display

@@ -7,18 +7,13 @@ Feature: Brand Analytics Charts and Consumption Patterns
   # 2. Design: docs/diagrams/brand-analytics-charts-flow.md
   # 3. Test: tests/Feature/BrandAnalyticsChartsTest.php
   # 4. Scenario Status Tracking:
-  # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
-  # |----------------------------------|---------------|--------------------------------|-----|---------|
-  # | Navigation link access          | DONE          | test_navigation_link_access    | DONE| DONE    |
-  # | Brand preference chart          | DONE          | test_brand_preference_chart    | DONE| DONE    |
-  # | Chart data updates              | DONE          | test_chart_data_updates       | DONE| DONE    |
-  # | Empty data handling             | DONE          | test_empty_data_handling      | DONE| DONE    |
-  # | Mobile responsiveness           | DONE          | test_mobile_responsiveness    | DONE| DONE    |
-  # | Chart interaction tooltips      | DONE          | test_chart_interaction        | DONE| DONE    |
-  # | Chart type switching            | TODO          | test_chart_type_switching     | TODO| TODO    |
-  # | Data export functionality       | TODO          | test_data_export              | TODO| TODO    |
-  # | Accessibility features          | TODO          | test_accessibility            | TODO| TODO    |
-  # | Navigation highlighting         | TODO          | test_navigation_highlighting | TODO| TODO    |
+# | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
+# |----------------------------------|---------------|--------------------------------|-----|---------|
+# | Authenticated user can access charts page | DONE          | authenticated_user_can_access_charts_page | DONE| DONE    |
+# | Chart canvas and script are present on charts page | DONE          | chart_canvas_and_script_are_present_on_charts_page | DONE| DONE    |
+# | Chart displays correct data for user consumption | DONE          | chart_displays_correct_data_for_user_consumption | DONE| DONE    |
+# | Chart handles empty data gracefully | DONE          | chart_handles_empty_data_gracefully | DONE| DONE    |
+
 
   Background:
     Given I am a registered user

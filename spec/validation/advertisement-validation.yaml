@@ -1,0 +1,325 @@
+advertisement_validation:
+  # Advertisement model validation rules
+  
+  create_advertisement:
+    name:
+      required: true
+      type: string
+      max_length: 255
+      min_length: 3
+      description: "Display name for the advertisement"
+      
+    position:
+      required: true
+      type: string
+      enum:
+        - dashboard-top
+        - dashboard-bottom 
+        - beer-list-native
+        - sidebar
+        - empty-state
+      description: "Where the advertisement should be displayed"
+      
+    ad_type:
+      required: true
+      type: string
+      enum:
+        - banner
+        - native
+        - sponsored
+        - affiliate
+        - adsense
+      description: "Type of advertisement for rendering logic"
+      
+    content:
+      required: true
+      type: string
+      max_length: 10000
+      validation_rules:
+        - no_script_tags
+        - safe_html_only
+        - no_external_forms
+      description: "HTML content or configuration JSON for the ad"
+      
+    target_url:
+      required: false
+      type: string
+      format: url
+      max_length: 2048
+      validation_rules:
+        - valid_url_format
+        - https_preferred
+      description: "URL to redirect when ad is clicked"
+      
+    start_date:
+      required: false
+      type: datetime
+      validation_rules:
+        - future_or_now
+      description: "When the advertisement should start displaying"
+      
+    end_date:
+      required: false
+      type: datetime
+      validation_rules:
+        - after_start_date
+        - future_date
+      description: "When the advertisement should stop displaying"
+      
+    budget:
+      required: false
+      type: decimal
+      min_value: 0
+      max_value: 999999.99
+      decimal_places: 2
+      description: "Budget allocated for this advertisement"
+      
+    priority:
+      required: false
+      type: integer
+      min_value: 1
+      max_value: 100
+      default: 50
+      description: "Display priority (higher numbers shown first)"
+
+  update_advertisement:
+    name:
+      required: false
+      type: string
+      max_length: 255
+      min_length: 3
+      
+    content:
+      required: false
+      type: string
+      max_length: 10000
+      validation_rules:
+        - no_script_tags
+        - safe_html_only
+        - no_external_forms
+        
+    target_url:
+      required: false
+      type: string
+      format: url
+      max_length: 2048
+      validation_rules:
+        - valid_url_format
+        - https_preferred
+        
+    is_active:
+      required: false
+      type: boolean
+      description: "Whether the advertisement is currently active"
+      
+    start_date:
+      required: false
+      type: datetime
+      validation_rules:
+        - future_or_now
+        
+    end_date:
+      required: false
+      type: datetime
+      validation_rules:
+        - after_start_date
+        - future_date
+
+# Privacy consent validation
+privacy_consent:
+  update_consent:
+    consent_types:
+      required: true
+      type: object
+      properties:
+        essential:
+          required: true
+          type: boolean
+          fixed_value: true
+          description: "Essential cookies always required"
+        analytics:
+          required: true
+          type: boolean
+          description: "Consent for analytics tracking"
+        advertising:
+          required: true
+          type: boolean
+          description: "Consent for personalized advertising"
+        personalization:
+          required: true
+          type: boolean
+          description: "Consent for personalized content"
+    timestamp:
+      required: true
+      type: datetime
+      validation_rules:
+        - valid_iso_format
+        - recent_timestamp
+
+# Advertisement content validation rules
+content_validation:
+  allowed_html_tags:
+    - div
+    - span
+    - p
+    - h1
+    - h2
+    - h3
+    - h4
+    - h5
+    - h6
+    - img
+    - a
+    - strong
+    - em
+    - br
+    - ul
+    - ol
+    - li
+    
+  allowed_attributes:
+    - class
+    - id
+    - src
+    - alt
+    - href
+    - target
+    - title
+    - data-*
+    
+  forbidden_elements:
+    - script
+    - iframe
+    - object
+    - embed
+    - form
+    - input
+    - textarea
+    - select
+    - button
+    
+  content_safety_rules:
+    max_external_links: 3
+    max_image_size: "1MB"
+    allowed_domains:
+      - holdyourbeer.test
+      - cdn.holdyourbeer.com
+      - trusted-ad-network.com
+    forbidden_keywords:
+      - javascript:
+      - vbscript:
+      - data:
+      - onclick
+      - onload
+      - onerror
+
+# Revenue tracking validation
+revenue_tracking:
+  click_tracking:
+    user_agent:
+      required: false
+      type: string
+      max_length: 512
+      
+    referrer:
+      required: false
+      type: string
+      max_length: 2048
+      format: url
+      
+    timestamp:
+      required: true
+      type: datetime
+      validation_rules:
+        - valid_iso_format
+        - within_last_hour
+        
+    ip_address:
+      required: false
+      type: string
+      format: ip
+      description: "For fraud detection (hashed)"
+
+# A/B testing validation
+ab_testing:
+  test_configuration:
+    test_name:
+      required: true
+      type: string
+      max_length: 100
+      pattern: "^[a-zA-Z0-9_-]+$"
+      
+    variations:
+      required: true
+      type: array
+      min_items: 2
+      max_items: 5
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+            max_length: 50
+          weight:
+            type: integer
+            min_value: 1
+            max_value: 100
+          ad_config:
+            type: object
+            
+    traffic_split:
+      required: true
+      type: integer
+      min_value: 1
+      max_value: 100
+      description: "Percentage of users included in test"
+
+# Performance validation
+performance_constraints:
+  max_ads_per_page: 5
+  max_ad_file_size: "500KB"
+  max_load_time_impact: "200ms"
+  required_lazy_loading: true
+  
+  image_requirements:
+    max_width: 1200
+    max_height: 600
+    allowed_formats:
+      - jpg
+      - png
+      - webp
+      - svg
+    compression_required: true
+
+# Custom validation messages
+validation_messages:
+  name.required: "廣告名稱為必填欄位"
+  name.max_length: "廣告名稱不得超過 255 個字元"
+  position.required: "請選擇廣告位置"
+  position.enum: "請選擇有效的廣告位置"
+  content.required: "廣告內容為必填欄位"
+  content.safe_html_only: "廣告內容包含不安全的 HTML 標籤"
+  target_url.format: "請輸入有效的網址格式"
+  start_date.future_or_now: "開始日期不得早於現在時間"
+  end_date.after_start_date: "結束日期必須晚於開始日期"
+  budget.min_value: "預算金額不得小於 0"
+  consent_types.essential.fixed_value: "基本功能 cookies 為必需項目"
+
+# Sanitization rules
+sanitization:
+  content:
+    strip_dangerous_tags: true
+    escape_script_content: true
+    validate_urls: true
+    limit_nesting_depth: 10
+    
+  target_url:
+    normalize_protocol: true
+    validate_domain: true
+    remove_tracking_params: false
+    
+  user_input:
+    trim_whitespace: true
+    remove_null_bytes: true
+    limit_length: true
+    encode_special_chars: true

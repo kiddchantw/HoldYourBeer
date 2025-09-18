@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 /**
- * @covers \spec\features\password_reset_email.feature
+ * Related specifications: spec/features/password_reset_email.feature
  *
  * Scenarios covered:
  * - Password reset link request

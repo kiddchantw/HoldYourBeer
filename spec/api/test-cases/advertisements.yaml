@@ -1,0 +1,486 @@
+openapi: 3.0.0
+info:
+  title: Advertisement Management API Test Cases
+  version: 1.0.0
+  description: Test cases for advertisement integration and management system
+
+paths:
+  /api/admin/advertisements:
+    get:
+      summary: Get all advertisements
+      tags: [Advertisement Management]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: position
+          schema:
+            type: string
+            enum: [dashboard-top, dashboard-bottom, beer-list-native, sidebar, empty-state]
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [active, inactive, expired]
+      responses:
+        '200':
+          description: List of advertisements
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Advertisement'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+
+    post:
+      summary: Create new advertisement
+      tags: [Advertisement Management]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAdvertisementRequest'
+      responses:
+        '201':
+          description: Advertisement created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Advertisement'
+
+  /api/admin/advertisements/{id}:
+    get:
+      summary: Get specific advertisement
+      tags: [Advertisement Management]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Advertisement details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Advertisement'
+
+    put:
+      summary: Update advertisement
+      tags: [Advertisement Management]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAdvertisementRequest'
+      responses:
+        '200':
+          description: Advertisement updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Advertisement'
+
+    delete:
+      summary: Delete advertisement
+      tags: [Advertisement Management]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Advertisement deleted successfully
+
+  /api/advertisements/active:
+    get:
+      summary: Get active advertisements for display
+      tags: [Public Advertisement]
+      parameters:
+        - in: query
+          name: position
+          required: true
+          schema:
+            type: string
+            enum: [dashboard-top, dashboard-bottom, beer-list-native, sidebar, empty-state]
+        - in: query
+          name: user_consent
+          schema:
+            type: boolean
+            description: Whether user has consented to personalized ads
+      responses:
+        '200':
+          description: Active advertisements for the specified position
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PublicAdvertisement'
+
+  /api/advertisements/{id}/click:
+    post:
+      summary: Track advertisement click
+      tags: [Advertisement Analytics]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_agent:
+                  type: string
+                referrer:
+                  type: string
+                timestamp:
+                  type: string
+                  format: date-time
+      responses:
+        '200':
+          description: Click tracked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  redirect_url:
+                    type: string
+                  tracked:
+                    type: boolean
+
+  /api/consent/update:
+    post:
+      summary: Update user privacy consent
+      tags: [Privacy Compliance]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                consent_types:
+                  type: object
+                  properties:
+                    essential:
+                      type: boolean
+                    analytics:
+                      type: boolean
+                    advertising:
+                      type: boolean
+                    personalization:
+                      type: boolean
+                timestamp:
+                  type: string
+                  format: date-time
+      responses:
+        '200':
+          description: Consent updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+  /api/admin/revenue/report:
+    get:
+      summary: Get revenue reports
+      tags: [Revenue Analytics]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: period
+          schema:
+            type: string
+            enum: [daily, weekly, monthly, yearly]
+        - in: query
+          name: start_date
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: end_date
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: ad_type
+          schema:
+            type: string
+            enum: [adsense, affiliate, sponsored]
+      responses:
+        '200':
+          description: Revenue report data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  summary:
+                    type: object
+                    properties:
+                      total_revenue:
+                        type: number
+                        format: decimal
+                      total_clicks:
+                        type: integer
+                      total_impressions:
+                        type: integer
+                      ctr:
+                        type: number
+                        format: decimal
+                        description: Click-through rate
+                  details:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RevenueDetail'
+
+components:
+  schemas:
+    Advertisement:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        position:
+          type: string
+          enum: [dashboard-top, dashboard-bottom, beer-list-native, sidebar, empty-state]
+        ad_type:
+          type: string
+          enum: [banner, native, sponsored, affiliate]
+        content:
+          type: string
+          description: HTML content or configuration for the advertisement
+        target_url:
+          type: string
+          format: uri
+        is_active:
+          type: boolean
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+        click_count:
+          type: integer
+        impression_count:
+          type: integer
+        revenue_generated:
+          type: number
+          format: decimal
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    PublicAdvertisement:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        position:
+          type: string
+        ad_type:
+          type: string
+        content:
+          type: string
+        target_url:
+          type: string
+          format: uri
+        tracking_params:
+          type: object
+          description: Additional parameters for click tracking
+
+    CreateAdvertisementRequest:
+      type: object
+      required:
+        - name
+        - position
+        - ad_type
+        - content
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        position:
+          type: string
+          enum: [dashboard-top, dashboard-bottom, beer-list-native, sidebar, empty-state]
+        ad_type:
+          type: string
+          enum: [banner, native, sponsored, affiliate]
+        content:
+          type: string
+        target_url:
+          type: string
+          format: uri
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+        budget:
+          type: number
+          format: decimal
+
+    UpdateAdvertisementRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        content:
+          type: string
+        target_url:
+          type: string
+          format: uri
+        is_active:
+          type: boolean
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+
+    RevenueDetail:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        ad_type:
+          type: string
+        position:
+          type: string
+        revenue:
+          type: number
+          format: decimal
+        clicks:
+          type: integer
+        impressions:
+          type: integer
+        ctr:
+          type: number
+          format: decimal
+
+    PaginationMeta:
+      type: object
+      properties:
+        current_page:
+          type: integer
+        last_page:
+          type: integer
+        per_page:
+          type: integer
+        total:
+          type: integer
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+# Test Scenarios
+test_cases:
+  - name: Create advertisement with valid data
+    method: POST
+    endpoint: /api/admin/advertisements
+    auth: admin_token
+    request_body:
+      name: "Dashboard Top Banner"
+      position: "dashboard-top"
+      ad_type: "banner"
+      content: "<div class='ad-banner'>Sample Ad Content</div>"
+      target_url: "https://example.com/beer-offer"
+      start_date: "2025-08-30T00:00:00Z"
+      end_date: "2025-12-31T23:59:59Z"
+    expected_status: 201
+    expected_response:
+      id: integer
+      name: "Dashboard Top Banner"
+      position: "dashboard-top"
+      is_active: true
+
+  - name: Get active ads for dashboard-top position
+    method: GET
+    endpoint: /api/advertisements/active
+    query_params:
+      position: "dashboard-top"
+      user_consent: true
+    expected_status: 200
+    expected_response:
+      data: array
+
+  - name: Track advertisement click
+    method: POST
+    endpoint: /api/advertisements/1/click
+    request_body:
+      user_agent: "Mozilla/5.0..."
+      referrer: "https://holdyourbeer.test/dashboard"
+      timestamp: "2025-08-30T12:00:00Z"
+    expected_status: 200
+    expected_response:
+      tracked: true
+      redirect_url: string
+
+  - name: Update privacy consent
+    method: POST
+    endpoint: /api/consent/update
+    request_body:
+      consent_types:
+        essential: true
+        analytics: true
+        advertising: false
+        personalization: false
+      timestamp: "2025-08-30T12:00:00Z"
+    expected_status: 200
+    expected_response:
+      success: true

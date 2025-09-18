@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
- * @covers \spec\features\user_role_distinction.feature
+ * Related specifications: spec/features/user_role_distinction.feature
  *
  * Scenarios covered:
  * - Admin-specific functionality

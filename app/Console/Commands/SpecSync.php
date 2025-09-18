@@ -214,7 +214,7 @@ class SpecSync extends Command
         
         foreach ($testMethods as $method) {
             $scenarioName = $this->methodToScenarioName($method);
-            $table .= "# | {$scenarioName:<32} | DONE          | {$method:<30} | DONE| DONE    |\n";
+            $table .= "# | " . str_pad($scenarioName, 32) . " | DONE          | " . str_pad($method, 30) . " | DONE| DONE    |\n";
         }
         
         return $table;

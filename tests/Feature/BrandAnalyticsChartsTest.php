@@ -11,7 +11,7 @@ use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
- * @covers \spec\features\brand_analytics_charts.feature
+ * Related specifications: spec/features/brand_analytics_charts.feature
  *
  * Scenarios covered:
  * - Brand analytics charts display

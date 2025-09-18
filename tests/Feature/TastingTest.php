@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
- * @covers \spec\features\beer_tracking\managing_tastings.feature
+ * Related specifications: spec/features/beer_tracking/managing_tastings.feature
  *
  * Scenarios covered:
  * - Incrementing the count of an existing beer

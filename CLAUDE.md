@@ -70,6 +70,36 @@ Key principles:
 - Performance optimization using dedicated count tables
 - Standardized error handling and authentication
 
+### Feature Development Workflow
+
+**Spec-Driven Development Process:**
+1. Review existing spec files in `/spec/features/`
+2. Update feature status in `.feature` files when starting/completing work
+3. Run `php artisan spec:status` to update progress tracking
+4. Follow Definition of Done criteria before marking features complete
+
+**Status Tracking Commands:**
+```bash
+# Update features implementation status
+php artisan spec:status
+
+# View current progress without updating files
+php artisan spec:status --dry-run --format=table
+
+# Check spec-test consistency
+php artisan spec:check
+
+# Sync spec files with test files
+php artisan spec:sync
+```
+
+**Claude Code Protocol:**
+When completing any feature development, Claude Code will automatically:
+1. Update the `.feature` file status: `# 1. Status: DONE`
+2. Execute `php artisan spec:status` to refresh progress tracking  
+3. Include status changes in commit messages
+4. Ensure all Definition of Done criteria are met
+
 ## File Organization
 
 - Core Laravel structure with additional spec-driven documentation

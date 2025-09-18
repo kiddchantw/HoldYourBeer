@@ -7,8 +7,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
- * @covers \spec\features\beer_tracking\adding_a_beer.feature
- * @covers \spec\features\beer_tracking\viewing_the_list.feature
+ * Related specifications: spec/features/beer_tracking/adding_a_beer.feature
+ * Related specifications: spec/features/beer_tracking/viewing_the_list.feature
  *
  * Scenarios covered:
  * - Beer creation page access

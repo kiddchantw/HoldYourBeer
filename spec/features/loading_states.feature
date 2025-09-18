@@ -7,15 +7,16 @@ Feature: Loading States and User Feedback
   # 2. Design: docs/diagrams/loading-states-flow.md
   # 3. Test: tests/Feature/LoadingStatesTest.php
   # 4. Scenario Status Tracking:
-  # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
-  # |----------------------------------|---------------|--------------------------------|-----|---------|
-  # | Loading state when adding beer   | DONE          | test_loading_state_adding_beer | DONE| DONE    |
-  # | Loading state when searching     | DONE          | test_loading_state_searching   | DONE| DONE    |
-  # | Loading state when incrementing  | DONE          | test_loading_state_incrementing| DONE| DONE    |
-  # | Loading state during navigation  | DONE          | test_loading_state_navigation  | DONE| DONE    |
-  # | Loading state with error handling| DONE          | test_loading_state_error       | DONE| DONE    |
-  # | Loading state for API calls      | DONE          | test_loading_state_api_calls   | DONE| DONE    |
-  # | Loading state for image uploads  | DONE          | test_loading_state_image_upload| DONE| DONE    |
+# | Scenario Name                                    | Status | Test Method                              | UI   | Backend |
+# |--------------------------------------------------|--------|------------------------------------------|------|---------|
+# | Loading state when adding a new beer            | DONE   | test_loading_state_when_adding_new_beer  | DONE | DONE    |
+# | Loading state when searching for brands         | DONE   | test_loading_state_when_searching_brands | DONE | DONE    |
+# | Loading state when incrementing beer count      | DONE   | test_loading_state_when_incrementing     | DONE | DONE    |
+# | Loading state during page navigation            | DONE   | test_loading_state_during_navigation     | DONE | DONE    |
+# | Loading state with error handling               | DONE   | test_loading_state_with_error_handling   | DONE | DONE    |
+# | Loading state for API calls                     | DONE   | test_loading_state_for_api_calls         | DONE | DONE    |
+# | Loading state for image uploads                 | DONE   | test_loading_state_for_image_uploads     | DONE | DONE    |
+
 
   Background:
     Given I am a registered user

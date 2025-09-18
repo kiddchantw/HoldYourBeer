@@ -11,7 +11,7 @@ use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
- * @covers \spec\features\third_party_login.feature
+ * Related specifications: spec/features/third_party_login.feature
  *
  * Scenarios covered:
  * - User login with Google account

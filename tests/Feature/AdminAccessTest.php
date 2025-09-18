@@ -8,7 +8,7 @@ use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
- * @covers \spec\features\user_role_distinction.feature
+ * Related specifications: spec/features/user_role_distinction.feature
  *
  * Scenarios covered:
  * - Admin panel access control

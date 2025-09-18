@@ -14,9 +14,9 @@ use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
- * @covers \spec\features\beer_tracking\adding_a_beer.feature
- * @covers \spec\features\beer_tracking\managing_tastings.feature
- * @covers \spec\features\loading_states.feature
+ * Related specifications: spec/features/beer_tracking/adding_a_beer.feature
+ * Related specifications: spec/features/beer_tracking/managing_tastings.feature
+ * Related specifications: spec/features/loading_states.feature
  *
  * Scenarios covered:
  * - Adding new beers with brand creation

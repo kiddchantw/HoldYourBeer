@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
- * @covers \spec\features\beer_tracking\viewing_tasting_history.feature
+ * Related specifications: spec/features/beer_tracking/viewing_tasting_history.feature
  *
  * Scenarios covered:
  * - Viewing tasting history for a specific beer

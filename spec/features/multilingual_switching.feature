@@ -7,18 +7,21 @@ Feature: Multilingual Language Switching
   # 2. Design: docs/diagrams/multilingual-switching-flow.md
   # 3. Test: tests/Feature/MultilingualSwitchingTest.php
   # 4. Scenario Status Tracking:
-  # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
-  # |----------------------------------|---------------|--------------------------------|-----|---------|
-  # | Switch to Chinese                | DONE          | test_switch_to_chinese         | DONE| DONE    |
-  # | Switch to English                | DONE          | test_switch_to_english          | DONE| DONE    |
-  # | Language persistence             | DONE          | test_language_persistence      | DONE| DONE    |
-  # | Different page types             | DONE          | test_different_page_types      | DONE| DONE    |
-  # | Language switcher presence       | DONE          | test_language_switcher_presence| DONE| DONE    |
-  # | Form validation messages         | DONE          | test_form_validation_messages  | DONE| DONE    |
-  # | Dynamic content switching        | DONE          | test_dynamic_content_switching | DONE| DONE    |
-  # | Accessibility features           | DONE          | test_accessibility_features     | DONE| DONE    |
-  # | Browser language detection       | DONE          | test_browser_language_detection| DONE| DONE    |
-  # | URL prefix switching             | DONE          | test_url_prefix_switching      | DONE| DONE    |
+# | Scenario Name                                   | Status | Test Method                                     | UI   | Backend |
+# |-------------------------------------------------|--------|------------------------------------------------|------|---------|
+# | Switch language from English to Chinese        | DONE   | test_switch_language_en_to_zh                  | DONE | DONE    |
+# | Switch language from Chinese to English        | DONE   | test_switch_language_zh_to_en                  | DONE | DONE    |
+# | Language preference persistence across sessions| DONE   | test_language_preference_persistence           | DONE | DONE    |
+# | Language switching on different page types     | DONE   | test_language_switching_different_pages        | DONE | DONE    |
+# | Language switcher presence on main pages       | DONE   | test_language_switcher_presence                | DONE | DONE    |
+# | Language switching with form validation messages| DONE   | test_language_switching_form_validation       | DONE | DONE    |
+# | Language switching with dynamic content        | DONE   | test_language_switching_dynamic_content        | DONE | DONE    |
+# | Language switching accessibility               | DONE   | test_language_switching_accessibility          | DONE | DONE    |
+# | Language switching with browser language detection| DONE   | test_browser_language_detection               | DONE | DONE    |
+# | Language switching with URL prefix             | DONE   | test_language_switching_url_prefix             | DONE | DONE    |
+# | Language switching with AJAX requests          | DONE   | test_language_switching_ajax_requests          | DONE | DONE    |
+# | Language switching on home page and dashboard  | DONE   | test_language_switching_home_dashboard         | DONE | DONE    |
+
 
   Background:
     Given I am on any page of the application

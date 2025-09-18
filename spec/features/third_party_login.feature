@@ -7,11 +7,14 @@ Feature: Third-Party Login
   # 2. Design: docs/diagrams/third-party-login-flow.md
   # 3. Test: tests/Feature/SocialLoginTest.php
   # 4. Scenario Status Tracking:
-  # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
-  # |----------------------------------|---------------|--------------------------------|-----|---------|
-  # | Google login                     | IN_PROGRESS   | test_google_login              | DONE| IN_PROGRESS|
-  # | Apple login                      | TODO          | test_apple_login               | TODO| TODO    |
-  # | Existing account linking         | IN_PROGRESS   | test_existing_account_linking | DONE| IN_PROGRESS|
+# | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
+# |----------------------------------|---------------|--------------------------------|-----|---------|
+# | User can login with google       | DONE          | user_can_login_with_google     | DONE| DONE    |
+# | User can login with apple        | DONE          | user_can_login_with_apple      | DONE| DONE    |
+# | Existing user can link google account | DONE          | existing_user_can_link_google_account | DONE| DONE    |
+# | Existing user can link apple account | DONE          | existing_user_can_link_apple_account | DONE| DONE    |
+# | Social login redirects to login on failure | DONE          | social_login_redirects_to_login_on_failure | DONE| DONE    |
+
 
   Scenario: User logs in with Google
     Given I am on the login page

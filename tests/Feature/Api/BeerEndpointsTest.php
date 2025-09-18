@@ -13,7 +13,7 @@ use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
- * @covers \spec\api\api.yaml
+ * Related specifications: spec/api/api.yaml
  * 
  * API Endpoints covered:
  * - GET /api/beers - List user's tracked beers

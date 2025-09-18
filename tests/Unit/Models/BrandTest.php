@@ -9,8 +9,11 @@ use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
- * @covers \spec\features\beer_tracking\adding_a_beer.feature
- * @covers \spec\features\brand_analytics_charts.feature
+ * Test coverage for Brand model functionality
+ *
+ * Related specifications:
+ * - spec/features/beer_tracking/adding_a_beer.feature
+ * - spec/features/brand_analytics_charts.feature
  *
  * Scenarios covered:
  * - Brand model relationships and data integrity
