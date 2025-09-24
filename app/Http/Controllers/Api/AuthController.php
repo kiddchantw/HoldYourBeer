@@ -17,6 +17,11 @@ class AuthController extends Controller
      */
     public function register(Request $request): JsonResponse
     {
+        // 先將 email 轉為小寫以進行一致性檢查
+        $request->merge([
+            'email' => strtolower($request->email ?? '')
+        ]);
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -42,7 +47,7 @@ class AuthController extends Controller
 
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email,
+            'email' => $request->email, // 已經是小寫
             'password' => Hash::make($request->password),
         ]);
 
@@ -67,6 +72,11 @@ class AuthController extends Controller
      */
     public function token(Request $request): JsonResponse
     {
+        // 先將 email 轉為小寫以進行一致性檢查
+        $request->merge([
+            'email' => strtolower($request->email ?? '')
+        ]);
+
         $request->validate([
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
