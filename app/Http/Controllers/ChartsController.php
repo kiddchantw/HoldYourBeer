@@ -7,6 +7,7 @@ use App\Models\UserBeerCount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Beer;
+use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ChartsController extends Controller
@@ -19,9 +20,11 @@ class ChartsController extends Controller
 
     public function index()
     {
+        \Log::info('ChartsController index method called');
         $user = auth()->user();
+        \Log::info('User ID: ' . $user->id);
 
-        // Eager load relationships and group by brand name
+        // 全部時間的品牌統計
         $brandData = UserBeerCount::where('user_id', $user->id)
             ->with('beer.brand')
             ->get()
@@ -36,6 +39,38 @@ class ChartsController extends Controller
                 return $counts->sum();
             });
 
+        // 本月統計數據
+        $currentMonth = Carbon::now()->startOfMonth();
+        $nextMonth = Carbon::now()->addMonth()->startOfMonth();
+
+        // 本月總數量
+        $monthlyTotalCount = UserBeerCount::where('user_id', $user->id)
+            ->whereBetween('updated_at', [$currentMonth, $nextMonth])
+            ->sum('count');
+
+        // 本月品牌數
+        $monthlyBrandCount = UserBeerCount::where('user_id', $user->id)
+            ->whereBetween('updated_at', [$currentMonth, $nextMonth])
+            ->with('beer.brand')
+            ->get()
+            ->pluck('beer.brand.name')
+            ->filter()
+            ->unique()
+            ->count();
+
+        // 本月新嘗試 (假設是本月第一次喝的啤酒)
+        $monthlyNewTried = UserBeerCount::where('user_id', $user->id)
+            ->whereBetween('created_at', [$currentMonth, $nextMonth])
+            ->count();
+
+        $monthlyStats = [
+            'totalCount' => $monthlyTotalCount,
+            'brandCount' => $monthlyBrandCount,
+            'newTried' => $monthlyNewTried,
+        ];
+
+        \Log::info('Monthly stats calculated', $monthlyStats);
+
         // Prepare chart data
         $labels = $brandData->keys()->all();
         $data = $brandData->values()->all();
@@ -44,11 +79,15 @@ class ChartsController extends Controller
         $debug = [
             'user_id' => $user->id,
             'brand_data' => $brandData->toArray(),
+            'monthly_stats' => $monthlyStats,
             'labels' => $labels,
             'data' => $data,
+            'current_month' => $currentMonth->format('Y-m'),
         ];
 
-        return view('charts.index', compact('labels', 'data', 'debug'));
+        \Log::info('Passing data to view', ['monthlyStats' => $monthlyStats, 'labels_count' => count($labels)]);
+
+        return view('charts.index', compact('labels', 'data', 'monthlyStats', 'debug'));
     }
 
     /**

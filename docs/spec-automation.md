@@ -30,7 +30,7 @@ php artisan spec:check --ci
 #### 在 Laradock 環境中使用
 ```bash
 # 從專案根目錄執行
-docker-compose -f ../../laradock/docker-compose.yml exec -w /var/www/side/HoldYourBeer workspace php artisan spec:check
+docker-compose -f ../../laradock/docker-compose.yml exec -w /var/www/beer/HoldYourBeer workspace php artisan spec:check
 ```
 
 #### 檢查項目
@@ -74,7 +74,7 @@ php artisan spec:sync --force
 #### 在 Laradock 環境中使用
 ```bash
 # 從專案根目錄執行
-docker-compose -f ../../laradock/docker-compose.yml exec -w /var/www/side/HoldYourBeer workspace php artisan spec:sync
+docker-compose -f ../../laradock/docker-compose.yml exec -w /var/www/beer/HoldYourBeer workspace php artisan spec:sync
 ```
 
 #### 功能特色

@@ -32,5 +32,13 @@
     "Already registered?": "Already registered?",
     "Remember me": "Remember me",
     "Forgot your password?": "Forgot your password?",
-    "Sign in with Google": "Sign in with Google"
+    "Sign in with Google": "Sign in with Google",
+    "Chart Statistics": "Chart Statistics",
+    "This Month Statistics": "This Month Statistics",
+    "Current Month": "Current Month",
+    "Total Consumption": "Total Consumption",
+    "Brand Count": "Brand Count",
+    "New Brands Tried": "New Brands Tried",
+    "Brand Distribution Chart": "Brand Distribution Chart",
+    "No consumption data available": "No consumption data available"
 }

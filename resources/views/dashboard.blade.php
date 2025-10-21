@@ -72,7 +72,7 @@
                                                     </p>
                                                     @if($beerCount->last_tasted_at)
                                                         <p class="text-xs text-gray-400 mt-2">
-                                                            {{ __('Last tasted') }}: {{ $beerCount->last_tasted_at->format('M j, Y') }}
+                                                            {{ __('Last tasted') }}: {{ $beerCount->last_tasted_at->setTimezone('Asia/Taipei')->format('M j, Y') }}
                                                         </p>
                                                     @endif
                                                 </div>

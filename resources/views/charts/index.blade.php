@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Brand Analytics Charts') }}
+            {{ __('Chart Statistics') }}
         </h2>
     </x-slot>
 
@@ -9,109 +9,70 @@
         <x-background />
 
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
+            <!-- 1x2 Grid Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                    @if(count($labels) > 0)
-                        <!-- Controls Section -->
-                        <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <!-- Chart Type Switcher -->
-                            <div role="group" aria-label="Chart type selection">
-                                <label for="chartType" class="block text-sm font-medium text-gray-700 mb-2">
-                                    {{ __('Chart Type') }}:
-                                </label>
-                                <div class="inline-flex rounded-md shadow-sm" role="group">
-                                    <button type="button"
-                                            class="chart-type-btn px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700"
-                                            data-type="bar"
-                                            aria-label="Switch to bar chart">
-                                        <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                                            <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"></path>
-                                        </svg>
-                                        Bar
-                                    </button>
-                                    <button type="button"
-                                            class="chart-type-btn px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 active"
-                                            data-type="pie"
-                                            aria-label="Switch to pie chart"
-                                            aria-pressed="true">
-                                        <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                                            <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                                            <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-                                        </svg>
-                                        Pie
-                                    </button>
-                                    <button type="button"
-                                            class="chart-type-btn px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-r-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700"
-                                            data-type="line"
-                                            aria-label="Switch to line chart">
-                                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
-                                        </svg>
-                                        Line
-                                    </button>
+                <!-- 左側：本月統計 -->
+                <div class="bg-white bg-opacity-50 backdrop-blur-sm overflow-hidden shadow-lg rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-6 text-gray-800">{{ __('This Month Statistics') }}</h3>
+                        <div class="text-sm text-gray-600 mb-4">{{ __('Current Month') }}: {{ date('Y-m') }}</div>
+
+                        <div class="space-y-4">
+                            <!-- 總數量 -->
+                            <div class="bg-gradient-to-r from-orange-100 to-orange-200 rounded-lg p-4 border border-orange-300">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-sm text-orange-700">{{ __('Total Consumption') }}</div>
+                                        <div class="text-3xl font-bold text-orange-800">{{ $monthlyStats['totalCount'] ?? 0 }}</div>
+                                    </div>
+                                    <div class="text-4xl opacity-30">🍺</div>
                                 </div>
                             </div>
 
-                            <!-- Export Buttons -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    {{ __('Export Data') }}:
-                                </label>
-                                <div class="inline-flex rounded-md shadow-sm" role="group" aria-label="Export options">
-                                    <a href="{{ route('charts.export', ['format' => 'csv']) }}"
-                                       class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700"
-                                       aria-label="Export as CSV">
-                                        <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        CSV
-                                    </a>
-                                    <a href="{{ route('charts.export', ['format' => 'json']) }}"
-                                       class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-r-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700"
-                                       aria-label="Export as JSON">
-                                        <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        JSON
-                                    </a>
+                            <!-- 品牌數 -->
+                            <div class="bg-gradient-to-r from-green-100 to-green-200 rounded-lg p-4 border border-green-300">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-sm text-green-700">{{ __('Brand Count') }}</div>
+                                        <div class="text-3xl font-bold text-green-800">{{ $monthlyStats['brandCount'] ?? 0 }}</div>
+                                    </div>
+                                    <div class="text-4xl opacity-30">🏷️</div>
+                                </div>
+                            </div>
+
+                            <!-- 新嘗試 -->
+                            <div class="bg-gradient-to-r from-blue-100 to-blue-200 rounded-lg p-4 border border-blue-300">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-sm text-blue-700">{{ __('New Brands Tried') }}</div>
+                                        <div class="text-3xl font-bold text-blue-800">{{ $monthlyStats['newTried'] ?? 0 }}</div>
+                                    </div>
+                                    <div class="text-4xl opacity-30">⭐</div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <!-- Chart Container with ARIA attributes -->
-                        <div class="relative h-96"
-                             role="img"
-                             aria-label="Brand analytics chart showing consumption data across different beer brands">
-                            <canvas id="brandChart" aria-label="Interactive chart displaying brand consumption statistics"></canvas>
-                        </div>
+                <!-- 右側：品牌分布圓餅圖 -->
+                <div class="bg-white bg-opacity-50 backdrop-blur-sm overflow-hidden shadow-lg rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-6 text-gray-800">{{ __('Brand Distribution Chart') }}</h3>
 
-                        <!-- Screen Reader Accessible Data Table -->
-                        <div class="sr-only" role="region" aria-label="Brand analytics data table">
-                            <table>
-                                <caption>Brand Consumption Data</caption>
-                                <thead>
-                                    <tr>
-                                        <th>Brand</th>
-                                        <th>Total Tastings</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($labels as $index => $label)
-                                        <tr>
-                                            <td>{{ $label }}</td>
-                                            <td>{{ $data[$index] }}</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @else
-                        <div role="status" aria-live="polite">
-                            <p class="text-gray-600">{{ __('No brand consumption data available.') }}</p>
-                            <p class="text-sm text-gray-500 mt-2">{{ __('Start tracking beers to see your analytics.') }}</p>
-                        </div>
-                    @endif
+                        @if(count($labels) > 0)
+                            <div class="relative h-80">
+                                <canvas id="brandChart"></canvas>
+                            </div>
+                        @else
+                            <div class="flex items-center justify-center h-80 text-gray-500">
+                                <div class="text-center">
+                                    <div class="text-6xl mb-4">📊</div>
+                                    <p>{{ __('No consumption data available') }}</p>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -142,8 +103,10 @@
                         'rgba(75, 192, 192, 0.6)',
                         'rgba(153, 102, 255, 0.6)',
                         'rgba(255, 159, 64, 0.6)',
-                        'rgba(255, 99, 255, 0.6)',
-                        'rgba(99, 255, 132, 0.6)',
+                        'rgba(231, 76, 60, 0.6)',
+                        'rgba(46, 204, 113, 0.6)',
+                        'rgba(52, 152, 219, 0.6)',
+                        'rgba(155, 89, 182, 0.6)'
                     ],
                     borders: [
                         'rgba(255, 99, 132, 1)',
@@ -152,8 +115,10 @@
                         'rgba(75, 192, 192, 1)',
                         'rgba(153, 102, 255, 1)',
                         'rgba(255, 159, 64, 1)',
-                        'rgba(255, 99, 255, 1)',
-                        'rgba(99, 255, 132, 1)',
+                        'rgba(231, 76, 60, 1)',
+                        'rgba(46, 204, 113, 1)',
+                        'rgba(52, 152, 219, 1)',
+                        'rgba(155, 89, 182, 1)'
                     ]
                 };
 
@@ -243,44 +208,7 @@
 
                     currentChart = new Chart(ctx, config);
                     currentType = type;
-
-                    // Announce chart update to screen readers
-                    announceChartUpdate(type);
                 }
-
-                /**
-                 * Announce chart updates for screen readers
-                 */
-                function announceChartUpdate(type) {
-                    const announcement = document.createElement('div');
-                    announcement.setAttribute('role', 'status');
-                    announcement.setAttribute('aria-live', 'polite');
-                    announcement.className = 'sr-only';
-                    announcement.textContent = `Chart type changed to ${type}. Chart displays ${labels.length} brands with consumption data.`;
-                    document.body.appendChild(announcement);
-                    setTimeout(() => document.body.removeChild(announcement), 1000);
-                }
-
-                /**
-                 * Handle chart type button clicks
-                 */
-                const chartTypeButtons = document.querySelectorAll('.chart-type-btn');
-                chartTypeButtons.forEach(button => {
-                    button.addEventListener('click', function() {
-                        const type = this.getAttribute('data-type');
-
-                        // Update active state
-                        chartTypeButtons.forEach(btn => {
-                            btn.classList.remove('active', 'bg-blue-700', 'text-white');
-                            btn.setAttribute('aria-pressed', 'false');
-                        });
-                        this.classList.add('active', 'bg-blue-700', 'text-white');
-                        this.setAttribute('aria-pressed', 'true');
-
-                        // Render chart
-                        renderChart(type);
-                    });
-                });
 
                 // Initial render
                 renderChart(currentType);

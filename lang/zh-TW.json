@@ -53,7 +53,13 @@
     "Already registered?": "已經有帳戶了嗎？",
     "Remember me": "記住我",
     "Forgot your password?": "忘記密碼？",
-    "Sign in with Google": "使用 Google 登入"
+    "Sign in with Google": "使用 Google 登入",
+    "Chart Statistics": "圖表統計",
+    "This Month Statistics": "本月統計",
+    "Current Month": "當月",
+    "Total Consumption": "總消費量",
+    "Brand Count": "品牌數",
+    "New Brands Tried": "新嘗試品牌",
+    "Brand Distribution Chart": "品牌分布圖",
+    "No consumption data available": "無消費資料"
 }
-
-
