@@ -56,6 +56,7 @@ Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale'], 'where' => 
 
     Route::middleware(['auth.locale', 'auth'])->group(function () {
         Route::get('/charts', [ChartsController::class, 'index'])->name('charts');
+        Route::get('/charts/export', [ChartsController::class, 'export'])->name('charts.export');
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

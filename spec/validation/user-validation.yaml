@@ -1,7 +1,7 @@
 user_validation_rules:
 
   registration:
-    endpoint: POST /api/register
+    endpoint: POST /api/v1/register
     fields:
       name:
         type: string
@@ -74,7 +74,7 @@ user_validation_rules:
           same: "密碼確認與密碼不符。"
 
   login:
-    endpoint: POST /api/sanctum/token
+    endpoint: POST /api/v1/login
     fields:
       email:
         type: string
@@ -105,11 +105,11 @@ user_validation_rules:
 authentication_validation:
   bearer_token:
     required_for_endpoints:
-      - GET /api/beers
-      - POST /api/beers
-      - POST /api/beers/{id}/count_actions
-      - GET /api/beers/{id}/tasting_logs
-      - GET /api/brands
+      - GET /api/v1/beers
+      - POST /api/v1/beers
+      - POST /api/v1/beers/{id}/count_actions
+      - GET /api/v1/beers/{id}/tasting_logs
+      - GET /api/v1/brands
     validation_rules:
       - format: "Bearer {token}"
       - token_length: 64

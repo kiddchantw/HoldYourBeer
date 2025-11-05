@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\View\View;
 
@@ -21,24 +22,73 @@ class PasswordResetLinkController extends Controller
     /**
      * Handle an incoming password reset link request.
      *
+     * This method handles special characters in email addresses and provides
+     * comprehensive error handling for mail sending failures.
+     *
+     * Rate Limiting: 3 attempts per minute, 10 per hour (via password-reset throttle)
+     *
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
     {
+        // Normalize email to lowercase for consistency
+        // This handles special characters and ensures case-insensitive matching
+        $email = strtolower(trim($request->input('email', '')));
+
+        $request->merge(['email' => $email]);
+
         $request->validate([
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'max:255'],
+        ], [
+            'email.required' => __('validation.email.required'),
+            'email.email' => __('validation.email.email'),
+            'email.max' => __('validation.email.max'),
         ]);
 
-        // We will send the password reset link to this user. Once we have attempted
-        // to send the link, we will examine the response then see the message we
-        // need to show to the user. Finally, we'll send out a proper response.
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+        try {
+            // Attempt to send the password reset link
+            $status = Password::sendResetLink(
+                $request->only('email')
+            );
 
-        return $status == Password::RESET_LINK_SENT
-                    ? back()->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => __($status)]);
+            // Log successful password reset request for security monitoring
+            if ($status === Password::RESET_LINK_SENT) {
+                Log::info('Password reset link sent', [
+                    'email' => $email,
+                    'ip' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                ]);
+
+                return back()->with('status', __($status));
+            }
+
+            // Log failed attempts (user not found, etc.)
+            Log::warning('Password reset link failed', [
+                'email' => $email,
+                'status' => $status,
+                'ip' => $request->ip(),
+            ]);
+
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors(['email' => __($status)]);
+
+        } catch (\Exception $e) {
+            // Log mail sending failures with full error details
+            Log::error('Password reset email sending failed', [
+                'email' => $email,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'ip' => $request->ip(),
+            ]);
+
+            // Return a user-friendly error message without exposing technical details
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors([
+                    'email' => __('passwords.mail_error')
+                        ?: 'Unable to send password reset email. Please try again later or contact support.'
+                ]);
+        }
     }
 }

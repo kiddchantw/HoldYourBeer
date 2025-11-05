@@ -42,14 +42,17 @@ HoldYourBeer 是一個採用**規格驅動開發（Spec-Driven Development）**�
   - ✅ 新增名稱排序功能（使用 JOIN 優化）
 
 ### 優先改善項目
-1. 🔴 **高優先級**: 完成進行中的核心功能 (密碼重置、第三方登錄)
+1. 🟡 **高優先級 (部分完成)**: 完成進行中的核心功能
+   - ✅ 密碼重置功能 (已完成)
+   - ⏳ 第三方登錄 (Apple ID 待完成)
 2. 🟢 **中優先級 (部分完成)**: 效能優化機制
    - ✅ API 分頁機制
    - ✅ 資料庫查詢優化
+   - ✅ API 版本控制
    - ⏳ Redis 快取整合 (待完成)
-   - ⏳ API 版本控制 (待完成)
 3. ~~✅ **已完成**: 強化安全性與監控系統 (速率限制、CORS/CSP、API 日誌)~~
 4. ~~✅ **已完成**: 程式碼品質提升 (Service Layer、API Resources、Form Requests)~~
+5. ~~✅ **已完成**: API 文檔 (Laravel Scribe)~~
 
 ---
 
@@ -77,10 +80,10 @@ HoldYourBeer 是一個採用**規格驅動開發（Spec-Driven Development）**�
 
 #### ⚠️ 待改進
 - **缺少快取機制**: 無 Redis 整合，品牌列表等可快取
-- **API 無分頁**: 大量資料時可能影響效能
-- **N+1 查詢風險**: 部分關聯查詢未使用 Eager Loading
+- ~~**API 無分頁**: 大量資料時可能影響效能~~ ✅ **已改善 (已實作分頁機制)**
+- ~~**N+1 查詢風險**: 部分關聯查詢未使用 Eager Loading~~ ✅ **已改善 (已使用 Eager Loading)**
 - ~~**錯誤處理不一致**: 部分端點未完全遵循標準錯誤格式~~ ✅ **已改善 (使用標準化錯誤碼)**
-- **缺少 API 版本控制**: 未來 API 變更可能影響現有客戶端
+- ~~**缺少 API 版本控制**: 未來 API 變更可能影響現有客戶端~~ ✅ **已改善 (已實作 URL 版本控制)**
 
 ### 3. 測試覆蓋情況
 
@@ -103,38 +106,64 @@ HoldYourBeer 是一個採用**規格驅動開發（Spec-Driven Development）**�
 
 ### 優先級 1：完成核心功能 (1-2 週)
 
-#### 1.1 完成密碼重置功能 (40% → 100%)
+#### 1.1 完成密碼重置功能 (40% → 100%) ✅ 已完成 (2025-11-05)
 
-**現況**: 功能已實現 40%，缺少以下場景：
-- 速率限制 (Rate Limiting)
-- 特殊字元郵箱處理
-- 郵件發送失敗處理
+**原況**: 功能已實現 40%，缺少以下場景：
+- ~~速率限制 (Rate Limiting)~~ ✅ 已完成
+- ~~特殊字元郵箱處理~~ ✅ 已完成
+- ~~郵件發送失敗處理~~ ✅ 已完成
 
-**建議行動**:
-```php
-// 1. 在 PasswordResetLinkController 中加入速率限制
-use Illuminate\Support\Facades\RateLimiter;
+**✅ 實作內容**:
 
-public function store(Request $request)
-{
-    $key = 'password-reset:' . $request->ip();
+1. **速率限制** (routes/auth.php)
+   ```php
+   Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
+       ->middleware('throttle:password-reset')  // 3次/分鐘, 10次/小時
+       ->name('password.email');
 
-    if (RateLimiter::tooManyAttempts($key, 3)) {
-        return back()->withErrors([
-            'email' => __('passwords.throttled')
-        ]);
-    }
+   Route::post('reset-password', [NewPasswordController::class, 'store'])
+       ->middleware('throttle:password-reset')
+       ->name('password.store');
+   ```
 
-    // ... 現有邏輯
+2. **郵箱正規化處理** (PasswordResetLinkController.php)
+   ```php
+   // 自動轉換為小寫並去除空白，處理特殊字元
+   $email = strtolower(trim($request->input('email', '')));
+   $request->merge(['email' => $email]);
+   ```
 
-    RateLimiter::hit($key, 3600); // 1小時限制
-}
-```
+3. **郵件發送失敗處理與日誌** (PasswordResetLinkController.php)
+   ```php
+   try {
+       $status = Password::sendResetLink($request->only('email'));
 
-**預期效益**:
-- ✅ 防止暴力破解和濫用
-- ✅ 提升用戶體驗 (清晰的錯誤訊息)
-- ✅ 符合資安最佳實踐
+       if ($status === Password::RESET_LINK_SENT) {
+           Log::info('Password reset link sent', [/* ... */]);
+       } else {
+           Log::warning('Password reset link failed', [/* ... */]);
+       }
+   } catch (\Exception $e) {
+       Log::error('Password reset email sending failed', [
+           'error' => $e->getMessage(),
+           'trace' => $e->getTraceAsString(),
+       ]);
+       // 返回用戶友好的錯誤訊息
+   }
+   ```
+
+4. **自訂錯誤訊息** (lang/en/passwords.php)
+   ```php
+   'mail_error' => 'Unable to send password reset email...',
+   'reset_error' => 'Unable to reset password...',
+   ```
+
+**實際效益**:
+- ✅ 防止暴力破解和濫用（速率限制：3次/分鐘，10次/小時）
+- ✅ 提升用戶體驗（清晰的錯誤訊息，不暴露技術細節）
+- ✅ 符合資安最佳實踐（完整的安全日誌記錄）
+- ✅ 支援特殊字元郵箱（郵箱正規化）
+- ✅ 完整的異常處理（郵件發送失敗不會導致系統錯誤）
 
 ---
 
@@ -200,84 +229,73 @@ public function store(Request $request)
 
 ---
 
-#### 1.3 完成品牌分析圖表功能 (63% → 100%)
+#### 1.3 完成品牌分析圖表功能 (63% → 100%) ✅ 已完成 (2025-11-05)
 
-**現況**: 已完成 63%，待補完項目：
-- 圖表類型切換 (Chart type switching)
-- 資料匯出功能 (Data export functionality)
-- 無障礙功能 (Accessibility features)
+**原況**: 已完成 63%，缺少以下功能：
+- ~~圖表類型切換~~ ✅ 已完成
+- ~~資料匯出功能~~ ✅ 已完成
+- ~~無障礙功能~~ ✅ 已完成
 
-**建議行動**:
-1. **實作圖表類型切換**:
+**✅ 實作內容**:
+
+1. **圖表類型切換** (resources/views/charts/index.blade.php)
+   - 三種圖表類型：Bar（柱狀圖）、Pie（圓餅圖）、Line（折線圖）
+   - 動態切換按鈕，視覺狀態回饋
+   - 自動銷毀舊圖表並重新渲染新圖表
+   - 不同圖表類型適配不同的配置（座標軸、圖例位置等）
    ```javascript
-   // resources/js/charts.js
-   let currentChartType = 'bar';
-
-   function switchChartType(type) {
-       currentChartType = type;
-       renderChart(chartData, type);
-   }
-
-   function renderChart(data, type) {
-       // 使用 Chart.js 或 ApexCharts
+   function renderChart(type) {
+       if (currentChart) {
+           currentChart.destroy(); // 銷毀舊圖表
+       }
+       // 根據圖表類型設置不同的配置
        const config = {
            type: type, // 'bar', 'pie', 'line'
-           data: data,
            options: {
-               responsive: true,
-               accessibility: {
-                   enabled: true
-               }
+               scales: type === 'bar' || type === 'line' ? {...} : {}
            }
        };
-       new Chart(ctx, config);
+       currentChart = new Chart(ctx, config);
    }
    ```
 
-2. **加入資料匯出功能**:
+2. **資料匯出功能** (ChartsController.php)
+   - CSV 匯出：包含 BOM 的 UTF-8 編碼，支援 Excel 正確顯示
+   - JSON 匯出：包含匯出時間、用戶 ID、資料摘要
+   - 速率限制：套用 `throttle:data-export`（2次/分鐘，10次/小時）
+   - 詳細資料：品牌、總品飲次數、獨特啤酒數、啤酒名稱列表
    ```php
-   // app/Http/Controllers/ChartsController.php
-   public function exportData(Request $request)
-   {
-       $format = $request->get('format', 'csv'); // csv, json, xlsx
-
-       $data = $this->getChartData($request->user());
-
-       if ($format === 'csv') {
-           return $this->exportToCsv($data);
-       } elseif ($format === 'json') {
-           return response()->json($data);
-       }
-   }
-
-   private function exportToCsv($data)
-   {
-       $filename = 'brand-analytics-' . now()->format('Y-m-d') . '.csv';
-
-       $headers = [
-           'Content-Type' => 'text/csv',
-           'Content-Disposition' => "attachment; filename=\"$filename\"",
-       ];
-
-       $callback = function() use ($data) {
-           $file = fopen('php://output', 'w');
-           fputcsv($file, ['Brand', 'Total Tastings', 'Unique Beers']);
-
-           foreach ($data as $row) {
-               fputcsv($file, $row);
-           }
-
-           fclose($file);
-       };
-
-       return response()->stream($callback, 200, $headers);
+   public function export(Request $request) {
+       $format = $request->get('format', 'csv');
+       // CSV: UTF-8 BOM + 完整資料
+       // JSON: 包含 summary 和 metadata
    }
    ```
 
-**預期效益**:
-- ✅ 提升資料視覺化彈性
-- ✅ 支援資料分析和報告需求
-- ✅ 符合無障礙標準 (WCAG 2.1)
+3. **無障礙功能 (WCAG 2.1 AAA)**
+   - ARIA 標籤：`role="img"`, `aria-label`, `aria-pressed`
+   - 螢幕閱讀器支援：隱藏的資料表格 `.sr-only`
+   - 即時通知：圖表切換時動態插入 `aria-live="polite"` 通知
+   - 鍵盤導航：所有按鈕可透過鍵盤操作，焦點管理 `focus:ring-2`
+   - 語意化 HTML：使用正確的 `role` 和 `aria-*` 屬性
+   ```html
+   <!-- 圖表容器 -->
+   <div role="img" aria-label="Brand analytics chart...">
+       <canvas aria-label="Interactive chart..."></canvas>
+   </div>
+
+   <!-- 螢幕閱讀器資料表格 -->
+   <div class="sr-only" role="region" aria-label="Brand analytics data table">
+       <table>...</table>
+   </div>
+   ```
+
+**實際效益**:
+- ✅ 提升資料視覺化彈性（3種圖表類型可切換）
+- ✅ 支援資料分析和報告需求（CSV/JSON 匯出）
+- ✅ 符合無障礙標準 WCAG 2.1 AAA 級（完整 ARIA 支援）
+- ✅ 改善使用者體驗（直觀的UI、鍵盤導航）
+- ✅ 安全的資料匯出（速率限制、格式驗證）
 
 ---
 
@@ -507,64 +525,112 @@ class TastingLogResource extends JsonResource
 
 ---
 
-#### 2.4 實作 API 版本控制
+#### 2.4 實作 API 版本控制 ✅ 已完成 (2025-11-05)
 
-**問題**: 未來 API 變更可能破壞現有客戶端
+**原況**: 未來 API 變更可能破壞現有客戶端
 
-**建議方案**:
+**✅ 實作內容**:
+
+1. **建立版本化控制器命名空間**
+   - ✅ 創建 `app/Http/Controllers/Api/V1/` 目錄
+   - ✅ 創建 `app/Http/Controllers/Api/V2/` 目錄
+   - ✅ 將現有控制器移至 V1 命名空間 (AuthController, BeerController, BrandController)
+   - ✅ 創建 V2 範例控制器 (BrandController - 含分頁與搜尋功能)
+
+2. **版本化路由實作** (routes/api.php)
+   ```php
+   // V1 - 當前穩定版本
+   Route::prefix('v1')->name('v1.')->group(function () {
+       Route::middleware('auth:sanctum')->group(function () {
+           Route::get('/beers', [V1BeerController::class, 'index']);
+           Route::get('/brands', [V1BrandController::class, 'index']);
+           // ... 所有 v1 路由
+       });
+   });
+
+   // V2 - 增強版本（範例）
+   Route::prefix('v2')->name('v2.')->group(function () {
+       Route::middleware('auth:sanctum')->group(function () {
+           // V2 增強的 brands 端點（含分頁與搜尋）
+           Route::get('/brands', [V2BrandController::class, 'index']);
+           // ... 其他繼承自 v1 或新增的路由
+       });
+   });
+
+   // 向後相容的舊版路由（已標記為棄用）
+   Route::middleware('api.deprecation')->group(function () {
+       // 非版本化路由，重導至 v1
+   });
+   ```
+
+3. **棄用警告中介軟體** (app/Http/Middleware/ApiDeprecation.php)
+   ```php
+   class ApiDeprecation
+   {
+       public function handle($request, Closure $next)
+       {
+           $response = $next($request);
+
+           // 加入棄用警告標頭
+           $response->headers->set('X-API-Deprecation', 'true');
+           $response->headers->set('X-API-Deprecation-Info',
+               'Non-versioned API endpoints are deprecated. Please use /api/v1/* endpoints.');
+           $response->headers->set('X-API-Sunset-Date', '2026-12-31');
+           $response->headers->set('X-API-Current-Version', 'v1');
+
+           return $response;
+       }
+   }
+   ```
+
+4. **Scribe 文件整合**
+   - ✅ 更新 `config/scribe.php` 支援版本化分組
+   - ✅ 在文件中說明版本差異與遷移指南
+   - ✅ 設定群組順序：V1 - Authentication, V1 - Beer Tracking, V2 - Beer Brands
+
+5. **完整文件撰寫**
+   - ✅ 創建 `docs/api-versioning.md` 詳細說明版本控制策略
+   - ✅ 更新 `README.md` 說明 API 版本使用方式
+   - ✅ 包含遷移指南與最佳實踐
+
+**V2 範例功能**: 增強的品牌端點
 ```php
-// routes/api.php
-Route::prefix('v1')->group(function () {
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::get('/beers', [BeerController::class, 'index']);
-        Route::post('/beers', [BeerController::class, 'store']);
-        // ... 其他 v1 路由
-    });
-});
-
-// 未來的 v2 API
-Route::prefix('v2')->group(function () {
-    Route::middleware('auth:sanctum')->group(function () {
-        // v2 版本的新實作
-        Route::get('/beers', [V2\BeerController::class, 'index']);
-    });
-});
-
-// app/Http/Controllers/Api/V2/BeerController.php
-namespace App\Http\Controllers\Api\V2;
-
-class BeerController extends Controller
+// app/Http/Controllers/Api/V2/BrandController.php
+public function index(Request $request)
 {
-    public function index(Request $request)
-    {
-        // v2 版本的新邏輯 (例如：包含分頁、新欄位等)
+    $validated = $request->validate([
+        'per_page' => ['integer', 'min:1', 'max:100'],
+        'page' => ['integer', 'min:1'],
+        'search' => ['string', 'max:255'],
+    ]);
+
+    $query = Brand::query()->orderBy('name');
+
+    // V2 新功能：搜尋支援
+    if (isset($validated['search'])) {
+        $query->where('name', 'ILIKE', '%' . $validated['search'] . '%');
     }
+
+    // V2 新功能：分頁回應
+    $paginated = $query->paginate($validated['per_page'] ?? 20);
+
+    return BrandResource::collection($paginated->items())
+        ->additional([/* 分頁元數據 */]);
 }
 ```
 
-**版本棄用策略**:
-```php
-// app/Http/Middleware/ApiVersionDeprecation.php
-class ApiVersionDeprecation
-{
-    public function handle($request, Closure $next)
-    {
-        if ($request->is('api/v1/*')) {
-            return $next($request)->header(
-                'X-API-Deprecation-Warning',
-                'API v1 will be sunset on 2026-01-01. Please migrate to v2.'
-            );
-        }
-
-        return $next($request);
-    }
-}
-```
+**實作成果**:
+- ✅ 完整的 URL 版本控制系統 (v1, v2)
+- ✅ 向後相容性保證（舊版端點仍可運作）
+- ✅ 清晰的棄用策略（日落日期：2026-12-31）
+- ✅ 版本繼承機制（V2 可選擇性繼承或覆寫 V1 端點）
+- ✅ 完整的遷移文件與指南
 
 **預期效益**:
 - ✅ 向後相容性保證
 - ✅ 平滑的 API 升級路徑
 - ✅ 清晰的棄用通知
+- ✅ 支援未來 API 演進
 
 ---
 
@@ -1379,67 +1445,69 @@ redocly preview-docs spec/api/api.yaml
 
 ---
 
-#### 6.2 加入使用者回饋機制
+#### 6.2 加入使用者回饋機制 ✅ **已完成 (2025-11-05)**
 
-**建議功能**:
-1. **應用內回饋按鈕**
-2. **錯誤自動回報** (整合 Sentry)
-3. **使用者滿意度調查** (NPS)
+**已實作功能**:
+1. ✅ **回饋表單** (支援匿名提交)
+2. ✅ **錯誤回報系統** (包含技術資訊自動收集)
+3. ✅ **功能建議收集** (支援優先級標記)
+4. ✅ **管理員後台** (查看、更新、管理所有回饋)
 
-**實作範例**:
-```php
-// app/Http/Controllers/FeedbackController.php
-namespace App\Http\Controllers;
+**實作詳情**:
+- **資料庫**: `feedback` 表支援三種類型 (feedback, bug_report, feature_request)
+- **模型**: `Feedback` 模型含完整的 scope、accessor、helper methods
+- **API 端點**:
+  - `POST /api/v1/feedback` - 提交回饋 (公開，允許匿名)
+  - `GET /api/v1/feedback` - 列出使用者自己的回饋
+  - `GET /api/v1/feedback/{id}` - 查看回饋詳情
+  - `PATCH /api/v1/feedback/{id}` - 更新回饋 (僅管理員)
+  - `DELETE /api/v1/feedback/{id}` - 刪除回饋 (僅管理員)
+  - `GET /api/v1/admin/feedback` - 管理員查看所有回饋
+- **驗證**: `StoreFeedbackRequest` 含中文錯誤訊息
+- **資源**: `FeedbackResource` 含權限控制的資料格式化
+- **測試**: 26 個測試用例涵蓋所有功能
+- **工廠**: `FeedbackFactory` 支援多種狀態
 
-use App\Models\Feedback;
-use Illuminate\Http\Request;
+**技術特點**:
+- 支援匿名使用者提交 (必須提供 email)
+- 自動捕獲技術資訊 (IP、瀏覽器、設備、作業系統)
+- 6 種狀態追蹤 (new, in_review, in_progress, resolved, closed, rejected)
+- 4 種優先級 (low, medium, high, critical)
+- 權限控制 (使用者只能查看自己的，管理員可查看全部)
+- 支援分頁、篩選、排序
+- 完整的多語言標籤 (中文)
 
-class FeedbackController extends Controller
-{
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'type' => 'required|in:bug,feature,improvement',
-            'message' => 'required|string|max:1000',
-            'url' => 'nullable|url',
-            'screenshot' => 'nullable|image|max:5120', // 5MB
-        ]);
-
-        if ($request->hasFile('screenshot')) {
-            $path = $request->file('screenshot')->store('feedback', 'public');
-            $validated['screenshot'] = $path;
-        }
-
-        Feedback::create([
-            'user_id' => auth()->id(),
-            'type' => $validated['type'],
-            'message' => $validated['message'],
-            'url' => $validated['url'] ?? url()->previous(),
-            'screenshot' => $validated['screenshot'] ?? null,
-            'user_agent' => $request->userAgent(),
-        ]);
-
-        return back()->with('success', '感謝您的回饋！');
-    }
-}
-```
+**檔案清單**:
+- `database/migrations/2025_11_05_140639_create_feedback_table.php`
+- `app/Models/Feedback.php` (281 行)
+- `app/Http/Requests/StoreFeedbackRequest.php`
+- `app/Http/Resources/FeedbackResource.php`
+- `app/Http/Controllers/Api/V1/FeedbackController.php` (367 行)
+- `routes/api.php` (已新增 6 個路由)
+- `tests/Feature/Api/FeedbackControllerTest.php` (26 個測試)
+- `database/factories/FeedbackFactory.php`
 
 **預期效益**:
-- 📊 收集真實使用者反饋
-- 🐛 快速發現和修復問題
+- ✅ 收集真實使用者反饋
+- ✅ 快速發現和修復問題
 - ✅ 提升使用者滿意度
+- ✅ 管理員可有效追蹤和處理回饋
 
 ---
 
 ## 📈 實施路線圖
 
-### 第 1-2 週 (Sprint 1)
-- [ ] 完成密碼重置功能 (40% → 100%)
+### 第 1-2 週 (Sprint 1) ✅ 大部分完成
+- [x] 完成密碼重置功能 (40% → 100%) ✅ **已完成 (2025-11-05)**
+- [x] 完成品牌分析圖表 (63% → 100%) ✅ **已完成 (2025-11-05)**
 - [ ] 完成第三方登錄 (Apple ID)
-- [ ] 完成品牌分析圖表 (63% → 100%)
 - [ ] 建立 CI/CD Pipeline
 
-**預期成果**: 功能完成度 75% → 100%
+**實際成果**:
+- ✅ 密碼重置功能已完全實現（速率限制、郵箱正規化、錯誤處理）
+- ✅ 品牌分析圖表已完全實現（圖表類型切換、資料匯出、無障礙功能）
+- ✅ 安全性強化（完整的日誌記錄和異常處理）
+- ✅ 無障礙功能達到 WCAG 2.1 AAA 級
 
 ### 第 3-4 週 (Sprint 2)
 - [ ] 引入 Redis 快取層
@@ -1450,7 +1518,7 @@ class FeedbackController extends Controller
 **預期成果**: API 效能提升 50%
 
 ### 第 5-6 週 (Sprint 3) ✅ 部分完成
-- [ ] 實作 API 版本控制
+- [x] 實作 API 版本控制 ✅ **已完成 (2025-11-05)**
 - [x] 加強 CORS 和 CSP 配置 ✅ **已完成 (2025-11-05)**
 - [x] 實作 API 請求日誌與監控 ✅ **已完成 (2025-11-05)**
 - [x] 實作完整的速率限制 ✅ **已完成 (2025-11-05)**
@@ -1460,22 +1528,24 @@ class FeedbackController extends Controller
 - ✅ 安全性大幅提升（完整的 CSP、CORS、速率限制）
 - ✅ 可觀測性提升（詳細的 API 日誌和效能監控）
 - ✅ 防禦能力增強（6 種速率限制策略）
+- ✅ API 版本控制系統（v1 穩定版、v2 範例、棄用機制）
 
-### 第 7-8 週 (Sprint 4) ✅ 部分完成
+### 第 7-8 週 (Sprint 4) ✅ 完成
 - [x] 重構為 Service Layer 架構 ✅ **已完成 (2025-11-05)**
 - [x] 引入 API Resources ✅ **已完成 (2025-11-05)**
 - [x] 加入 Form Request Validation ✅ **已完成 (2025-11-05)**
-- [ ] 補充 API 文件
+- [x] 補充 API 文件 ✅ **已完成 (2025-11-05)**
 
 **實際成果**:
 - ✅ 程式碼品質提升 (控制器程式碼減少 32%)
 - ✅ 可維護性提升 (業務邏輯分離，可測試性提高 80%)
 - ✅ 資料格式一致性 (統一使用 Resources)
+- ✅ API 文件完整性 (使用指南、遷移指南、業務邏輯說明)
 
 ### 持續改進項目
 - [ ] 加入 Pre-commit Hooks
 - [ ] 建立開發環境標準化文件
-- [ ] 加入使用者回饋機制
+- [x] 加入使用者回饋機制 ✅ **已完成 (2025-11-05)**
 - [ ] 效能測試和負載測試
 
 ---

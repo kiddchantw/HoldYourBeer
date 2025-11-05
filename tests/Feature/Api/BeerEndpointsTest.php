@@ -58,17 +58,17 @@ class BeerEndpointsTest extends TestCase
     public function it_requires_authentication_for_beer_endpoints()
     {
         // GET /api/beers
-        $response = $this->getJson('/api/beers');
+        $response = $this->getJson('/api/v1/beers');
         $response->assertStatus(401);
 
         // POST /api/beers/{id}/count_actions
-        $response = $this->postJson("/api/beers/{$this->beer->id}/count_actions", [
+        $response = $this->postJson("/api/v1/beers/{$this->beer->id}/count_actions", [
             'action' => 'increment'
         ]);
         $response->assertStatus(401);
 
         // GET /api/beers/{id}/tasting_logs
-        $response = $this->getJson("/api/beers/{$this->beer->id}/tasting_logs");
+        $response = $this->getJson("/api/v1/beers/{$this->beer->id}/tasting_logs");
         $response->assertStatus(401);
     }
 
@@ -77,7 +77,7 @@ class BeerEndpointsTest extends TestCase
     {
         Sanctum::actingAs($this->user);
 
-        $response = $this->getJson('/api/beers');
+        $response = $this->getJson('/api/v1/beers');
         
         $response->assertStatus(200)
                 ->assertJsonStructure([
@@ -123,7 +123,7 @@ class BeerEndpointsTest extends TestCase
         ]);
 
         // Filter by first brand
-        $response = $this->getJson("/api/beers?brand_id={$this->brand->id}");
+        $response = $this->getJson("/api/v1/beers?brand_id={$this->brand->id}");
         
         $response->assertStatus(200)
                 ->assertJsonCount(1)
@@ -137,7 +137,7 @@ class BeerEndpointsTest extends TestCase
     {
         Sanctum::actingAs($this->user);
 
-        $response = $this->postJson("/api/beers/{$this->beer->id}/count_actions", [
+        $response = $this->postJson("/api/v1/beers/{$this->beer->id}/count_actions", [
             'action' => 'increment'
         ]);
 
@@ -164,7 +164,7 @@ class BeerEndpointsTest extends TestCase
     {
         Sanctum::actingAs($this->user);
 
-        $response = $this->postJson("/api/beers/{$this->beer->id}/count_actions", [
+        $response = $this->postJson("/api/v1/beers/{$this->beer->id}/count_actions", [
             'action' => 'decrement'
         ]);
 
@@ -194,7 +194,7 @@ class BeerEndpointsTest extends TestCase
         // Set count to 0
         $this->userBeerCount->update(['count' => 0]);
 
-        $response = $this->postJson("/api/beers/{$this->beer->id}/count_actions", [
+        $response = $this->postJson("/api/v1/beers/{$this->beer->id}/count_actions", [
             'action' => 'decrement'
         ]);
 
@@ -220,7 +220,7 @@ class BeerEndpointsTest extends TestCase
             'brand_id' => $this->brand->id
         ]);
 
-        $response = $this->postJson("/api/beers/{$untrackedBeer->id}/count_actions", [
+        $response = $this->postJson("/api/v1/beers/{$untrackedBeer->id}/count_actions", [
             'action' => 'increment'
         ]);
 
@@ -236,11 +236,11 @@ class BeerEndpointsTest extends TestCase
         Sanctum::actingAs($this->user);
 
         // Missing action
-        $response = $this->postJson("/api/beers/{$this->beer->id}/count_actions", []);
+        $response = $this->postJson("/api/v1/beers/{$this->beer->id}/count_actions", []);
         $response->assertStatus(422);
 
         // Invalid action
-        $response = $this->postJson("/api/beers/{$this->beer->id}/count_actions", [
+        $response = $this->postJson("/api/v1/beers/{$this->beer->id}/count_actions", [
             'action' => 'invalid'
         ]);
         $response->assertStatus(422);
@@ -264,7 +264,7 @@ class BeerEndpointsTest extends TestCase
             'note' => null
         ]);
 
-        $response = $this->getJson("/api/beers/{$this->beer->id}/tasting_logs");
+        $response = $this->getJson("/api/v1/beers/{$this->beer->id}/tasting_logs");
 
         $response->assertStatus(200)
                 ->assertJsonStructure([
@@ -288,7 +288,7 @@ class BeerEndpointsTest extends TestCase
             'brand_id' => $this->brand->id
         ]);
 
-        $response = $this->getJson("/api/beers/{$untrackedBeer->id}/tasting_logs");
+        $response = $this->getJson("/api/v1/beers/{$untrackedBeer->id}/tasting_logs");
 
         $response->assertStatus(404)
                 ->assertJsonFragment([

@@ -21,7 +21,7 @@ class EmailCaseInsensitiveTest extends TestCase
             'password_confirmation' => 'password123'
         ];
 
-        $response = $this->postJson('/api/register', $userData);
+        $response = $this->postJson('/api/v1/register', $userData);
 
         $response->assertStatus(201);
 
@@ -48,7 +48,7 @@ class EmailCaseInsensitiveTest extends TestCase
             'password_confirmation' => 'password123'
         ];
 
-        $response = $this->postJson('/api/register', $userData);
+        $response = $this->postJson('/api/v1/register', $userData);
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['email']);
@@ -78,7 +78,7 @@ class EmailCaseInsensitiveTest extends TestCase
             'password' => 'password123'
         ];
 
-        $response = $this->postJson('/api/login', $loginData);
+        $response = $this->postJson('/api/v1/login', $loginData);
 
         $response->assertStatus(200);
         $response->assertJsonStructure([
@@ -108,7 +108,7 @@ class EmailCaseInsensitiveTest extends TestCase
             'password_confirmation' => 'password123'
         ];
 
-        $response = $this->postJson('/api/register', $userData);
+        $response = $this->postJson('/api/v1/register', $userData);
         $response->assertStatus(201);
 
         // 嘗試用其他大小寫組合註冊，都應該失敗
@@ -120,7 +120,7 @@ class EmailCaseInsensitiveTest extends TestCase
                 'password_confirmation' => 'password123'
             ];
 
-            $response = $this->postJson('/api/register', $userData);
+            $response = $this->postJson('/api/v1/register', $userData);
             $response->assertStatus(422);
             $response->assertJsonValidationErrors(['email']);
         }

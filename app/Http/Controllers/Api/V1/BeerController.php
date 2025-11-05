@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBeerRequest;
@@ -13,9 +13,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * @group Beer Tracking
+ * @group V1 - Beer Tracking
  *
- * APIs for tracking beer tastings and managing beer collections
+ * APIs for tracking beer tastings and managing beer collections (Version 1)
  */
 class BeerController extends Controller
 {

@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'setLocale' => \App\Http\Middleware\SetLocale::class,
             'auth.locale' => \App\Http\Middleware\AuthLocaleRedirect::class,
             'log.api' => \App\Http\Middleware\LogApiRequests::class,
+            'api.deprecation' => \App\Http\Middleware\ApiDeprecation::class,
         ]);
 
         // Add global middleware for all requests

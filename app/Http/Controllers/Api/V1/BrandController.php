@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BrandResource;
@@ -8,9 +8,9 @@ use App\Models\Brand;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 /**
- * @group Beer Brands
+ * @group V1 - Beer Brands
  *
- * APIs for managing beer brands
+ * APIs for managing beer brands (Version 1)
  */
 class BrandController extends Controller
 {

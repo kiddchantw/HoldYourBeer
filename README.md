@@ -98,13 +98,58 @@ You should now be able to access the application in your browser at [http://loca
 
 ## Key API Endpoints
 
-- `POST /api/register` - User registration
-- `POST /api/sanctum/token` - Authentication (login)
-- `GET /api/beers` - List user's tracked beers (supports sorting and brand filtering)
-- `POST /api/beers` - Add new beer to tracking
-- `POST /api/beers/{id}/count_actions` - Increment/decrement tasting count
-- `GET /api/beers/{id}/tasting_logs` - View tasting history
-- `GET /api/brands` - List all available brands
+### API Versioning
+
+This API uses **URL-based versioning**. All endpoints are prefixed with a version number:
+
+- **v1** (Current Stable): `/api/v1/*` - All core features
+- **v2** (Enhanced): `/api/v2/*` - Enhanced features (e.g., brand pagination/search)
+
+⚠️ **Legacy non-versioned endpoints** (e.g., `/api/beers`) are **deprecated** and will be removed on **2026-12-31**. Please migrate to versioned endpoints.
+
+📖 For detailed versioning information, see [API Versioning Guide](docs/api-versioning.md)
+
+### V1 Endpoints (Current Stable)
+
+- `POST /api/v1/register` - User registration
+- `POST /api/v1/login` - Authentication (login)
+- `POST /api/v1/logout` - Logout
+- `GET /api/v1/beers` - List user's tracked beers (supports sorting and brand filtering)
+- `POST /api/v1/beers` - Add new beer to tracking
+- `POST /api/v1/beers/{id}/count_actions` - Increment/decrement tasting count
+- `GET /api/v1/beers/{id}/tasting_logs` - View tasting history
+- `GET /api/v1/brands` - List all available brands
+
+### V2 Endpoints (Enhanced Features)
+
+All v1 endpoints are available in v2, plus:
+
+- `GET /api/v2/brands?search=query&per_page=20&page=1` - Enhanced brand listing with pagination and search
+
+### API Documentation
+
+**Interactive documentation** is available via Laravel Scribe:
+
+- **View docs**: http://localhost/docs
+- **Postman Collection**: http://localhost/docs.postman
+- **OpenAPI Spec**: http://localhost/docs.openapi
+
+**Features**:
+- 🔍 Interactive "Try It Out" functionality
+- 📝 Complete request/response examples
+- 🔐 Bearer token authentication support
+- 🌐 Code examples in Bash and JavaScript
+
+**Regenerate docs** after API changes:
+```bash
+php artisan scribe:generate
+```
+
+**📚 API Documentation Resources**:
+- 📖 [API Documentation Guide](docs/api-documentation.md) - Scribe 設定與使用
+- 💡 [API Usage Guide](docs/api-usage-guide.md) - 完整使用範例、業務邏輯說明
+- 🔄 [API Migration Guide](docs/api-migration-guide.md) - 從舊版遷移至 v1 的完整指南
+- 🔖 [API Versioning Strategy](docs/api-versioning.md) - 版本控制策略與最佳實踐
 
 ---
 

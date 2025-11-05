@@ -29,3 +29,7 @@ COMMIT_MSG.tmp
 # Local development configuration (not shared in repository)
 laradock_setting.md
 
+# Scribe API documentation (generated files)
+.scribe/
+public/vendor/scribe/
+

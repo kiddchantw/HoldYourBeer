@@ -1,7 +1,7 @@
 authentication_test_cases:
   
   user_registration:
-    endpoint: POST /api/register
+    endpoint: POST /api/v1/register
     
     success_cases:
       - name: "成功註冊新用戶"
@@ -67,7 +67,7 @@ authentication_test_cases:
               password_confirmation: ["The password confirmation field is required."]
 
   user_login:
-    endpoint: POST /api/sanctum/token
+    endpoint: POST /api/v1/login
     
     success_cases:
       - name: "成功登入取得令牌"
@@ -134,7 +134,7 @@ authentication_test_cases:
         request:
           headers:
             Authorization: "Bearer valid_token_here"
-          endpoint: "GET /api/beers"
+          endpoint: "GET /api/v1/beers"
         expected_response:
           status: 200
           body: "@array"
@@ -142,7 +142,7 @@ authentication_test_cases:
     failure_cases:
       - name: "無令牌存取受保護端點"
         request:
-          endpoint: "GET /api/beers"
+          endpoint: "GET /api/v1/beers"
         expected_response:
           status: 401
           body:
@@ -152,7 +152,7 @@ authentication_test_cases:
         request:
           headers:
             Authorization: "Bearer invalid_token"
-          endpoint: "GET /api/beers"
+          endpoint: "GET /api/v1/beers"
         expected_response:
           status: 401
           body:
@@ -162,7 +162,7 @@ authentication_test_cases:
         request:
           headers:
             Authorization: "Bearer expired_token"
-          endpoint: "GET /api/beers"
+          endpoint: "GET /api/v1/beers"
         expected_response:
           status: 401
           body:

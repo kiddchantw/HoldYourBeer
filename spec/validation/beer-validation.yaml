@@ -1,7 +1,7 @@
 beer_validation_rules:
 
   add_beer:
-    endpoint: POST /api/beers
+    endpoint: POST /api/v1/beers
     fields:
       brand_name:
         type: string
@@ -61,7 +61,7 @@ beer_validation_rules:
           max: "啤酒類型不得超過 100 個字元。"
 
   count_actions:
-    endpoint: POST /api/beers/{id}/count_actions
+    endpoint: POST /api/v1/beers/{id}/count_actions
     path_parameters:
       id:
         type: integer
@@ -93,7 +93,7 @@ beer_validation_rules:
           decrement_not_below_zero: "計數不能減至負數。"
 
   get_beers_list:
-    endpoint: GET /api/beers
+    endpoint: GET /api/v1/beers
     query_parameters:
       sort:
         type: string
@@ -120,7 +120,7 @@ beer_validation_rules:
           exists: "指定的品牌不存在。"
 
   get_tasting_logs:
-    endpoint: GET /api/beers/{id}/tasting_logs
+    endpoint: GET /api/v1/beers/{id}/tasting_logs
     path_parameters:
       id:
         type: integer
@@ -138,22 +138,22 @@ business_validation_rules:
   user_beer_ownership:
     description: "確保用戶只能存取自己的啤酒記錄"
     applies_to:
-      - POST /api/beers/{id}/count_actions
-      - GET /api/beers/{id}/tasting_logs
+      - POST /api/v1/beers/{id}/count_actions
+      - GET /api/v1/beers/{id}/tasting_logs
     rule: "user_beer_counts.user_id = authenticated_user.id"
     error_message: "您只能存取自己的啤酒記錄。"
   
   beer_brand_uniqueness:
     description: "每個用戶的品牌+啤酒名稱組合必須唯一"
     applies_to:
-      - POST /api/beers
+      - POST /api/v1/beers
     rule: "brand_name + name combination unique per user"
     error_message: "您已經追蹤過此品牌的這款啤酒。"
   
   count_non_negative:
     description: "啤酒計數不能為負數"
     applies_to:
-      - POST /api/beers/{id}/count_actions
+      - POST /api/v1/beers/{id}/count_actions
     rule: "user_beer_counts.count >= 0 after decrement"
     error_message: "計數不能減至負數。"
 
