@@ -24,18 +24,39 @@ paths:
   /api/beers:
     get:
       summary: Get my list of tracked beers
-      description: Returns a list of all unique beers the user has tracked, including the brand and how many times they've been consumed.
+      description: Returns a paginated list of all unique beers the user has tracked, including the brand and how many times they've been consumed.
       tags:
         - Beers
       security:
         - bearerAuth: []
       parameters:
+        - name: per_page
+          in: query
+          description: "Number of items per page. Default is 20, maximum is 100."
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+            example: 20
+        - name: page
+          in: query
+          description: "Page number. Default is 1."
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+            example: 1
         - name: sort
           in: query
-          description: "Sort order. Default is by last tasted time, newest first. Use '-tasted_at' for explicit sorting."
+          description: "Sort order. Options: '-tasted_at' (newest first, default), 'tasted_at' (oldest first), 'name' (A-Z), '-name' (Z-A)."
           required: false
           schema:
             type: string
+            enum: ["-tasted_at", "tasted_at", "name", "-name"]
+            default: "-tasted_at"
             example: "-tasted_at"
         - name: brand_id
           in: query
@@ -46,13 +67,54 @@ paths:
             example: 1
       responses:
         '200':
-          description: A list of my beers.
+          description: A paginated list of my beers with metadata.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Beer'
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Beer'
+                  meta:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                        example: 1
+                      last_page:
+                        type: integer
+                        example: 5
+                      per_page:
+                        type: integer
+                        example: 20
+                      total:
+                        type: integer
+                        example: 95
+                      from:
+                        type: integer
+                        example: 1
+                      to:
+                        type: integer
+                        example: 20
+                  links:
+                    type: object
+                    properties:
+                      first:
+                        type: string
+                        example: "http://localhost/api/beers?page=1"
+                      last:
+                        type: string
+                        example: "http://localhost/api/beers?page=5"
+                      prev:
+                        type: string
+                        nullable: true
+                        example: null
+                      next:
+                        type: string
+                        nullable: true
+                        example: "http://localhost/api/beers?page=2"
     post:
       summary: Add a new beer to track
       description: Adds a new unique beer, potentially creating a new brand if it doesn't exist.
@@ -189,6 +251,11 @@ components:
           type: integer
           description: How many times the current user has tasted this beer. This value is read from a dedicated count table for performance.
           example: 5
+        last_tasted_at:
+          type: string
+          format: date-time
+          description: The timestamp of when the user last tasted this beer.
+          example: "2025-11-05T10:30:45+00:00"
 
     TastingLog:
       type: object

@@ -29,35 +29,72 @@ class BeerController extends Controller
      */
     public function index(Request $request)
     {
+        // Validate pagination parameters
+        $validated = $request->validate([
+            'per_page' => ['integer', 'min:1', 'max:100'],
+            'page' => ['integer', 'min:1'],
+            'sort' => ['string', 'in:-tasted_at,tasted_at,name,-name'],
+            'brand_id' => ['integer', 'exists:brands,id'],
+        ]);
+
+        $perPage = $validated['per_page'] ?? 20;
+
+        // Eager load relationships to avoid N+1 queries
         $query = UserBeerCount::with(['beer.brand'])
             ->where('user_id', Auth::id());
 
         // Apply sorting
-        $sort = $request->get('sort', '-tasted_at');
+        $sort = $validated['sort'] ?? '-tasted_at';
         if ($sort === '-tasted_at') {
             $query->orderBy('last_tasted_at', 'desc');
         } elseif ($sort === 'tasted_at') {
             $query->orderBy('last_tasted_at', 'asc');
+        } elseif ($sort === 'name') {
+            $query->join('beers', 'user_beer_counts.beer_id', '=', 'beers.id')
+                ->orderBy('beers.name', 'asc')
+                ->select('user_beer_counts.*');
+        } elseif ($sort === '-name') {
+            $query->join('beers', 'user_beer_counts.beer_id', '=', 'beers.id')
+                ->orderBy('beers.name', 'desc')
+                ->select('user_beer_counts.*');
         }
 
-        // Apply brand filter
-        if ($request->has('brand_id')) {
-            $query->whereHas('beer', function ($q) use ($request) {
-                $q->where('brand_id', $request->get('brand_id'));
+        // Apply brand filter (optimized with whereHas)
+        if (isset($validated['brand_id'])) {
+            $query->whereHas('beer', function ($q) use ($validated) {
+                $q->where('brand_id', $validated['brand_id']);
             });
         }
 
-        $userBeerCounts = $query->get();
+        // Paginate results
+        $paginated = $query->paginate($perPage);
 
         // Transform the data using BeerResource
-        $beers = $userBeerCounts->map(function ($userBeerCount) {
+        $beers = $paginated->getCollection()->map(function ($userBeerCount) {
             $beer = $userBeerCount->beer;
             $beer->tasting_count = $userBeerCount->count;
             $beer->last_tasted_at = $userBeerCount->last_tasted_at;
             return $beer;
         });
 
-        return BeerResource::collection($beers);
+        // Return paginated response with metadata
+        return BeerResource::collection($beers)
+            ->additional([
+                'meta' => [
+                    'current_page' => $paginated->currentPage(),
+                    'last_page' => $paginated->lastPage(),
+                    'per_page' => $paginated->perPage(),
+                    'total' => $paginated->total(),
+                    'from' => $paginated->firstItem(),
+                    'to' => $paginated->lastItem(),
+                ],
+                'links' => [
+                    'first' => $paginated->url(1),
+                    'last' => $paginated->url($paginated->lastPage()),
+                    'prev' => $paginated->previousPageUrl(),
+                    'next' => $paginated->nextPageUrl(),
+                ],
+            ]);
     }
 
     /**
