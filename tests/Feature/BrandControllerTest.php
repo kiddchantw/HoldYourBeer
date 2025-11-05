@@ -43,7 +43,7 @@ class BrandControllerTest extends TestCase
         ];
 
         // Make the API request
-        $response = $this->getJson('/api/brands');
+        $response = $this->getJson('/api/v1/brands');
 
         // Assert successful response
         $response->assertStatus(200);
@@ -67,7 +67,7 @@ class BrandControllerTest extends TestCase
         Brand::create(['name' => 'Brewdog']);
 
         // Make the API request without authentication
-        $response = $this->getJson('/api/brands');
+        $response = $this->getJson('/api/v1/brands');
 
         // Assert unauthorized response
         $response->assertStatus(401);
@@ -83,7 +83,7 @@ class BrandControllerTest extends TestCase
         Sanctum::actingAs($user);
 
         // Make the API request with no brands in database
-        $response = $this->getJson('/api/brands');
+        $response = $this->getJson('/api/v1/brands');
 
         // Assert successful response with empty array
         $response->assertStatus(200);
@@ -104,7 +104,7 @@ class BrandControllerTest extends TestCase
         $brand = Brand::create(['name' => 'Test Brand']);
 
         // Make the API request
-        $response = $this->getJson('/api/brands');
+        $response = $this->getJson('/api/v1/brands');
 
         // Assert response structure
         $response->assertStatus(200);

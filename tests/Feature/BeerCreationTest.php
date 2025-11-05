@@ -44,7 +44,7 @@ class BeerCreationTest extends TestCase
             'style' => 'IPA',
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/beers', $beerData);
+        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/v1/beers', $beerData);
 
         $response->assertStatus(201);
         $this->assertDatabaseHas('beers', $beerData);
@@ -59,7 +59,7 @@ class BeerCreationTest extends TestCase
             'style' => 'IPA',
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/beers', $beerData);
+        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/v1/beers', $beerData);
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['name']);
@@ -74,7 +74,7 @@ class BeerCreationTest extends TestCase
             'style' => 'IPA',
         ];
 
-        $response = $this->postJson('/api/beers', $beerData);
+        $response = $this->postJson('/api/v1/beers', $beerData);
 
         $response->assertStatus(401);
     }
@@ -88,7 +88,7 @@ class BeerCreationTest extends TestCase
             'style' => 'Stout',
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/beers', $beerData);
+        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/v1/beers', $beerData);
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['brand_id']);
@@ -103,7 +103,7 @@ class BeerCreationTest extends TestCase
             'style' => 'IPA',
         ];
 
-        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/beers', $beerData);
+        $response = $this->actingAs($this->user, 'sanctum')->postJson('/api/v1/beers', $beerData);
 
         $response->assertStatus(201);
         $this->assertDatabaseHas('user_beer_counts', [

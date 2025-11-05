@@ -42,7 +42,7 @@ class AuthControllerTest extends TestCase
             'password_confirmation' => 'password',
         ];
 
-        $response = $this->postJson('/api/register', $data);
+        $response = $this->postJson('/api/v1/register', $data);
 
         $response->assertStatus(201)
             ->assertJsonStructure([
@@ -72,7 +72,7 @@ class AuthControllerTest extends TestCase
             'password_confirmation' => 'different', // Password confirmation doesn't match
         ];
 
-        $response = $this->postJson('/api/register', $data);
+        $response = $this->postJson('/api/v1/register', $data);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['name', 'email', 'password']);
@@ -90,7 +90,7 @@ class AuthControllerTest extends TestCase
             'password' => 'password',
         ];
 
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -113,7 +113,7 @@ class AuthControllerTest extends TestCase
             'password' => 'wrong-password',
         ];
 
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['email']);
@@ -127,7 +127,7 @@ class AuthControllerTest extends TestCase
             ['*']
         );
 
-        $response = $this->postJson('/api/logout');
+        $response = $this->postJson('/api/v1/logout');
 
         $response->assertStatus(200)
             ->assertJson(['message' => 'Logged out successfully.']);
@@ -136,7 +136,7 @@ class AuthControllerTest extends TestCase
     #[Test]
     public function it_returns_an_error_if_unauthenticated_user_tries_to_logout()
     {
-        $response = $this->postJson('/api/logout');
+        $response = $this->postJson('/api/v1/logout');
 
         $response->assertStatus(401);
     }
