@@ -145,7 +145,11 @@ All v1 endpoints are available in v2, plus:
 php artisan scribe:generate
 ```
 
-📖 For more details, see [API Documentation Guide](docs/api-documentation.md)
+**📚 API Documentation Resources**:
+- 📖 [API Documentation Guide](docs/api-documentation.md) - Scribe 設定與使用
+- 💡 [API Usage Guide](docs/api-usage-guide.md) - 完整使用範例、業務邏輯說明
+- 🔄 [API Migration Guide](docs/api-migration-guide.md) - 從舊版遷移至 v1 的完整指南
+- 🔖 [API Versioning Strategy](docs/api-versioning.md) - 版本控制策略與最佳實踐
 
 ---
 

@@ -1532,16 +1532,17 @@ class FeedbackController extends Controller
 - ✅ 防禦能力增強（6 種速率限制策略）
 - ✅ API 版本控制系統（v1 穩定版、v2 範例、棄用機制）
 
-### 第 7-8 週 (Sprint 4) ✅ 部分完成
+### 第 7-8 週 (Sprint 4) ✅ 完成
 - [x] 重構為 Service Layer 架構 ✅ **已完成 (2025-11-05)**
 - [x] 引入 API Resources ✅ **已完成 (2025-11-05)**
 - [x] 加入 Form Request Validation ✅ **已完成 (2025-11-05)**
-- [ ] 補充 API 文件
+- [x] 補充 API 文件 ✅ **已完成 (2025-11-05)**
 
 **實際成果**:
 - ✅ 程式碼品質提升 (控制器程式碼減少 32%)
 - ✅ 可維護性提升 (業務邏輯分離，可測試性提高 80%)
 - ✅ 資料格式一致性 (統一使用 Resources)
+- ✅ API 文件完整性 (使用指南、遷移指南、業務邏輯說明)
 
 ### 持續改進項目
 - [ ] 加入 Pre-commit Hooks
