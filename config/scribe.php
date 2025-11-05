@@ -24,6 +24,16 @@ return [
         - View tasting history and logs
         - Access multilingual content
 
+        ## API Versioning
+
+        This API uses URL versioning. All endpoints are prefixed with a version number (e.g., `/api/v1/`, `/api/v2/`).
+
+        - **v1**: Current stable version. Includes all core features.
+        - **v2**: Enhanced version with additional features like pagination and search for brands.
+
+        **⚠️ Legacy non-versioned endpoints** (e.g., `/api/beers`) are deprecated and will be removed on 2026-12-31.
+        Please migrate to versioned endpoints (e.g., `/api/v1/beers`).
+
         <aside>As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).
         You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).</aside>
     INTRO,
@@ -178,7 +188,17 @@ return [
         // You can override this by listing the groups, subgroups and endpoints here in the order you want them.
         // See https://scribe.knuckles.wtf/blog/laravel-v4#easier-sorting and https://scribe.knuckles.wtf/laravel/reference/config#order for details
         // Note: does not work for `external` docs types
-        'order' => [],
+        'order' => [
+            // Version 1 - Current stable
+            'V1 - Authentication',
+            'V1 - Beer Tracking',
+            'V1 - Beer Brands',
+
+            // Version 2 - Enhanced with pagination
+            'V2 - Authentication',
+            'V2 - Beer Tracking',
+            'V2 - Beer Brands',
+        ],
     ],
 
     // Custom logo path. This will be used as the value of the src attribute for the <img> tag,

@@ -48,8 +48,8 @@ HoldYourBeer 是一個採用**規格驅動開發（Spec-Driven Development）**�
 2. 🟢 **中優先級 (部分完成)**: 效能優化機制
    - ✅ API 分頁機制
    - ✅ 資料庫查詢優化
+   - ✅ API 版本控制
    - ⏳ Redis 快取整合 (待完成)
-   - ⏳ API 版本控制 (待完成)
 3. ~~✅ **已完成**: 強化安全性與監控系統 (速率限制、CORS/CSP、API 日誌)~~
 4. ~~✅ **已完成**: 程式碼品質提升 (Service Layer、API Resources、Form Requests)~~
 5. ~~✅ **已完成**: API 文檔 (Laravel Scribe)~~
@@ -80,10 +80,10 @@ HoldYourBeer 是一個採用**規格驅動開發（Spec-Driven Development）**�
 
 #### ⚠️ 待改進
 - **缺少快取機制**: 無 Redis 整合，品牌列表等可快取
-- **API 無分頁**: 大量資料時可能影響效能
-- **N+1 查詢風險**: 部分關聯查詢未使用 Eager Loading
+- ~~**API 無分頁**: 大量資料時可能影響效能~~ ✅ **已改善 (已實作分頁機制)**
+- ~~**N+1 查詢風險**: 部分關聯查詢未使用 Eager Loading~~ ✅ **已改善 (已使用 Eager Loading)**
 - ~~**錯誤處理不一致**: 部分端點未完全遵循標準錯誤格式~~ ✅ **已改善 (使用標準化錯誤碼)**
-- **缺少 API 版本控制**: 未來 API 變更可能影響現有客戶端
+- ~~**缺少 API 版本控制**: 未來 API 變更可能影響現有客戶端~~ ✅ **已改善 (已實作 URL 版本控制)**
 
 ### 3. 測試覆蓋情況
 
@@ -525,64 +525,112 @@ class TastingLogResource extends JsonResource
 
 ---
 
-#### 2.4 實作 API 版本控制
+#### 2.4 實作 API 版本控制 ✅ 已完成 (2025-11-05)
 
-**問題**: 未來 API 變更可能破壞現有客戶端
+**原況**: 未來 API 變更可能破壞現有客戶端
 
-**建議方案**:
+**✅ 實作內容**:
+
+1. **建立版本化控制器命名空間**
+   - ✅ 創建 `app/Http/Controllers/Api/V1/` 目錄
+   - ✅ 創建 `app/Http/Controllers/Api/V2/` 目錄
+   - ✅ 將現有控制器移至 V1 命名空間 (AuthController, BeerController, BrandController)
+   - ✅ 創建 V2 範例控制器 (BrandController - 含分頁與搜尋功能)
+
+2. **版本化路由實作** (routes/api.php)
+   ```php
+   // V1 - 當前穩定版本
+   Route::prefix('v1')->name('v1.')->group(function () {
+       Route::middleware('auth:sanctum')->group(function () {
+           Route::get('/beers', [V1BeerController::class, 'index']);
+           Route::get('/brands', [V1BrandController::class, 'index']);
+           // ... 所有 v1 路由
+       });
+   });
+
+   // V2 - 增強版本（範例）
+   Route::prefix('v2')->name('v2.')->group(function () {
+       Route::middleware('auth:sanctum')->group(function () {
+           // V2 增強的 brands 端點（含分頁與搜尋）
+           Route::get('/brands', [V2BrandController::class, 'index']);
+           // ... 其他繼承自 v1 或新增的路由
+       });
+   });
+
+   // 向後相容的舊版路由（已標記為棄用）
+   Route::middleware('api.deprecation')->group(function () {
+       // 非版本化路由，重導至 v1
+   });
+   ```
+
+3. **棄用警告中介軟體** (app/Http/Middleware/ApiDeprecation.php)
+   ```php
+   class ApiDeprecation
+   {
+       public function handle($request, Closure $next)
+       {
+           $response = $next($request);
+
+           // 加入棄用警告標頭
+           $response->headers->set('X-API-Deprecation', 'true');
+           $response->headers->set('X-API-Deprecation-Info',
+               'Non-versioned API endpoints are deprecated. Please use /api/v1/* endpoints.');
+           $response->headers->set('X-API-Sunset-Date', '2026-12-31');
+           $response->headers->set('X-API-Current-Version', 'v1');
+
+           return $response;
+       }
+   }
+   ```
+
+4. **Scribe 文件整合**
+   - ✅ 更新 `config/scribe.php` 支援版本化分組
+   - ✅ 在文件中說明版本差異與遷移指南
+   - ✅ 設定群組順序：V1 - Authentication, V1 - Beer Tracking, V2 - Beer Brands
+
+5. **完整文件撰寫**
+   - ✅ 創建 `docs/api-versioning.md` 詳細說明版本控制策略
+   - ✅ 更新 `README.md` 說明 API 版本使用方式
+   - ✅ 包含遷移指南與最佳實踐
+
+**V2 範例功能**: 增強的品牌端點
 ```php
-// routes/api.php
-Route::prefix('v1')->group(function () {
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::get('/beers', [BeerController::class, 'index']);
-        Route::post('/beers', [BeerController::class, 'store']);
-        // ... 其他 v1 路由
-    });
-});
-
-// 未來的 v2 API
-Route::prefix('v2')->group(function () {
-    Route::middleware('auth:sanctum')->group(function () {
-        // v2 版本的新實作
-        Route::get('/beers', [V2\BeerController::class, 'index']);
-    });
-});
-
-// app/Http/Controllers/Api/V2/BeerController.php
-namespace App\Http\Controllers\Api\V2;
-
-class BeerController extends Controller
+// app/Http/Controllers/Api/V2/BrandController.php
+public function index(Request $request)
 {
-    public function index(Request $request)
-    {
-        // v2 版本的新邏輯 (例如：包含分頁、新欄位等)
+    $validated = $request->validate([
+        'per_page' => ['integer', 'min:1', 'max:100'],
+        'page' => ['integer', 'min:1'],
+        'search' => ['string', 'max:255'],
+    ]);
+
+    $query = Brand::query()->orderBy('name');
+
+    // V2 新功能：搜尋支援
+    if (isset($validated['search'])) {
+        $query->where('name', 'ILIKE', '%' . $validated['search'] . '%');
     }
+
+    // V2 新功能：分頁回應
+    $paginated = $query->paginate($validated['per_page'] ?? 20);
+
+    return BrandResource::collection($paginated->items())
+        ->additional([/* 分頁元數據 */]);
 }
 ```
 
-**版本棄用策略**:
-```php
-// app/Http/Middleware/ApiVersionDeprecation.php
-class ApiVersionDeprecation
-{
-    public function handle($request, Closure $next)
-    {
-        if ($request->is('api/v1/*')) {
-            return $next($request)->header(
-                'X-API-Deprecation-Warning',
-                'API v1 will be sunset on 2026-01-01. Please migrate to v2.'
-            );
-        }
-
-        return $next($request);
-    }
-}
-```
+**實作成果**:
+- ✅ 完整的 URL 版本控制系統 (v1, v2)
+- ✅ 向後相容性保證（舊版端點仍可運作）
+- ✅ 清晰的棄用策略（日落日期：2026-12-31）
+- ✅ 版本繼承機制（V2 可選擇性繼承或覆寫 V1 端點）
+- ✅ 完整的遷移文件與指南
 
 **預期效益**:
 - ✅ 向後相容性保證
 - ✅ 平滑的 API 升級路徑
 - ✅ 清晰的棄用通知
+- ✅ 支援未來 API 演進
 
 ---
 
@@ -1472,7 +1520,7 @@ class FeedbackController extends Controller
 **預期成果**: API 效能提升 50%
 
 ### 第 5-6 週 (Sprint 3) ✅ 部分完成
-- [ ] 實作 API 版本控制
+- [x] 實作 API 版本控制 ✅ **已完成 (2025-11-05)**
 - [x] 加強 CORS 和 CSP 配置 ✅ **已完成 (2025-11-05)**
 - [x] 實作 API 請求日誌與監控 ✅ **已完成 (2025-11-05)**
 - [x] 實作完整的速率限制 ✅ **已完成 (2025-11-05)**
@@ -1482,6 +1530,7 @@ class FeedbackController extends Controller
 - ✅ 安全性大幅提升（完整的 CSP、CORS、速率限制）
 - ✅ 可觀測性提升（詳細的 API 日誌和效能監控）
 - ✅ 防禦能力增強（6 種速率限制策略）
+- ✅ API 版本控制系統（v1 穩定版、v2 範例、棄用機制）
 
 ### 第 7-8 週 (Sprint 4) ✅ 部分完成
 - [x] 重構為 Service Layer 架構 ✅ **已完成 (2025-11-05)**
