@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth.locale' => \App\Http\Middleware\AuthLocaleRedirect::class,
             'log.api' => \App\Http\Middleware\LogApiRequests::class,
             'api.deprecation' => \App\Http\Middleware\ApiDeprecation::class,
+            'firebase.auth' => \App\Http\Middleware\FirebaseAuthMiddleware::class,
         ]);
 
         // Add global middleware for all requests

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\FirebaseAuthController;
 use App\Http\Controllers\Api\V1\AuthController as V1AuthController;
 use App\Http\Controllers\Api\V1\BeerController as V1BeerController;
 use App\Http\Controllers\Api\V1\BrandController as V1BrandController;
@@ -22,10 +23,20 @@ Route::prefix('v1')->name('v1.')->group(function () {
     Route::middleware('throttle:auth')->group(function () {
         Route::post('/register', [V1AuthController::class, 'register'])->name('register');
         Route::post('/login', [V1AuthController::class, 'token'])->name('login');
+
+        // Firebase Authentication
+        Route::post('/auth/firebase/login', [FirebaseAuthController::class, 'login'])->name('auth.firebase.login');
     });
 
     // Public feedback endpoint (allows anonymous submissions)
     Route::post('/feedback', [V1FeedbackController::class, 'store'])->name('feedback.store');
+
+    // Firebase authenticated routes
+    Route::middleware('firebase.auth')->group(function () {
+        Route::get('/auth/firebase/me', [FirebaseAuthController::class, 'me'])->name('auth.firebase.me');
+        Route::post('/auth/firebase/fcm-token', [FirebaseAuthController::class, 'updateFcmToken'])->name('auth.firebase.fcm_token');
+        Route::post('/auth/firebase/logout', [FirebaseAuthController::class, 'logout'])->name('auth.firebase.logout');
+    });
 
     // Authenticated routes
     Route::middleware('auth:sanctum')->group(function () {

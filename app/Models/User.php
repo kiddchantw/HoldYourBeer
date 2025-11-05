@@ -27,6 +27,8 @@ class User extends Authenticatable
         'provider_id',
         'google_id',
         'apple_id',
+        'firebase_uid',
+        'fcm_token',
     ];
 
     /**

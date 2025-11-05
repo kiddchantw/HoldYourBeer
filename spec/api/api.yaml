@@ -26,6 +26,191 @@ paths:
         - Authentication
       # ... (content omitted for brevity)
 
+  /api/v1/auth/firebase/login:
+    post:
+      summary: Authenticate with Firebase ID Token
+      description: |
+        Authenticate a user using a Firebase ID Token obtained from Firebase Auth on the client side.
+        Supports Google Sign-In, Apple Sign-In, and other Firebase authentication methods.
+        Creates a new user account if the Firebase UID doesn't exist in the database.
+      tags:
+        - Firebase Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id_token
+              properties:
+                id_token:
+                  type: string
+                  description: Firebase ID Token obtained from Firebase Auth SDK
+                  example: "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFkYzBmMTc..."
+                fcm_token:
+                  type: string
+                  description: Optional FCM token for push notifications
+                  example: "fGcm:token:example..."
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Login successful"
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: "John Doe"
+                      email:
+                        type: string
+                        example: "john@example.com"
+                      provider:
+                        type: string
+                        enum: [google, apple, email, firebase]
+                        example: "google"
+                      firebase_uid:
+                        type: string
+                        example: "firebase-uid-123"
+        '401':
+          description: Invalid or expired Firebase token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized"
+                  message:
+                    type: string
+                    example: "Invalid or expired Firebase token"
+        '500':
+          description: Authentication failed due to server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Authentication failed"
+                  message:
+                    type: string
+                    example: "An error occurred during authentication"
+
+  /api/v1/auth/firebase/me:
+    get:
+      summary: Get authenticated user information
+      description: Returns the current user's profile information. Requires a valid Firebase ID Token.
+      tags:
+        - Firebase Authentication
+      security:
+        - firebaseAuth: []
+      responses:
+        '200':
+          description: User information retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: "John Doe"
+                      email:
+                        type: string
+                        example: "john@example.com"
+                      provider:
+                        type: string
+                        example: "google"
+                      firebase_uid:
+                        type: string
+                        example: "firebase-uid-123"
+                      email_verified_at:
+                        type: string
+                        format: date-time
+                        example: "2025-11-05T10:30:45+00:00"
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2025-11-05T10:30:45+00:00"
+        '401':
+          description: Unauthorized - Invalid or missing token
+
+  /api/v1/auth/firebase/fcm-token:
+    post:
+      summary: Update FCM token for push notifications
+      description: Updates the user's FCM token used for sending push notifications.
+      tags:
+        - Firebase Authentication
+      security:
+        - firebaseAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - fcm_token
+              properties:
+                fcm_token:
+                  type: string
+                  description: FCM token from Firebase Cloud Messaging
+                  example: "fGcm:token:example..."
+      responses:
+        '200':
+          description: FCM token updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "FCM token updated successfully"
+        '401':
+          description: Unauthorized - Invalid or missing token
+
+  /api/v1/auth/firebase/logout:
+    post:
+      summary: Logout user
+      description: Clears the user's FCM token. The client should also sign out from Firebase Auth.
+      tags:
+        - Firebase Authentication
+      security:
+        - firebaseAuth: []
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Logout successful"
+        '401':
+          description: Unauthorized - Invalid or missing token
+
   # ... Beer and Brand Endpoints ...
   /api/v1/beers:
     get:
@@ -285,3 +470,8 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
+      description: Sanctum token authentication for traditional email/password login
+    firebaseAuth:
+      type: http
+      scheme: bearer
+      description: Firebase ID Token authentication for Google/Apple Sign-In
