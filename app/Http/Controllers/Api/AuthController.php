@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -15,40 +16,16 @@ class AuthController extends Controller
      * Register a new user
      * POST /api/register
      */
-    public function register(Request $request): JsonResponse
+    public function register(RegisterRequest $request): JsonResponse
     {
-        // 先將 email 轉為小寫以進行一致性檢查
-        $request->merge([
-            'email' => strtolower($request->email ?? '')
-        ]);
-
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'max:255'],
-            'password_confirmation' => ['required', 'string', 'same:password'],
-        ], [
-            'name.required' => '姓名欄位為必填項目。',
-            'name.string' => '姓名必須是字串格式。',
-            'name.max' => '姓名不得超過 255 個字元。',
-            'email.required' => '電子郵件欄位為必填項目。',
-            'email.string' => '電子郵件必須是字串格式。',
-            'email.email' => '電子郵件格式不正確。',
-            'email.max' => '電子郵件不得超過 255 個字元。',
-            'email.unique' => '此電子郵件已被註冊。',
-            'password.required' => '密碼欄位為必填項目。',
-            'password.string' => '密碼必須是字串格式。',
-            'password.min' => '密碼至少需要 8 個字元。',
-            'password.max' => '密碼不得超過 255 個字元。',
-            'password_confirmation.required' => '密碼確認欄位為必填項目。',
-            'password_confirmation.string' => '密碼確認必須是字串格式。',
-            'password_confirmation.same' => '密碼確認與密碼不符。',
-        ]);
+        // Normalize email to lowercase for consistency
+        $validated = $request->validated();
+        $validated['email'] = strtolower($validated['email']);
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email, // 已經是小寫
-            'password' => Hash::make($request->password),
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
