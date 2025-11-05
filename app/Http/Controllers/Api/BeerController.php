@@ -12,6 +12,11 @@ use App\Models\UserBeerCount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @group Beer Tracking
+ *
+ * APIs for tracking beer tastings and managing beer collections
+ */
 class BeerController extends Controller
 {
     /**
@@ -22,10 +27,47 @@ class BeerController extends Controller
     ) {}
 
     /**
-     * Get my list of tracked beers.
+     * Get my tracked beers
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * Retrieve a paginated list of beers the authenticated user is tracking,
+     * with tasting counts and last tasted dates.
+     *
+     * @authenticated
+     *
+     * @queryParam per_page integer Number of items per page (1-100). Defaults to 20. Example: 20
+     * @queryParam page integer Page number. Example: 1
+     * @queryParam sort string Sort field. Options: -tasted_at (newest first), tasted_at (oldest first), name (A-Z), -name (Z-A). Example: -tasted_at
+     * @queryParam brand_id integer Filter by brand ID. Example: 1
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Guinness Draught",
+     *       "style": "Dry Stout",
+     *       "brand": {
+     *         "id": 1,
+     *         "name": "Guinness"
+     *       },
+     *       "tasting_count": 5,
+     *       "last_tasted_at": "2025-11-05T10:00:00.000000Z"
+     *     }
+     *   ],
+     *   "meta": {
+     *     "current_page": 1,
+     *     "last_page": 2,
+     *     "per_page": 20,
+     *     "total": 25,
+     *     "from": 1,
+     *     "to": 20
+     *   },
+     *   "links": {
+     *     "first": "http://localhost/api/beers?page=1",
+     *     "last": "http://localhost/api/beers?page=2",
+     *     "prev": null,
+     *     "next": "http://localhost/api/beers?page=2"
+     *   }
+     * }
      */
     public function index(Request $request)
     {
@@ -98,10 +140,36 @@ class BeerController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Add a beer to tracking
      *
-     * @param  \App\Http\Requests\StoreBeerRequest  $request
-     * @return \Illuminate\Http\JsonResponse
+     * Add a new beer to the authenticated user's tracking list with an initial count of 1.
+     *
+     * @authenticated
+     *
+     * @bodyParam name string required The beer's name. Example: Guinness Draught
+     * @bodyParam brand_id integer required The brand ID this beer belongs to. Example: 1
+     * @bodyParam style string The beer style (e.g., IPA, Stout). Example: Dry Stout
+     *
+     * @response 201 {
+     *   "data": {
+     *     "id": 1,
+     *     "name": "Guinness Draught",
+     *     "style": "Dry Stout",
+     *     "brand": {
+     *       "id": 1,
+     *       "name": "Guinness"
+     *     },
+     *     "tasting_count": 1,
+     *     "last_tasted_at": "2025-11-05T10:00:00.000000Z"
+     *   }
+     * }
+     *
+     * @response 422 {
+     *   "message": "The given data was invalid.",
+     *   "errors": {
+     *     "brand_id": ["The selected brand id is invalid."]
+     *   }
+     * }
      */
     public function store(StoreBeerRequest $request)
     {
@@ -116,11 +184,41 @@ class BeerController extends Controller
     }
 
     /**
-     * Increment or decrement the tasting count for a beer.
+     * Update tasting count
      *
-     * @param  \App\Http\Requests\CountActionRequest  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * Increment or decrement the tasting count for a tracked beer.
+     * Each action is logged with a timestamp and optional note.
+     *
+     * @authenticated
+     *
+     * @urlParam id integer required The beer ID. Example: 1
+     *
+     * @bodyParam action string required The action to perform. Options: increment, decrement. Example: increment
+     * @bodyParam note string Optional note for this tasting. Example: Enjoyed at the pub with friends
+     *
+     * @response 200 {
+     *   "data": {
+     *     "id": 1,
+     *     "name": "Guinness Draught",
+     *     "style": "Dry Stout",
+     *     "brand": {
+     *       "id": 1,
+     *       "name": "Guinness"
+     *     },
+     *     "tasting_count": 6,
+     *     "last_tasted_at": "2025-11-05T10:30:00.000000Z"
+     *   }
+     * }
+     *
+     * @response 404 {
+     *   "error_code": "RES_002",
+     *   "message": "Beer not found in your tracked list."
+     * }
+     *
+     * @response 400 {
+     *   "error_code": "BIZ_001",
+     *   "message": "Cannot decrement count below zero."
+     * }
      */
     public function countAction(CountActionRequest $request, int $id)
     {
@@ -152,10 +250,36 @@ class BeerController extends Controller
     }
 
     /**
-     * Get the tasting log for a specific beer.
+     * Get tasting history
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * Retrieve the complete tasting history log for a specific beer,
+     * including all increment/decrement actions with timestamps and notes.
+     *
+     * @authenticated
+     *
+     * @urlParam id integer required The beer ID. Example: 1
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 10,
+     *       "action": "increment",
+     *       "tasted_at": "2025-11-05T10:30:00.000000Z",
+     *       "note": "Enjoyed at the pub with friends"
+     *     },
+     *     {
+     *       "id": 9,
+     *       "action": "increment",
+     *       "tasted_at": "2025-11-04T18:15:00.000000Z",
+     *       "note": null
+     *     }
+     *   ]
+     * }
+     *
+     * @response 404 {
+     *   "error_code": "RES_002",
+     *   "message": "Beer not found in your tracked list."
+     * }
      */
     public function tastingLogs(int $id)
     {

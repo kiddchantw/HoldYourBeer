@@ -7,10 +7,32 @@ use App\Http\Resources\BrandResource;
 use App\Models\Brand;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
+/**
+ * @group Beer Brands
+ *
+ * APIs for managing beer brands
+ */
 class BrandController extends Controller
 {
     /**
-     * Display a listing of all brands.
+     * Get all brands
+     *
+     * Retrieve a list of all beer brands, sorted alphabetically by name.
+     *
+     * @authenticated
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Guinness"
+     *     },
+     *     {
+     *       "id": 2,
+     *       "name": "Heineken"
+     *     }
+     *   ]
+     * }
      */
     public function index(): AnonymousResourceCollection
     {

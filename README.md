@@ -106,6 +106,27 @@ You should now be able to access the application in your browser at [http://loca
 - `GET /api/beers/{id}/tasting_logs` - View tasting history
 - `GET /api/brands` - List all available brands
 
+### API Documentation
+
+**Interactive documentation** is available via Laravel Scribe:
+
+- **View docs**: http://localhost/docs
+- **Postman Collection**: http://localhost/docs.postman
+- **OpenAPI Spec**: http://localhost/docs.openapi
+
+**Features**:
+- 🔍 Interactive "Try It Out" functionality
+- 📝 Complete request/response examples
+- 🔐 Bearer token authentication support
+- 🌐 Code examples in Bash and JavaScript
+
+**Regenerate docs** after API changes:
+```bash
+php artisan scribe:generate
+```
+
+📖 For more details, see [API Documentation Guide](docs/api-documentation.md)
+
 ---
 
 ## Development Guidelines
