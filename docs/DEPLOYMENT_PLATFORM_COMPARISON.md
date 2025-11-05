@@ -4,9 +4,10 @@
 > 作者：Claude Code
 > 專案：HoldYourBeer
 
-本文件記錄了兩個重要主題：
+本文件記錄了三個重要主題：
 1. Google 登入功能的國際化修正
 2. Laravel Cloud vs Zeabur 部署平台完整比較
+3. Laravel Nightwatch vs Sentry 監控工具完整比較
 
 ---
 
@@ -528,6 +529,561 @@ Frontend:    Blade + Tailwind CSS + Livewire
 
 ---
 
+## 第三部分：應用程式監控工具比較
+
+### 監控工具概述
+
+#### Laravel Nightwatch
+- **開發團隊**：Laravel 官方（Taylor Otwell）
+- **推出時間**：2025 年 6 月正式推出
+- **定位**：Laravel 專屬的 APM（Application Performance Monitoring）
+- **焦點**：全方位效能監控 + 錯誤追蹤
+- **特色**：深度整合 Laravel 內部機制
+- **官網**：https://nightwatch.laravel.com
+
+#### Sentry
+- **開發團隊**：Sentry.io（獨立公司）
+- **成立時間**：2012 年（成熟產品）
+- **定位**：跨平台錯誤追蹤工具
+- **焦點**：錯誤追蹤為主 + 效能監控為輔
+- **特色**：支援多種程式語言和框架
+- **官網**：https://sentry.io
+- **Laravel 整合**：透過 `sentry/sentry-laravel` 套件
+
+---
+
+## 🔍 核心定位差異
+
+### 監控範圍比較
+
+| 監控項目 | Laravel Nightwatch | Sentry |
+|---------|-------------------|--------|
+| **錯誤追蹤** | ✅ 完整支援 | ✅ **核心功能** |
+| **HTTP 請求** | ✅ **詳細追蹤** | ⚠️ 基本支援 |
+| **資料庫查詢** | ✅ **SQL 效能分析** | ⚠️ 有限支援 |
+| **Queue Jobs** | ✅ **深度監控** | ⚠️ 基本支援 |
+| **排程任務** | ✅ 完整追蹤 | ⚠️ 基本支援 |
+| **Laravel Events** | ✅ 自動追蹤 | ❌ 不支援 |
+| **通知/郵件** | ✅ 完整追蹤 | ❌ 不支援 |
+| **快取操作** | ✅ 監控 | ❌ 不支援 |
+| **用戶行為追蹤** | ✅ 個別追蹤 | ⚠️ 部分支援 |
+| **效能分析 (APM)** | ✅ **完整免費** | ⚠️ 付費功能 |
+| **Session Replays** | ⚠️ 未知 | ✅ 50 replays（免費） |
+
+### 功能定位
+
+```
+Laravel Nightwatch
+├─ 定位：完整的 Laravel 應用程式健康檢查
+├─ 範圍：錯誤 + 效能 + Laravel 所有元件
+└─ 方式：自動追蹤，零配置
+
+Sentry
+├─ 定位：專注於錯誤捕捉和堆疊追蹤
+├─ 範圍：錯誤為主，效能為輔
+└─ 方式：需手動配置追蹤點
+```
+
+---
+
+## 💰 定價比較（2025）
+
+### Laravel Nightwatch 定價
+
+| 方案 | 月費 | 事件數量 | 包含功能 |
+|------|------|---------|---------|
+| **Free** | **$0** | 免費額度（2025 年提高 50%） | 所有監控功能 |
+| **付費方案** | 依用量計費 | 超額付費（費率已降低） | 完整功能無限制 |
+
+**事件定義**（所有 Laravel 活動都計入）：
+```
+✅ 1 個 HTTP 請求 = 1 個事件
+✅ 1 個 Queue Job = 1 個事件
+✅ 1 個排程任務 = 1 個事件
+✅ 1 個通知 = 1 個事件
+✅ 1 個例外錯誤 = 1 個事件
+✅ 1 個資料庫查詢 = 1 個事件（視設定）
+
+→ 提供完整應用程式視圖
+```
+
+**效能影響**：
+- 每個請求增加 < 3ms 延遲
+- Agent 獨立運行，不影響主程序
+- 已處理超過 10 億+日事件量
+
+### Sentry 定價
+
+| 方案 | 月費 | 錯誤數量 | 主要限制 |
+|------|------|---------|---------|
+| **Developer** | **$0** | 5,000 錯誤/月 | 1 用戶、50 Session Replays、5GB logs |
+| **Team** | **$26/月** | 預付額度 + 彈性用量 | 效能監控需額外配置 |
+| **Business** | **$80/月** | 預付額度 + 進階功能 | 跨專案分析 |
+| **Enterprise** | 客製報價 | 無限制 | 完整平台功能 |
+
+**事件定義**（僅錯誤計入）：
+```
+✅ 1 個錯誤/例外 = 1 個事件
+
+⚠️ 效能監控（Performance Monitoring）：
+   → Team 方案以上
+   → 需額外配置
+   → 需手動設定追蹤點（Transactions）
+
+✅ Session Replays：
+   → 免費方案：50 replays/月
+   → 付費方案：依方案而定
+```
+
+---
+
+## 🎯 針對 HoldYourBeer 專案分析
+
+### 專案監控需求
+
+```php
+// HoldYourBeer 需要監控的場景
+
+1. Firebase Auth API
+   POST /api/v1/auth/firebase/login
+   → 回應時間、成功率、錯誤類型
+
+2. Google OAuth 流程
+   GET /auth/google/callback
+   → 轉換率、失敗原因
+
+3. FCM 推播 Queue
+   dispatch(new SendFcmNotification($user, $beer))
+   → 執行狀況、失敗率、積壓情況
+
+4. 資料庫查詢效能
+   Beer::with('brand')->where('user_id', $userId)->get()
+   → 查詢時間、N+1 問題
+
+5. 例外錯誤
+   FirebaseAuthException
+   TokenExpiredException
+   → 錯誤堆疊、發生頻率
+```
+
+### Nightwatch 監控能力
+
+```
+HoldYourBeer + Nightwatch 可自動監控：
+
+✅ 所有 API 端點（回應時間、狀態碼、錯誤率）
+✅ Queue Jobs 執行（FCM 推播成功率、執行時間）
+✅ 資料庫查詢效能（識別慢查詢、N+1 問題）
+✅ Firebase 驗證錯誤（自動捕捉例外）
+✅ Google OAuth 流程（追蹤整個認證流程）
+✅ 用戶行為分析（追蹤個別用戶操作）
+
+零配置設定：
+composer require laravel/nightwatch
+php artisan nightwatch:install
+
+→ 立即獲得完整應用程式洞察
+```
+
+### Sentry 監控能力
+
+```
+HoldYourBeer + Sentry 可監控：
+
+✅ Firebase 驗證錯誤（例外捕捉 + 堆疊追蹤）
+✅ Google OAuth 失敗（錯誤詳情）
+✅ 資料庫錯誤（SQL 例外）
+⚠️ FCM Queue 失敗（需在 Job 中手動 report）
+⚠️ API 效能（需付費 + 手動設定 Transactions）
+❌ 資料庫查詢效能（不會自動追蹤）
+❌ Queue Jobs 效能監控（僅錯誤，無效能數據）
+
+需要配置：
+composer require sentry/sentry-laravel
+php artisan sentry:publish --dsn=your-dsn
+
+手動追蹤效能（需付費方案）：
+$transaction = \Sentry\startTransaction(...);
+// 手動設定追蹤點
+$transaction->finish();
+
+→ 主要用於錯誤捕捉
+```
+
+---
+
+## 🔬 深度監控範例
+
+### Laravel Nightwatch - 自動深度追蹤
+
+```php
+// 以下程式碼 Nightwatch 自動監控，無需額外設定
+
+// 1. Eloquent 查詢效能
+User::where('firebase_uid', $uid)->first();
+→ 自動記錄：查詢時間、SQL 語句、是否 N+1
+
+// 2. Queue Job 完整生命週期
+dispatch(new SendPushNotification($user));
+→ 自動記錄：排隊時間、執行時間、失敗原因、重試次數
+
+// 3. Event 系統觸發
+event(new UserRegistered($user));
+→ 自動記錄：事件觸發、監聽器執行時間
+
+// 4. HTTP 請求完整追蹤
+Route::post('/api/beers', [BeerController::class, 'store']);
+→ 自動記錄：中介層耗時、控制器耗時、回應時間、記憶體使用
+
+// 5. 排程任務
+$schedule->command('fcm:send-reminders')->daily();
+→ 自動記錄：執行時間、成功/失敗、輸出日誌
+```
+
+### Sentry - 錯誤為中心
+
+```php
+// 以下是 Sentry 的典型使用方式
+
+// 1. 自動捕捉例外（主要功能）
+try {
+    User::findOrFail($id);
+} catch (ModelNotFoundException $e) {
+    // Sentry 自動捕捉並發送
+    // 包含：完整堆疊、請求上下文、用戶資訊
+}
+
+// 2. 手動記錄錯誤
+\Sentry\captureException($exception);
+\Sentry\captureMessage('Something went wrong', 'warning');
+
+// 3. 添加上下文資訊
+\Sentry\configureScope(function ($scope) {
+    $scope->setUser(['id' => auth()->id()]);
+    $scope->setTag('firebase_uid', $user->firebase_uid);
+});
+
+// 4. 效能追蹤（需付費 Performance Monitoring）
+$transaction = \Sentry\startTransaction([
+    'name' => 'POST /api/beers',
+    'op' => 'http.server',
+]);
+
+// 需手動設定每個追蹤點
+$span = $transaction->startChild(['op' => 'db.query']);
+// 執行資料庫查詢
+$span->finish();
+
+$transaction->finish();
+
+// 5. Queue Jobs 需手動處理
+class SendFcmNotification implements ShouldQueue
+{
+    public function failed(\Throwable $exception)
+    {
+        // 需手動報告失敗
+        \Sentry\captureException($exception);
+    }
+}
+```
+
+---
+
+## 📊 平台整合比較
+
+### 與 Laravel Cloud 整合
+
+| 功能 | Nightwatch | Sentry |
+|------|-----------|--------|
+| **官方整合文件** | ✅ https://nightwatch.laravel.com/docs/guides/cloud | ✅ 透過 Laravel 合作夥伴 |
+| **設定複雜度** | ⭐⭐⭐⭐⭐ 零配置 | ⭐⭐⭐ 需配置 DSN 和環境變數 |
+| **Agent 部署** | 自動加入 Background Process | 需手動配置 |
+| **Laravel 深度** | ⭐⭐⭐⭐⭐ 原生整合 | ⭐⭐⭐ 透過套件整合 |
+
+### 與 Zeabur 整合
+
+| 功能 | Nightwatch | Sentry |
+|------|-----------|--------|
+| **支援程度** | ✅ 完全支援（平台無關） | ✅ 完全支援 |
+| **設定方式** | 環境變數 + Composer | 環境變數 + Composer |
+| **Agent 運行** | 需設定 Background Process | 無需額外 Process |
+| **複雜度** | ⭐⭐⭐ 需手動設定 Agent | ⭐⭐⭐⭐ 安裝即用 |
+
+**Zeabur + Nightwatch 設定**：
+```bash
+# 1. 安裝 Nightwatch
+composer require laravel/nightwatch
+
+# 2. 在 Zeabur 環境變數加入
+NIGHTWATCH_API_TOKEN=your-token
+NIGHTWATCH_PROJECT_ID=your-project-id
+
+# 3. 設定 Background Process（需手動配置）
+# 在 Zeabur 控制台新增 Worker 服務
+# Command: php artisan nightwatch:work
+```
+
+**Zeabur + Sentry 設定**：
+```bash
+# 1. 安裝 Sentry
+composer require sentry/sentry-laravel
+
+# 2. 在 Zeabur 環境變數加入
+SENTRY_LARAVEL_DSN=your-dsn
+
+# 3. 發布配置（可選）
+php artisan sentry:publish
+
+# 完成！無需額外 Process
+```
+
+---
+
+## 🏆 選擇建議
+
+### 選擇 Nightwatch 的情境
+
+```
+✅ 想要全面了解應用程式效能
+✅ 需要監控 Queue Jobs 效能（HoldYourBeer 有 FCM！）
+✅ 想自動發現慢查詢、N+1 問題
+✅ 希望零配置、開箱即用
+✅ 使用 Laravel Cloud（原生整合）
+✅ 預算有限但需要完整監控
+✅ 想追蹤用戶行為流程
+
+適合角色：
+- 開發者（優化效能）
+- DevOps（監控應用健康）
+- 產品經理（了解用戶行為）
+```
+
+### 選擇 Sentry 的情境
+
+```
+✅ 主要目的是捕捉和追蹤錯誤
+✅ 需要詳細的錯誤堆疊和上下文
+✅ 需要跨平台支援（Flutter + Web + Backend）
+✅ 已經熟悉 Sentry 生態系
+✅ 有多語言專案（不只 Laravel）
+✅ 重視成熟度和穩定性（2012 年至今）
+✅ 需要 Session Replays 功能
+
+適合角色：
+- 開發者（除錯）
+- QA（追蹤 Bug）
+- 客服（用戶問題排查）
+```
+
+### 兩者並用？
+
+```
+並用場景：
+├─ Nightwatch：日常效能監控和優化
+└─ Sentry：深度錯誤追蹤和 Session Replays
+
+現實評估：
+├─ Nightwatch 已包含錯誤追蹤功能
+├─ 兩者有功能重疊
+├─ 增加維護複雜度
+└─ 多數情況選一個就夠
+
+成本考量：
+├─ Nightwatch Free + Sentry Free = 兩套系統維護
+├─ 建議：選擇最符合主要需求的一個
+└─ 除非有特殊跨平台需求
+```
+
+---
+
+## 🎖️ 綜合評分
+
+### Laravel Nightwatch
+
+| 評估項目 | 評分 | 說明 |
+|---------|------|------|
+| Laravel 整合 | ⭐⭐⭐⭐⭐ | 原生深度整合 |
+| 錯誤追蹤 | ⭐⭐⭐⭐⭐ | 自動捕捉所有例外 |
+| 效能監控 | ⭐⭐⭐⭐⭐ | 完整 APM，免費 |
+| Queue 監控 | ⭐⭐⭐⭐⭐ | 自動追蹤，零配置 |
+| 資料庫分析 | ⭐⭐⭐⭐⭐ | SQL 效能、N+1 偵測 |
+| 學習曲線 | ⭐⭐⭐⭐⭐ | 幾乎零學習成本 |
+| 跨平台支援 | ⭐⭐ | Laravel 專用 |
+| 成熟度 | ⭐⭐⭐ | 新產品（2025） |
+| 免費方案 | ⭐⭐⭐⭐⭐ | 功能完整 |
+| **總評** | **⭐⭐⭐⭐⭐** | Laravel 專案最佳選擇 |
+
+### Sentry
+
+| 評估項目 | 評分 | 說明 |
+|---------|------|------|
+| Laravel 整合 | ⭐⭐⭐ | 透過套件整合 |
+| 錯誤追蹤 | ⭐⭐⭐⭐⭐ | 業界標準 |
+| 效能監控 | ⭐⭐⭐ | 付費功能，需手動設定 |
+| Queue 監控 | ⭐⭐ | 僅錯誤，無效能數據 |
+| 資料庫分析 | ⭐ | 有限支援 |
+| 學習曲線 | ⭐⭐⭐ | 需學習配置 |
+| 跨平台支援 | ⭐⭐⭐⭐⭐ | 支援多種語言 |
+| 成熟度 | ⭐⭐⭐⭐⭐ | 成熟產品（2012-） |
+| 免費方案 | ⭐⭐⭐ | 錯誤追蹤基本功能 |
+| **總評** | **⭐⭐⭐⭐** | 跨平台錯誤追蹤首選 |
+
+---
+
+## 💡 HoldYourBeer 專案最終建議
+
+### 推薦方案：**Laravel Nightwatch**
+
+#### 核心理由
+
+1. **FCM Queue 監控至關重要**
+   ```php
+   // HoldYourBeer 的核心功能
+   dispatch(new SendFcmNotification($user, $beer));
+
+   Nightwatch 優勢：
+   ✅ 自動追蹤執行狀態
+   ✅ 監控積壓情況（避免推播延遲）
+   ✅ 失敗率統計
+   ✅ 效能分析（找出瓶頸）
+
+   Sentry 限制：
+   ⚠️ 需在每個 Job 手動加 report()
+   ⚠️ 只能看到失敗，看不到效能
+   ⚠️ 無法監控 Queue 積壓
+   ```
+
+2. **API 效能優化需求**
+   ```php
+   // Flutter App 頻繁呼叫的 API
+   GET /api/v1/beers
+   POST /api/v1/beers/{id}/count_actions
+   GET /api/v1/auth/firebase/me
+
+   Nightwatch：
+   ✅ 自動追蹤所有端點
+   ✅ 回應時間分析
+   ✅ 資料庫查詢優化建議
+   ✅ 免費
+
+   Sentry：
+   ⚠️ 需付費 Performance Monitoring
+   ⚠️ 需手動設定 Transactions
+   ⚠️ 配置複雜
+   ```
+
+3. **成本效益**
+   ```
+   Nightwatch Free:
+   ✅ 完整 APM 功能
+   ✅ 錯誤追蹤
+   ✅ Queue 監控
+   ✅ 資料庫分析
+   ✅ 用戶行為追蹤
+   → 全功能，零成本
+
+   Sentry Free:
+   ✅ 5,000 錯誤/月
+   ⚠️ 無效能監控
+   ⚠️ 無 Queue 深度監控
+   → 基本錯誤追蹤
+   ```
+
+4. **Laravel 原生整合**
+   ```
+   Nightwatch:
+   $ composer require laravel/nightwatch
+   $ php artisan nightwatch:install
+   → 完成！自動監控所有內容
+
+   Sentry:
+   $ composer require sentry/sentry-laravel
+   $ php artisan sentry:publish --dsn=xxx
+   $ 手動配置錯誤處理
+   $ 手動設定效能追蹤（如需）
+   → 需要更多配置
+   ```
+
+### 部署組合建議
+
+#### 方案一：成本最優（推薦）
+
+```
+部署平台：Zeabur Developer ($5/月)
+監控工具：Laravel Nightwatch (Free)
+
+總成本：$5/月
+
+優勢：
+✅ 極低成本
+✅ 完整監控功能
+✅ 中文支援（Zeabur）
+✅ Queue 監控（Nightwatch）
+
+適合：開發/測試階段、小型專案
+```
+
+#### 方案二：最佳整合
+
+```
+部署平台：Laravel Cloud Growth ($20/月)
+監控工具：Laravel Nightwatch (Free)
+
+總成本：$20/月
+
+優勢：
+✅ 原生深度整合
+✅ Queue Clusters + Nightwatch 監控
+✅ Preview Environments
+✅ 零配置
+
+適合：成長期、重視整合度
+```
+
+#### 方案三：跨平台需求
+
+```
+部署平台：Zeabur Developer ($5/月)
+監控工具：
+├─ Laravel Nightwatch (Free) - Backend
+└─ Sentry Developer (Free) - Flutter App
+
+總成本：$5/月
+
+優勢：
+✅ Backend 完整監控（Nightwatch）
+✅ Flutter 錯誤追蹤（Sentry）
+✅ 跨平台覆蓋
+
+適合：有 Flutter 錯誤追蹤需求
+```
+
+### 實施步驟
+
+```bash
+# Step 1: 部署到 Zeabur
+# （參考前面章節的 Zeabur 部署檢查清單）
+
+# Step 2: 安裝 Nightwatch
+composer require laravel/nightwatch
+
+# Step 3: 設定環境變數（在 Zeabur 控制台）
+NIGHTWATCH_API_TOKEN=your-token
+NIGHTWATCH_PROJECT_ID=your-project-id
+
+# Step 4: 安裝並啟動
+php artisan nightwatch:install
+
+# Step 5: 設定 Background Process（在 Zeabur）
+# 新增 Worker 服務
+# Command: php artisan nightwatch:work
+
+# Step 6: 驗證
+# 訪問 https://nightwatch.laravel.com 查看監控數據
+```
+
+---
+
 ## 🔗 相關資源
 
 ### Laravel Cloud
@@ -542,6 +1098,19 @@ Frontend:    Blade + Tailwind CSS + Livewire
 - 文件（中文）：https://zeabur.com/docs/zh-TW
 - Laravel 指南：https://zeabur.com/docs/zh-TW/guides/php/laravel
 
+### Laravel Nightwatch
+- 官網：https://nightwatch.laravel.com
+- 定價：https://nightwatch.laravel.com/pricing
+- 文件：https://nightwatch.laravel.com/docs
+- Laravel Cloud 整合：https://nightwatch.laravel.com/docs/guides/cloud
+- vs Pulse 比較：https://nightwatch.laravel.com/nightwatch-vs-pulse
+
+### Sentry
+- 官網：https://sentry.io
+- 定價：https://sentry.io/pricing
+- Laravel 文件：https://docs.sentry.io/platforms/php/guides/laravel/
+- GitHub：https://github.com/getsentry/sentry-laravel
+
 ### HoldYourBeer 相關文件
 - `README.md` - 專案概覽
 - `CLAUDE.md` - AI 助手指南
@@ -555,6 +1124,7 @@ Frontend:    Blade + Tailwind CSS + Livewire
 | 日期 | 內容 | 作者 |
 |------|------|------|
 | 2025-11-05 | 初版建立：i18n 修正 + 平台比較 | Claude Code |
+| 2025-11-05 | 新增第三部分：監控工具比較（Nightwatch vs Sentry） | Claude Code |
 
 ---
 
@@ -562,33 +1132,86 @@ Frontend:    Blade + Tailwind CSS + Livewire
 
 ### 關鍵決策點
 
+#### 部署平台選擇
+
 1. **當前階段**：使用 **Zeabur**
    - 理由：成本低、中文支援、快速上線
+   - 成本：$5/月
 
 2. **成長階段**：評估 **Laravel Cloud**
    - 觸發點：Queue 負載高、需要進階功能
+   - 成本：$20/月起
 
 3. **長期策略**：保持彈性
    - 兩個平台都是優秀選擇
    - 根據業務需求調整
 
+#### 監控工具選擇
+
+1. **當前階段**：使用 **Laravel Nightwatch**
+   - 理由：完整免費、Queue 監控、零配置
+   - 成本：$0（免費方案）
+
+2. **跨平台需求**：考慮加入 **Sentry**
+   - 觸發點：需要 Flutter App 錯誤追蹤
+   - 成本：$0（免費方案）或 $26/月（Team）
+
+3. **最佳組合**：Nightwatch + Sentry 並用
+   - Backend：Nightwatch（效能 + 錯誤）
+   - Mobile：Sentry（Flutter 錯誤追蹤）
+
 ### 行動建議
 
+#### 階段一：部署設定
+
 ✅ **立即執行**：
-1. 在 Zeabur 建立帳號
-2. 部署 HoldYourBeer 到 Developer 方案
-3. 驗證所有功能正常
+1. 在 Zeabur 建立帳號並部署專案（$5/月）
+2. 設定環境變數和必要服務（MySQL、Redis）
+3. 驗證所有功能正常（登入、API、Queue）
+
+#### 階段二：監控設定
+
+✅ **安裝 Nightwatch**：
+1. 安裝套件：`composer require laravel/nightwatch`
+2. 設定環境變數：`NIGHTWATCH_API_TOKEN`、`NIGHTWATCH_PROJECT_ID`
+3. 執行安裝：`php artisan nightwatch:install`
+4. 在 Zeabur 設定 Background Process
+
+⚠️ **可選：安裝 Sentry**（如需 Flutter 錯誤追蹤）：
+1. 安裝套件：`composer require sentry/sentry-laravel`
+2. 設定 DSN：`SENTRY_LARAVEL_DSN`
+3. Flutter App 整合 Sentry SDK
+
+#### 階段三：持續優化
 
 📊 **持續監控**：
-1. 每月檢查資源使用量
-2. 追蹤 Queue Job 效能
-3. 評估用戶成長曲線
+1. 每週檢查 Nightwatch 儀表板
+2. 追蹤 Queue Job 效能和失敗率
+3. 監控 API 回應時間
+4. 識別並優化慢查詢
 
 🔄 **定期評估**：
-1. 每季度檢視平台選擇
-2. 對比實際成本與效益
-3. 根據業務需求調整方案
+1. 每月檢查資源使用量和成本
+2. 每季度檢視平台選擇
+3. 評估用戶成長趨勢
+4. 根據業務需求調整方案
+
+### 推薦配置（HoldYourBeer）
+
+```
+當前最佳組合：
+
+部署平台：
+└─ Zeabur Developer ($5/月)
+
+監控工具：
+├─ Laravel Nightwatch (Free) - Backend 完整監控
+└─ (可選) Sentry (Free) - Flutter 錯誤追蹤
+
+總成本：$5/月
+總價值：完整部署 + 深度監控
+```
 
 ---
 
-**需要協助設定 Zeabur 部署嗎？或是想深入了解某個平台的特定功能？**
+**本文件涵蓋三大主題：i18n 修正、部署平台比較、監控工具比較，為 HoldYourBeer 專案提供完整的技術選型指南。**
