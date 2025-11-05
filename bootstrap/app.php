@@ -12,12 +12,24 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Register middleware aliases
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'setLocale' => \App\Http\Middleware\SetLocale::class,
             'auth.locale' => \App\Http\Middleware\AuthLocaleRedirect::class,
+            'log.api' => \App\Http\Middleware\LogApiRequests::class,
         ]);
 
+        // Add global middleware for all requests
+        $middleware->append(\App\Http\Middleware\AddSecurityHeaders::class);
+
+        // Add API middleware group
+        $middleware->group('api', [
+            \App\Http\Middleware\LogApiRequests::class,
+            'throttle:api',
+        ]);
+
+        // Set middleware priority
         $middleware->priority([
             \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
             \Illuminate\Cookie\Middleware\EncryptCookies::class,

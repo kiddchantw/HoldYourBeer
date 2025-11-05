@@ -19,6 +19,8 @@ HoldYourBeer 是一個採用**規格驅動開發（Spec-Driven Development）**�
 - **自動化程度**: 優秀 (規格自動化工具完善)
 
 ### ✨ 最新進展 (2025-11-05)
+
+**第一波改善 - 程式碼品質提升**
 - ✅ **完成優先級 5 的所有改進項目**
   - ✅ 引入 API Resources (3 個 Resource 類別)
   - ✅ 加入 Form Request Validation (3 個 Request 類別)
@@ -26,10 +28,16 @@ HoldYourBeer 是一個採用**規格驅動開發（Spec-Driven Development）**�
   - ✅ 重構 BeerController (程式碼減少 32%)
   - ✅ 重構 AuthController、BrandController
 
+**第二波改善 - 安全性強化**
+- ✅ **完成優先級 3 的所有改進項目**
+  - ✅ 實作完整的速率限制 (6 種限制策略)
+  - ✅ 加強 CORS 和 CSP 配置 (全域安全標頭)
+  - ✅ 實作 API 請求日誌與監控 (詳細日誌記錄)
+
 ### 優先改善項目
 1. 🔴 **高優先級**: 完成進行中的核心功能 (密碼重置、第三方登錄)
 2. 🟠 **中優先級**: 增加效能優化機制 (快取、分頁)
-3. 🟡 **低優先級**: 強化安全性與監控系統
+3. ~~✅ **已完成**: 強化安全性與監控系統 (速率限制、CORS/CSP、API 日誌)~~
 4. ~~✅ **已完成**: 程式碼品質提升 (Service Layer、API Resources、Form Requests)~~
 
 ---
@@ -531,11 +539,22 @@ class ApiVersionDeprecation
 
 ---
 
-### 優先級 3：安全性強化 (2-3 週)
+### 優先級 3：安全性強化 (2-3 週) ✅ 已完成 (2025-11-05)
 
-#### 3.1 實作完整的速率限制 (Rate Limiting)
+#### 3.1 實作完整的速率限制 (Rate Limiting) ✅ 已完成
 
-**現況**: 僅有 Laravel 預設的 API 速率限制 (每分鐘 60 次)
+**現況**: ~~僅有 Laravel 預設的 API 速率限制 (每分鐘 60 次)~~
+
+**✅ 實作狀態**: 已完成
+- ✅ 創建 `RateLimitServiceProvider.php` (6 種速率限制策略)
+  - `api` - 每分鐘 60 次（一般 API）
+  - `auth` - 每分鐘 5 次、每小時 20 次（認證端點）
+  - `count-actions` - 每分鐘 30 次（品飲計數）
+  - `social-login` - 每分鐘 10 次（第三方登錄）
+  - `password-reset` - 每分鐘 3 次、每小時 10 次（密碼重置）
+  - `data-export` - 每分鐘 2 次、每小時 10 次（資料匯出）
+- ✅ 更新 `routes/api.php` 應用不同速率限制
+- ✅ 註冊 RateLimitServiceProvider
 
 **建議方案**:
 ```php
@@ -596,16 +615,27 @@ public function render($request, Throwable $exception)
 }
 ```
 
-**預期效益**:
-- 🔒 防止 API 濫用和 DoS 攻擊
-- 🔒 保護後端資源
+**實際效益**:
+- ✅ 防止 API 濫用和 DoS 攻擊（6 種不同的限制策略）
+- ✅ 保護後端資源（認證端點特別嚴格限制）
 - ✅ 符合 OWASP API 安全標準
 
 ---
 
-#### 3.2 加強 CORS 和 CSP 配置
+#### 3.2 加強 CORS 和 CSP 配置 ✅ 已完成
 
-**現況**: 使用 Laravel 預設 CORS 設定，無 CSP 頭部
+**現況**: ~~使用 Laravel 預設 CORS 設定，無 CSP 頭部~~
+
+**✅ 實作狀態**: 已完成
+- ✅ 創建 `AddSecurityHeaders.php` 中間件
+  - X-Content-Type-Options: nosniff
+  - X-Frame-Options: DENY
+  - X-XSS-Protection: 1; mode=block
+  - Referrer-Policy: strict-origin-when-cross-origin
+  - Content-Security-Policy（完整 CSP 設定）
+  - 動態 CORS 標頭（僅允許配置的來源）
+- ✅ 註冊為全域中間件（所有請求）
+- ✅ API 路由自動套用 CORS 標頭
 
 **建議方案**:
 ```php
@@ -661,16 +691,30 @@ protected $middlewareGroups = [
 ];
 ```
 
-**預期效益**:
-- 🔒 防止 XSS 和點擊劫持攻擊
-- 🔒 限制資源載入來源
-- ✅ 通過安全性稽核 (Security Audit)
+**實際效益**:
+- ✅ 防止 XSS 和點擊劫持攻擊（完整的安全標頭）
+- ✅ 限制資源載入來源（CSP 策略）
+- ✅ 通過安全性稽核（符合安全最佳實踐）
+- ✅ 支援多個前端來源（FRONTEND_URL、APP_URL）
 
 ---
 
-#### 3.3 實作 API 請求日誌與監控
+#### 3.3 實作 API 請求日誌與監控 ✅ 已完成
 
-**現況**: 無詳細的 API 請求日誌和異常監控
+**現況**: ~~無詳細的 API 請求日誌和異常監控~~
+
+**✅ 實作狀態**: 已完成
+- ✅ 創建 `LogApiRequests.php` 中間件
+  - 記錄所有 API 請求（方法、路徑、狀態碼）
+  - 計算請求處理時間（毫秒）
+  - 生成唯一請求 ID（X-Request-ID）
+  - 記錄慢請求（>1秒）單獨警告
+  - 根據狀態碼自動分類日誌等級
+  - 自動過濾敏感資訊（密碼、token 等）
+- ✅ 新增 `api` 日誌頻道（config/logging.php）
+  - 每日輪替日誌
+  - 保留 30 天
+- ✅ 整合到 API 中間件群組
 
 **建議方案**:
 ```php
@@ -735,10 +779,24 @@ return [
 SENTRY_LARAVEL_DSN=https://your-sentry-dsn@sentry.io/project-id
 ```
 
-**預期效益**:
-- 📊 即時監控 API 效能
-- 🐛 快速定位和修復錯誤
-- 📈 產生 API 使用統計報告
+**實際效益**:
+- ✅ 即時監控 API 效能（記錄每個請求的處理時間）
+- ✅ 快速定位和修復錯誤（包含請求 ID、用戶 ID、IP）
+- ✅ 產生 API 使用統計報告（結構化日誌易於分析）
+- ✅ 慢請求自動警告（>1秒）
+- ✅ 安全日誌（自動過濾敏感資訊）
+
+**日誌記錄項目**:
+- request_id - 唯一請求識別碼
+- method - HTTP 方法
+- path - 請求路徑
+- user_id - 認證用戶 ID
+- ip - 客戶端 IP
+- user_agent - 用戶代理
+- status - HTTP 狀態碼
+- duration_ms - 處理時間（毫秒）
+- request_size - 請求大小
+- response_size - 回應大小
 
 ---
 
@@ -1362,13 +1420,17 @@ class FeedbackController extends Controller
 
 **預期成果**: API 效能提升 50%
 
-### 第 5-6 週 (Sprint 3)
+### 第 5-6 週 (Sprint 3) ✅ 部分完成
 - [ ] 實作 API 版本控制
-- [ ] 加強 CORS 和 CSP 配置
-- [ ] 實作 API 請求日誌與監控
+- [x] 加強 CORS 和 CSP 配置 ✅ **已完成 (2025-11-05)**
+- [x] 實作 API 請求日誌與監控 ✅ **已完成 (2025-11-05)**
+- [x] 實作完整的速率限制 ✅ **已完成 (2025-11-05)**
 - [ ] 整合 Sentry 錯誤追蹤
 
-**預期成果**: 安全性和可觀測性提升
+**實際成果**:
+- ✅ 安全性大幅提升（完整的 CSP、CORS、速率限制）
+- ✅ 可觀測性提升（詳細的 API 日誌和效能監控）
+- ✅ 防禦能力增強（6 種速率限制策略）
 
 ### 第 7-8 週 (Sprint 4) ✅ 部分完成
 - [x] 重構為 Service Layer 架構 ✅ **已完成 (2025-11-05)**
