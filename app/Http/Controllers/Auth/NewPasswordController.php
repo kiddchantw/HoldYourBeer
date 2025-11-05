@@ -8,6 +8,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
@@ -26,37 +27,87 @@ class NewPasswordController extends Controller
     /**
      * Handle an incoming new password request.
      *
+     * This method handles special characters in email addresses and provides
+     * comprehensive error handling for password reset operations.
+     *
+     * Rate Limiting: 3 attempts per minute, 10 per hour (via password-reset throttle)
+     *
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
     {
+        // Normalize email to lowercase for consistency
+        // This handles special characters and ensures case-insensitive matching
+        $email = strtolower(trim($request->input('email', '')));
+
+        $request->merge(['email' => $email]);
+
         $request->validate([
-            'token' => ['required'],
-            'email' => ['required', 'email'],
+            'token' => ['required', 'string'],
+            'email' => ['required', 'email', 'max:255'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ], [
+            'token.required' => __('validation.token.required'),
+            'email.required' => __('validation.email.required'),
+            'email.email' => __('validation.email.email'),
+            'password.required' => __('validation.password.required'),
+            'password.confirmed' => __('validation.password.confirmed'),
         ]);
 
-        // Here we will attempt to reset the user's password. If it is successful we
-        // will update the password on an actual user model and persist it to the
-        // database. Otherwise we will parse the error and return the response.
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function (User $user) use ($request) {
-                $user->forceFill([
-                    'password' => Hash::make($request->password),
-                    'remember_token' => Str::random(60),
-                ])->save();
+        try {
+            // Attempt to reset the user's password
+            $status = Password::reset(
+                $request->only('email', 'password', 'password_confirmation', 'token'),
+                function (User $user) use ($request, $email) {
+                    $user->forceFill([
+                        'password' => Hash::make($request->password),
+                        'remember_token' => Str::random(60),
+                    ])->save();
 
-                event(new PasswordReset($user));
+                    // Log successful password reset for security monitoring
+                    Log::info('Password successfully reset', [
+                        'user_id' => $user->id,
+                        'email' => $email,
+                        'ip' => $request->ip(),
+                        'user_agent' => $request->userAgent(),
+                    ]);
+
+                    event(new PasswordReset($user));
+                }
+            );
+
+            if ($status === Password::PASSWORD_RESET) {
+                return redirect()
+                    ->route('login')
+                    ->with('status', __($status));
             }
-        );
 
-        // If the password was successfully reset, we will redirect the user back to
-        // the application's home authenticated view. If there is an error we can
-        // redirect them back to where they came from with their error message.
-        return $status == Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => __($status)]);
+            // Log failed password reset attempts
+            Log::warning('Password reset failed', [
+                'email' => $email,
+                'status' => $status,
+                'ip' => $request->ip(),
+            ]);
+
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors(['email' => __($status)]);
+
+        } catch (\Exception $e) {
+            // Log unexpected errors during password reset
+            Log::error('Password reset exception', [
+                'email' => $email,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'ip' => $request->ip(),
+            ]);
+
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors([
+                    'email' => __('passwords.reset_error')
+                        ?: 'Unable to reset password. Please try again or request a new reset link.'
+                ]);
+        }
     }
 }

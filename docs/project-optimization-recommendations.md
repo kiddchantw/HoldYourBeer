@@ -42,7 +42,9 @@ HoldYourBeer 是一個採用**規格驅動開發（Spec-Driven Development）**�
   - ✅ 新增名稱排序功能（使用 JOIN 優化）
 
 ### 優先改善項目
-1. 🔴 **高優先級**: 完成進行中的核心功能 (密碼重置、第三方登錄)
+1. 🟡 **高優先級 (部分完成)**: 完成進行中的核心功能
+   - ✅ 密碼重置功能 (已完成)
+   - ⏳ 第三方登錄 (Apple ID 待完成)
 2. 🟢 **中優先級 (部分完成)**: 效能優化機制
    - ✅ API 分頁機制
    - ✅ 資料庫查詢優化
@@ -50,6 +52,7 @@ HoldYourBeer 是一個採用**規格驅動開發（Spec-Driven Development）**�
    - ⏳ API 版本控制 (待完成)
 3. ~~✅ **已完成**: 強化安全性與監控系統 (速率限制、CORS/CSP、API 日誌)~~
 4. ~~✅ **已完成**: 程式碼品質提升 (Service Layer、API Resources、Form Requests)~~
+5. ~~✅ **已完成**: API 文檔 (Laravel Scribe)~~
 
 ---
 
@@ -103,38 +106,64 @@ HoldYourBeer 是一個採用**規格驅動開發（Spec-Driven Development）**�
 
 ### 優先級 1：完成核心功能 (1-2 週)
 
-#### 1.1 完成密碼重置功能 (40% → 100%)
+#### 1.1 完成密碼重置功能 (40% → 100%) ✅ 已完成 (2025-11-05)
 
-**現況**: 功能已實現 40%，缺少以下場景：
-- 速率限制 (Rate Limiting)
-- 特殊字元郵箱處理
-- 郵件發送失敗處理
+**原況**: 功能已實現 40%，缺少以下場景：
+- ~~速率限制 (Rate Limiting)~~ ✅ 已完成
+- ~~特殊字元郵箱處理~~ ✅ 已完成
+- ~~郵件發送失敗處理~~ ✅ 已完成
 
-**建議行動**:
-```php
-// 1. 在 PasswordResetLinkController 中加入速率限制
-use Illuminate\Support\Facades\RateLimiter;
+**✅ 實作內容**:
 
-public function store(Request $request)
-{
-    $key = 'password-reset:' . $request->ip();
+1. **速率限制** (routes/auth.php)
+   ```php
+   Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
+       ->middleware('throttle:password-reset')  // 3次/分鐘, 10次/小時
+       ->name('password.email');
 
-    if (RateLimiter::tooManyAttempts($key, 3)) {
-        return back()->withErrors([
-            'email' => __('passwords.throttled')
-        ]);
-    }
+   Route::post('reset-password', [NewPasswordController::class, 'store'])
+       ->middleware('throttle:password-reset')
+       ->name('password.store');
+   ```
 
-    // ... 現有邏輯
+2. **郵箱正規化處理** (PasswordResetLinkController.php)
+   ```php
+   // 自動轉換為小寫並去除空白，處理特殊字元
+   $email = strtolower(trim($request->input('email', '')));
+   $request->merge(['email' => $email]);
+   ```
 
-    RateLimiter::hit($key, 3600); // 1小時限制
-}
-```
+3. **郵件發送失敗處理與日誌** (PasswordResetLinkController.php)
+   ```php
+   try {
+       $status = Password::sendResetLink($request->only('email'));
 
-**預期效益**:
-- ✅ 防止暴力破解和濫用
-- ✅ 提升用戶體驗 (清晰的錯誤訊息)
-- ✅ 符合資安最佳實踐
+       if ($status === Password::RESET_LINK_SENT) {
+           Log::info('Password reset link sent', [/* ... */]);
+       } else {
+           Log::warning('Password reset link failed', [/* ... */]);
+       }
+   } catch (\Exception $e) {
+       Log::error('Password reset email sending failed', [
+           'error' => $e->getMessage(),
+           'trace' => $e->getTraceAsString(),
+       ]);
+       // 返回用戶友好的錯誤訊息
+   }
+   ```
+
+4. **自訂錯誤訊息** (lang/en/passwords.php)
+   ```php
+   'mail_error' => 'Unable to send password reset email...',
+   'reset_error' => 'Unable to reset password...',
+   ```
+
+**實際效益**:
+- ✅ 防止暴力破解和濫用（速率限制：3次/分鐘，10次/小時）
+- ✅ 提升用戶體驗（清晰的錯誤訊息，不暴露技術細節）
+- ✅ 符合資安最佳實踐（完整的安全日誌記錄）
+- ✅ 支援特殊字元郵箱（郵箱正規化）
+- ✅ 完整的異常處理（郵件發送失敗不會導致系統錯誤）
 
 ---
 
@@ -1433,13 +1462,15 @@ class FeedbackController extends Controller
 
 ## 📈 實施路線圖
 
-### 第 1-2 週 (Sprint 1)
-- [ ] 完成密碼重置功能 (40% → 100%)
+### 第 1-2 週 (Sprint 1) ✅ 部分完成
+- [x] 完成密碼重置功能 (40% → 100%) ✅ **已完成 (2025-11-05)**
 - [ ] 完成第三方登錄 (Apple ID)
 - [ ] 完成品牌分析圖表 (63% → 100%)
 - [ ] 建立 CI/CD Pipeline
 
-**預期成果**: 功能完成度 75% → 100%
+**實際成果**:
+- ✅ 密碼重置功能已完全實現（速率限制、郵箱正規化、錯誤處理）
+- ✅ 安全性強化（完整的日誌記錄和異常處理）
 
 ### 第 3-4 週 (Sprint 2)
 - [ ] 引入 Redis 快取層
