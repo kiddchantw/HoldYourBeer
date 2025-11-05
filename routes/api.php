@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\AuthController as V1AuthController;
 use App\Http\Controllers\Api\V1\BeerController as V1BeerController;
 use App\Http\Controllers\Api\V1\BrandController as V1BrandController;
+use App\Http\Controllers\Api\V1\FeedbackController as V1FeedbackController;
 use App\Http\Controllers\Api\V2\BrandController as V2BrandController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,9 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::post('/register', [V1AuthController::class, 'register'])->name('register');
         Route::post('/login', [V1AuthController::class, 'token'])->name('login');
     });
+
+    // Public feedback endpoint (allows anonymous submissions)
+    Route::post('/feedback', [V1FeedbackController::class, 'store'])->name('feedback.store');
 
     // Authenticated routes
     Route::middleware('auth:sanctum')->group(function () {
@@ -44,6 +48,15 @@ Route::prefix('v1')->name('v1.')->group(function () {
 
         // Brand endpoints
         Route::get('/brands', [V1BrandController::class, 'index'])->name('brands.index');
+
+        // Feedback endpoints (authenticated users)
+        Route::get('/feedback', [V1FeedbackController::class, 'index'])->name('feedback.index');
+        Route::get('/feedback/{feedback}', [V1FeedbackController::class, 'show'])->name('feedback.show');
+        Route::patch('/feedback/{feedback}', [V1FeedbackController::class, 'update'])->name('feedback.update');
+        Route::delete('/feedback/{feedback}', [V1FeedbackController::class, 'destroy'])->name('feedback.destroy');
+
+        // Admin-only feedback endpoint
+        Route::get('/admin/feedback', [V1FeedbackController::class, 'adminIndex'])->name('admin.feedback.index');
     });
 });
 

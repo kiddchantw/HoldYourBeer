@@ -1445,55 +1445,53 @@ redocly preview-docs spec/api/api.yaml
 
 ---
 
-#### 6.2 加入使用者回饋機制
+#### 6.2 加入使用者回饋機制 ✅ **已完成 (2025-11-05)**
 
-**建議功能**:
-1. **應用內回饋按鈕**
-2. **錯誤自動回報** (整合 Sentry)
-3. **使用者滿意度調查** (NPS)
+**已實作功能**:
+1. ✅ **回饋表單** (支援匿名提交)
+2. ✅ **錯誤回報系統** (包含技術資訊自動收集)
+3. ✅ **功能建議收集** (支援優先級標記)
+4. ✅ **管理員後台** (查看、更新、管理所有回饋)
 
-**實作範例**:
-```php
-// app/Http/Controllers/FeedbackController.php
-namespace App\Http\Controllers;
+**實作詳情**:
+- **資料庫**: `feedback` 表支援三種類型 (feedback, bug_report, feature_request)
+- **模型**: `Feedback` 模型含完整的 scope、accessor、helper methods
+- **API 端點**:
+  - `POST /api/v1/feedback` - 提交回饋 (公開，允許匿名)
+  - `GET /api/v1/feedback` - 列出使用者自己的回饋
+  - `GET /api/v1/feedback/{id}` - 查看回饋詳情
+  - `PATCH /api/v1/feedback/{id}` - 更新回饋 (僅管理員)
+  - `DELETE /api/v1/feedback/{id}` - 刪除回饋 (僅管理員)
+  - `GET /api/v1/admin/feedback` - 管理員查看所有回饋
+- **驗證**: `StoreFeedbackRequest` 含中文錯誤訊息
+- **資源**: `FeedbackResource` 含權限控制的資料格式化
+- **測試**: 26 個測試用例涵蓋所有功能
+- **工廠**: `FeedbackFactory` 支援多種狀態
 
-use App\Models\Feedback;
-use Illuminate\Http\Request;
+**技術特點**:
+- 支援匿名使用者提交 (必須提供 email)
+- 自動捕獲技術資訊 (IP、瀏覽器、設備、作業系統)
+- 6 種狀態追蹤 (new, in_review, in_progress, resolved, closed, rejected)
+- 4 種優先級 (low, medium, high, critical)
+- 權限控制 (使用者只能查看自己的，管理員可查看全部)
+- 支援分頁、篩選、排序
+- 完整的多語言標籤 (中文)
 
-class FeedbackController extends Controller
-{
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'type' => 'required|in:bug,feature,improvement',
-            'message' => 'required|string|max:1000',
-            'url' => 'nullable|url',
-            'screenshot' => 'nullable|image|max:5120', // 5MB
-        ]);
-
-        if ($request->hasFile('screenshot')) {
-            $path = $request->file('screenshot')->store('feedback', 'public');
-            $validated['screenshot'] = $path;
-        }
-
-        Feedback::create([
-            'user_id' => auth()->id(),
-            'type' => $validated['type'],
-            'message' => $validated['message'],
-            'url' => $validated['url'] ?? url()->previous(),
-            'screenshot' => $validated['screenshot'] ?? null,
-            'user_agent' => $request->userAgent(),
-        ]);
-
-        return back()->with('success', '感謝您的回饋！');
-    }
-}
-```
+**檔案清單**:
+- `database/migrations/2025_11_05_140639_create_feedback_table.php`
+- `app/Models/Feedback.php` (281 行)
+- `app/Http/Requests/StoreFeedbackRequest.php`
+- `app/Http/Resources/FeedbackResource.php`
+- `app/Http/Controllers/Api/V1/FeedbackController.php` (367 行)
+- `routes/api.php` (已新增 6 個路由)
+- `tests/Feature/Api/FeedbackControllerTest.php` (26 個測試)
+- `database/factories/FeedbackFactory.php`
 
 **預期效益**:
-- 📊 收集真實使用者反饋
-- 🐛 快速發現和修復問題
+- ✅ 收集真實使用者反饋
+- ✅ 快速發現和修復問題
 - ✅ 提升使用者滿意度
+- ✅ 管理員可有效追蹤和處理回饋
 
 ---
 
@@ -1547,7 +1545,7 @@ class FeedbackController extends Controller
 ### 持續改進項目
 - [ ] 加入 Pre-commit Hooks
 - [ ] 建立開發環境標準化文件
-- [ ] 加入使用者回饋機制
+- [x] 加入使用者回饋機制 ✅ **已完成 (2025-11-05)**
 - [ ] 效能測試和負載測試
 
 ---
