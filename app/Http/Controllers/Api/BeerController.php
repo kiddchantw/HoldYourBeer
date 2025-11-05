@@ -3,15 +3,24 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Beer;
+use App\Http\Requests\StoreBeerRequest;
+use App\Http\Requests\CountActionRequest;
+use App\Http\Resources\BeerResource;
+use App\Http\Resources\TastingLogResource;
+use App\Services\TastingService;
 use App\Models\UserBeerCount;
-use App\Models\TastingLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class BeerController extends Controller
 {
+    /**
+     * The tasting service instance.
+     */
+    public function __construct(
+        private TastingService $tastingService
+    ) {}
+
     /**
      * Get my list of tracked beers.
      *
@@ -40,122 +49,68 @@ class BeerController extends Controller
 
         $userBeerCounts = $query->get();
 
-        // Transform the data to match API specification
+        // Transform the data using BeerResource
         $beers = $userBeerCounts->map(function ($userBeerCount) {
-            return [
-                'id' => $userBeerCount->beer->id,
-                'name' => $userBeerCount->beer->name,
-                'style' => $userBeerCount->beer->style,
-                'brand' => [
-                    'id' => $userBeerCount->beer->brand->id,
-                    'name' => $userBeerCount->beer->brand->name,
-                ],
-                'tasting_count' => $userBeerCount->count,
-                'last_tasted_at' => $userBeerCount->last_tasted_at,
-            ];
+            $beer = $userBeerCount->beer;
+            $beer->tasting_count = $userBeerCount->count;
+            $beer->last_tasted_at = $userBeerCount->last_tasted_at;
+            return $beer;
         });
 
-        return response()->json($beers);
+        return BeerResource::collection($beers);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\StoreBeerRequest  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(StoreBeerRequest $request)
     {
-        $validatedData = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'brand_id' => ['required', 'integer', 'exists:brands,id'],
-            'style' => ['nullable', 'string', 'max:255'],
-        ]);
+        $beer = $this->tastingService->addBeerToTracking(
+            Auth::id(),
+            $request->validated()
+        );
 
-        $beer = Beer::create($validatedData);
-
-        UserBeerCount::create([
-            'user_id' => Auth::id(),
-            'beer_id' => $beer->id,
-            'count' => 1,
-            'last_tasted_at' => now(),
-        ]);
-
-        return response()->json($beer, 201);
+        return (new BeerResource($beer))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
      * Increment or decrement the tasting count for a beer.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\CountActionRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function countAction(Request $request, int $id)
+    public function countAction(CountActionRequest $request, int $id)
     {
-        $validatedData = $request->validate([
-            'action' => ['required', 'string', 'in:increment,decrement'],
-        ]);
-
-        $action = $validatedData['action'];
+        $action = $request->validated()['action'];
+        $note = $request->validated()['note'] ?? null;
 
         try {
-            return DB::transaction(function () use ($id, $action) {
-                // Find the user beer count with lock
-                $userBeerCount = UserBeerCount::where('user_id', Auth::id())
-                    ->where('beer_id', $id)
-                    ->lockForUpdate()
-                    ->first();
+            $userBeerCount = match($action) {
+                'increment' => $this->tastingService->incrementCount(Auth::id(), $id, $note),
+                'decrement' => $this->tastingService->decrementCount(Auth::id(), $id, $note),
+            };
 
-                if (!$userBeerCount) {
-                    return response()->json([
-                        'error' => 'Beer not found in your tracked list.'
-                    ], 404);
-                }
+            $beer = $userBeerCount->beer;
+            $beer->tasting_count = $userBeerCount->count;
+            $beer->last_tasted_at = $userBeerCount->last_tasted_at;
 
-                // Perform the action
-                if ($action === 'increment') {
-                    $userBeerCount->count += 1;
-                } elseif ($action === 'decrement') {
-                    // Don't decrement below zero
-                    if ($userBeerCount->count <= 0) {
-                        return response()->json([
-                            'error' => 'Cannot decrement count below zero.'
-                        ], 400);
-                    }
-                    $userBeerCount->count -= 1;
-                }
-
-                $userBeerCount->last_tasted_at = now();
-                $userBeerCount->save();
-
-                // Create tasting log entry
-                TastingLog::create([
-                    'user_beer_count_id' => $userBeerCount->id,
-                    'action' => $action,
-                    'tasted_at' => now(),
-                ]);
-
-                // Load the beer with brand for response
-                $userBeerCount->load(['beer.brand']);
-
-                // Return the updated beer object
-                return response()->json([
-                    'id' => $userBeerCount->beer->id,
-                    'name' => $userBeerCount->beer->name,
-                    'style' => $userBeerCount->beer->style,
-                    'brand' => [
-                        'id' => $userBeerCount->beer->brand->id,
-                        'name' => $userBeerCount->beer->brand->name,
-                    ],
-                    'tasting_count' => $userBeerCount->count,
-                    'last_tasted_at' => $userBeerCount->last_tasted_at,
-                ]);
-            });
-        } catch (\Exception) {
+            return new BeerResource($beer);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
             return response()->json([
-                'error' => 'Failed to update tasting count.'
-            ], 500);
+                'error_code' => 'RES_002',
+                'message' => 'Beer not found in your tracked list.'
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error_code' => 'BIZ_001',
+                'message' => $e->getMessage()
+            ], 400);
         }
     }
 
@@ -167,32 +122,15 @@ class BeerController extends Controller
      */
     public function tastingLogs(int $id)
     {
-        // Find the user beer count
-        $userBeerCount = UserBeerCount::where('user_id', Auth::id())
-            ->where('beer_id', $id)
-            ->first();
+        try {
+            $tastingLogs = $this->tastingService->getTastingLogs(Auth::id(), $id);
 
-        if (!$userBeerCount) {
+            return TastingLogResource::collection($tastingLogs);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
             return response()->json([
-                'error' => 'Beer not found in your tracked list.'
+                'error_code' => 'RES_002',
+                'message' => 'Beer not found in your tracked list.'
             ], 404);
         }
-
-        // Get tasting logs
-        $tastingLogs = TastingLog::where('user_beer_count_id', $userBeerCount->id)
-            ->orderBy('tasted_at', 'desc')
-            ->get();
-
-        // Transform the data
-        $logs = $tastingLogs->map(function ($log) {
-            return [
-                'id' => $log->id,
-                'action' => $log->action,
-                'tasted_at' => $log->tasted_at,
-                'note' => $log->note,
-            ];
-        });
-
-        return response()->json($logs);
     }
 }
