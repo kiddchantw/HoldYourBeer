@@ -113,7 +113,7 @@ class FeedbackFactory extends Factory
     /**
      * Indicate that the feedback is new.
      */
-    public function new(): static
+    public function asNew(): static
     {
         return $this->withStatus(Feedback::STATUS_NEW);
     }

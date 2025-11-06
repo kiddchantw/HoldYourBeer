@@ -15,17 +15,20 @@ use PHPUnit\Framework\Attributes\Test;
  *
  * Scenarios covered:
  * - User login with Google account
- * - User login with Apple account  
- * - Existing user linking Google account
- * - Existing user linking Apple account
+ * - User login with Apple account
+ * - Existing user login with Google account
+ * - Existing user login with Apple account
  * - Social login failure handling
  *
  * Test coverage:
- * - OAuth authentication flow
- * - Social provider integration
- * - Account linking functionality
+ * - OAuth authentication flow with email as unique identifier
+ * - Social provider integration (Google, Apple)
+ * - Automatic account linking via email
  * - Error handling for failed authentication
- * - User data synchronization with social providers
+ * - Email verification for OAuth users
+ *
+ * Note: This implementation uses email as the unique identifier.
+ * No separate provider fields are stored in the database.
  */
 class SocialLoginTest extends TestCase
 {
@@ -52,14 +55,16 @@ class SocialLoginTest extends TestCase
 
         $response = $this->get(route('social.callback', ['provider' => 'google']));
 
-        $response->assertRedirect('/dashboard');
+        $response->assertRedirect(route('localized.dashboard', ['locale' => 'en']));
         $this->assertAuthenticated();
         $this->assertDatabaseHas('users', [
             'email' => 'google@example.com',
-            'provider' => 'google',
-            'provider_id' => 'google_id_123',
-            'google_id' => 'google_id_123',
+            'name' => 'Google User',
         ]);
+
+        // Verify email is verified for OAuth users
+        $user = User::where('email', 'google@example.com')->first();
+        $this->assertNotNull($user->email_verified_at);
     }
 
     #[Test]
@@ -69,18 +74,20 @@ class SocialLoginTest extends TestCase
 
         $response = $this->get(route('social.callback', ['provider' => 'apple']));
 
-        $response->assertRedirect('/dashboard');
+        $response->assertRedirect(route('localized.dashboard', ['locale' => 'en']));
         $this->assertAuthenticated();
         $this->assertDatabaseHas('users', [
             'email' => 'apple@example.com',
-            'provider' => 'apple',
-            'provider_id' => 'apple_id_123',
-            'apple_id' => 'apple_id_123',
+            'name' => 'Apple User',
         ]);
+
+        // Verify email is verified for OAuth users
+        $user = User::where('email', 'apple@example.com')->first();
+        $this->assertNotNull($user->email_verified_at);
     }
 
     #[Test]
-    public function existing_user_can_link_google_account()
+    public function existing_user_can_login_with_google()
     {
         $user = User::factory()->create([
             'email' => 'existing@example.com',
@@ -91,18 +98,17 @@ class SocialLoginTest extends TestCase
 
         $response = $this->get(route('social.callback', ['provider' => 'google']));
 
-        $response->assertRedirect('/dashboard');
+        $response->assertRedirect(route('localized.dashboard', ['locale' => 'en']));
         $this->assertAuthenticatedAs($user);
+
+        // Email is the unique identifier - no provider fields needed
         $this->assertDatabaseHas('users', [
             'email' => 'existing@example.com',
-            'provider' => 'google',
-            'provider_id' => 'google_id_456',
-            'google_id' => 'google_id_456',
         ]);
     }
 
     #[Test]
-    public function existing_user_can_link_apple_account()
+    public function existing_user_can_login_with_apple()
     {
         $user = User::factory()->create([
             'email' => 'existing2@example.com',
@@ -113,13 +119,12 @@ class SocialLoginTest extends TestCase
 
         $response = $this->get(route('social.callback', ['provider' => 'apple']));
 
-        $response->assertRedirect('/dashboard');
+        $response->assertRedirect(route('localized.dashboard', ['locale' => 'en']));
         $this->assertAuthenticatedAs($user);
+
+        // Email is the unique identifier - no provider fields needed
         $this->assertDatabaseHas('users', [
             'email' => 'existing2@example.com',
-            'provider' => 'apple',
-            'provider_id' => 'apple_id_456',
-            'apple_id' => 'apple_id_456',
         ]);
     }
 

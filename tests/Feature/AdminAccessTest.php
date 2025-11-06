@@ -63,9 +63,9 @@ class AdminAccessTest extends TestCase
     public function admin_can_view_user_list()
     {
         $admin = User::factory()->create(['role' => 'admin']);
-        $user1 = User::factory()->create(['email' => 'user1@example.com', 'name' => 'User One', 'provider' => null, 'provider_id' => null]);
-        $user2 = User::factory()->create(['email' => 'user2@google.com', 'name' => 'User Two Google', 'provider' => 'google', 'google_id' => 'google_id_1']);
-        $user3 = User::factory()->create(['email' => 'user3@apple.com', 'name' => 'User Three Apple', 'provider' => 'apple', 'apple_id' => 'apple_id_1']);
+        $user1 = User::factory()->create(['email' => 'user1@example.com', 'name' => 'User One']);
+        $user2 = User::factory()->create(['email' => 'user2@google.com', 'name' => 'User Two Google']);
+        $user3 = User::factory()->create(['email' => 'user3@apple.com', 'name' => 'User Three Apple']);
 
         $this->actingAs($admin);
 

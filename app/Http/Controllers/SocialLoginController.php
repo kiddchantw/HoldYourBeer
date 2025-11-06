@@ -3,69 +3,72 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Auth\Events\Registered;
 
 class SocialLoginController extends Controller
 {
-    public function redirectToProvider($locale = null, $provider = null)
+    /**
+     * Redirect to the OAuth provider
+     */
+    public function redirectToProvider($locale = null, $provider = null): RedirectResponse
     {
         // If called from localized route, $locale is the locale and $provider is in second param
         // If called from non-localized route, $locale is the provider
         $actualProvider = $provider ?? $locale;
 
-        return Socialite::driver($actualProvider)->redirect();
+        // Use stateless mode and explicitly set redirect URL
+        return Socialite::driver($actualProvider)
+            ->stateless()
+            ->redirect();
     }
 
-    public function handleProviderCallback($locale = null, $provider = null)
+    /**
+     * Handle the OAuth provider callback
+     */
+    public function handleProviderCallback($locale = null, $provider = null): RedirectResponse
     {
         // If called from localized route, $locale is the locale and $provider is in second param
         // If called from non-localized route, $locale is the provider
         $actualProvider = $provider ?? $locale;
+        $targetLocale = ($provider !== null) ? $locale : 'en';
 
         try {
-            $socialUser = Socialite::driver($actualProvider)->user();
+            $socialUser = Socialite::driver($actualProvider)->stateless()->user();
         } catch (\Exception $e) {
-            return redirect('/login')->withErrors(['social_login' => 'Unable to login with ' . ucfirst($actualProvider) . '. Please try again.']);
+            $loginRoute = ($provider !== null)
+                ? route('localized.login', ['locale' => $targetLocale])
+                : route('login');
+
+            return redirect($loginRoute)->withErrors([
+                'social_login' => 'Unable to login with ' . ucfirst($actualProvider) . '. Please try again.'
+            ]);
         }
 
-        $user = User::where('provider', $actualProvider)
-                    ->where('provider_id', $socialUser->getId())
-                    ->first();
+        // Use email as the unique identifier
+        $user = User::where('email', $socialUser->getEmail())->first();
 
-        if (!$user) {
-            // Check if a user with the same email already exists
-            $user = User::where('email', $socialUser->getEmail())->first();
+        if ($user) {
+            // Existing user - just login
+            Auth::login($user, true);
+        } else {
+            // Create new user
+            $user = User::create([
+                'name' => $socialUser->getName() ?? $socialUser->getNickname() ?? $socialUser->getEmail(),
+                'email' => $socialUser->getEmail(),
+                'password' => Hash::make(Str::random(16)), // Random password for OAuth users
+                'email_verified_at' => now(), // OAuth users are already verified
+            ]);
 
-            if ($user) {
-                // Link social account to existing user
-                $user->provider = $actualProvider;
-                $user->provider_id = $socialUser->getId();
-                if ($actualProvider === 'google') {
-                    $user->google_id = $socialUser->getId();
-                } elseif ($actualProvider === 'apple') {
-                    $user->apple_id = $socialUser->getId();
-                }
-                $user->save();
-            } else {
-                // Create a new user
-                $user = User::create([
-                    'name' => $socialUser->getName() ?? $socialUser->getNickname() ?? $socialUser->getEmail(),
-                    'email' => $socialUser->getEmail(),
-                    'password' => Hash::make(Str::random(24)), // Generate a random password
-                    'provider' => $actualProvider,
-                    'provider_id' => $socialUser->getId(),
-                    'google_id' => ($actualProvider === 'google') ? $socialUser->getId() : null,
-                    'apple_id' => ($actualProvider === 'apple') ? $socialUser->getId() : null,
-                ]);
-            }
+            event(new Registered($user));
+            Auth::login($user, true);
         }
 
-        Auth::login($user, true);
-
-        return redirect('/dashboard');
+        // Redirect to dashboard with proper locale
+        return redirect()->route('localized.dashboard', ['locale' => $targetLocale]);
     }
 }

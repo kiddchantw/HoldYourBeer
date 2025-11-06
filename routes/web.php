@@ -96,6 +96,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 Route::get('/auth/{provider}/redirect', [SocialLoginController::class, 'redirectToProvider'])->name('social.redirect');
 Route::get('/auth/{provider}/callback', [SocialLoginController::class, 'handleProviderCallback'])->name('social.callback');
 
+// Test OAuth configuration (development only)
+if (app()->environment('local')) {
+    Route::get('/test-oauth', [\App\Http\Controllers\TestOAuthController::class, 'showConfig'])->name('test.oauth');
+}
+
 // ------------------------------------------------------------------
 // Fallback non-localized routes (default English) for tests/BC
 // ------------------------------------------------------------------

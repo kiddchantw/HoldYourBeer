@@ -23,10 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'provider',
-        'provider_id',
-        'google_id',
-        'apple_id',
+        'email_verified_at',
         'firebase_uid',
         'fcm_token',
     ];
