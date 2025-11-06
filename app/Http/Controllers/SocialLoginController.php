@@ -11,20 +11,28 @@ use Illuminate\Support\Str;
 
 class SocialLoginController extends Controller
 {
-    public function redirectToProvider($provider)
+    public function redirectToProvider($locale = null, $provider = null)
     {
-        return Socialite::driver($provider)->redirect();
+        // If called from localized route, $locale is the locale and $provider is in second param
+        // If called from non-localized route, $locale is the provider
+        $actualProvider = $provider ?? $locale;
+
+        return Socialite::driver($actualProvider)->redirect();
     }
 
-    public function handleProviderCallback($provider)
+    public function handleProviderCallback($locale = null, $provider = null)
     {
+        // If called from localized route, $locale is the locale and $provider is in second param
+        // If called from non-localized route, $locale is the provider
+        $actualProvider = $provider ?? $locale;
+
         try {
-            $socialUser = Socialite::driver($provider)->user();
+            $socialUser = Socialite::driver($actualProvider)->user();
         } catch (\Exception $e) {
-            return redirect('/login')->withErrors(['social_login' => 'Unable to login with ' . ucfirst($provider) . '. Please try again.']);
+            return redirect('/login')->withErrors(['social_login' => 'Unable to login with ' . ucfirst($actualProvider) . '. Please try again.']);
         }
 
-        $user = User::where('provider', $provider)
+        $user = User::where('provider', $actualProvider)
                     ->where('provider_id', $socialUser->getId())
                     ->first();
 
@@ -34,11 +42,11 @@ class SocialLoginController extends Controller
 
             if ($user) {
                 // Link social account to existing user
-                $user->provider = $provider;
+                $user->provider = $actualProvider;
                 $user->provider_id = $socialUser->getId();
-                if ($provider === 'google') {
+                if ($actualProvider === 'google') {
                     $user->google_id = $socialUser->getId();
-                } elseif ($provider === 'apple') {
+                } elseif ($actualProvider === 'apple') {
                     $user->apple_id = $socialUser->getId();
                 }
                 $user->save();
@@ -48,10 +56,10 @@ class SocialLoginController extends Controller
                     'name' => $socialUser->getName() ?? $socialUser->getNickname() ?? $socialUser->getEmail(),
                     'email' => $socialUser->getEmail(),
                     'password' => Hash::make(Str::random(24)), // Generate a random password
-                    'provider' => $provider,
+                    'provider' => $actualProvider,
                     'provider_id' => $socialUser->getId(),
-                    'google_id' => ($provider === 'google') ? $socialUser->getId() : null,
-                    'apple_id' => ($provider === 'apple') ? $socialUser->getId() : null,
+                    'google_id' => ($actualProvider === 'google') ? $socialUser->getId() : null,
+                    'apple_id' => ($actualProvider === 'apple') ? $socialUser->getId() : null,
                 ]);
             }
         }

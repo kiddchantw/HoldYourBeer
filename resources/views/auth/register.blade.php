@@ -32,6 +32,7 @@
                             name="password"
                             required autocomplete="new-password" />
 
+            <p class="mt-1 text-sm text-gray-500">{{ __('Password must be at least 8 characters') }}</p>
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 

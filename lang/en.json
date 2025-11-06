@@ -40,5 +40,6 @@
     "Brand Count": "Brand Count",
     "New Brands Tried": "New Brands Tried",
     "Brand Distribution Chart": "Brand Distribution Chart",
-    "No consumption data available": "No consumption data available"
+    "No consumption data available": "No consumption data available",
+    "Password must be at least 8 characters": "Password must be at least 8 characters"
 }

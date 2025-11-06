@@ -93,14 +93,14 @@
             </div>
 
             <!-- Social Login Buttons -->
-            <div class="grid grid-cols-2 gap-4">
+            <div class="flex justify-center">
                 @php
                     $socialRoute = request()->route()->getName() === 'localized.login' ? 'localized.social.redirect' : 'social.redirect';
                     $routeParams = request()->route()->getName() === 'localized.login' ? ['locale' => app()->getLocale()] : [];
                 @endphp
 
                 <a href="{{ route($socialRoute, array_merge($routeParams, ['provider' => 'google'])) }}"
-                   class="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl shadow-sm bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md transition duration-200 group">
+                   class="flex items-center justify-center px-6 py-3 border border-gray-300 rounded-xl shadow-sm bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md transition duration-200 group w-full max-w-xs">
                     <svg class="w-5 h-5 mr-2 text-red-500" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                         <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -110,6 +110,8 @@
                     <span class="font-medium">Google</span>
                 </a>
 
+                {{-- Apple Sign In - Temporarily Hidden --}}
+                {{--
                 <a href="{{ route($socialRoute, array_merge($routeParams, ['provider' => 'apple'])) }}"
                    class="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl shadow-sm bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md transition duration-200 group">
                     <svg class="w-5 h-5 mr-2 text-gray-800" viewBox="0 0 24 24" fill="currentColor">
@@ -117,6 +119,7 @@
                     </svg>
                     <span class="font-medium">Apple</span>
                 </a>
+                --}}
             </div>
 
             <!-- Sign Up Link -->
