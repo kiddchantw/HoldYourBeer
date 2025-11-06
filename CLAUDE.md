@@ -11,11 +11,8 @@ HoldYourBeer is a Laravel-based beer tracking application that follows a **Spec-
 > **📖 For detailed setup instructions, see [README.md](README.md#technology-stack)**
 
 - **Backend**: Laravel 12 with PHP 8.3
-- **Mobile App**: Flutter with Firebase Auth
-- **Authentication**:
-  - Laravel Sanctum (email/password)
-  - Firebase Auth (Google Sign-In, Apple Sign-In)
-- **Push Notifications**: Firebase Cloud Messaging (FCM)
+- **Mobile App**: Flutter
+- **Authentication**: Laravel Sanctum (email/password)
 - **Testing**: PHPUnit with PCOV for code coverage
 - **Design**: Mobile-first responsive design using Tailwind CSS
 
@@ -34,15 +31,11 @@ This file contains the command templates and all necessary variables.
 This project follows a comprehensive specification-first approach:
 
 ### Core Business Logic
-- **Users**: Hybrid authentication system
-  - Traditional: Registration and authentication via Laravel Sanctum
-  - Social: Firebase Auth with Google/Apple Sign-In
-  - Account linking: Same email automatically linked across methods
+- **Users**: Registration and authentication via Laravel Sanctum
 - **Brands**: Beer brand entities (e.g., "Guinness")
 - **Beers**: Specific beer variants (e.g., "Guinness Draught")
 - **Tasting Count**: Optimized count tracking per user/beer
 - **Tasting Logs**: Audit trail of increment/decrement actions
-- **Push Notifications**: FCM token management for notifications
 
 ### Specification Structure
 - `/spec/api/api.yaml` - OpenAPI 3.0 specification for all endpoints
@@ -57,22 +50,10 @@ This project follows a comprehensive specification-first approach:
 
 ### API Design Patterns
 - RESTful endpoints with `/api/v1/` prefix (versioned)
-- Hybrid authentication:
-  - Bearer token via Sanctum (email/password)
-  - Bearer token via Firebase ID Token (Google/Apple Sign-In)
-- Middleware: `auth:sanctum` for Sanctum, `firebase.auth` for Firebase
+- Authentication: Bearer token via Sanctum (email/password)
+- Middleware: `auth:sanctum` for API protection
 - Count modifications use dedicated `count_actions` endpoint with `increment`/`decrement` actions
 - All responses follow consistent JSON structure defined in OpenAPI spec
-
-### Firebase Integration
-- **Service**: `FirebaseAuthService` - Token verification and user management
-- **Middleware**: `FirebaseAuthMiddleware` - Protects API routes
-- **Controller**: `FirebaseAuthController` - Handles login, FCM tokens, logout
-- **Routes**: `/api/v1/auth/firebase/*` endpoints
-- **Documentation**:
-  - `/docs/FIREBASE_AUTH_IMPLEMENTATION.md` - Complete technical design
-  - `/docs/FIREBASE_SETUP.md` - Firebase Console setup guide
-  - `/docs/FLUTTER_INTEGRATION.md` - Flutter integration guide
 
 ## Key API Endpoints
 
@@ -127,12 +108,6 @@ When completing any feature development, Claude Code will automatically:
 - Core Laravel structure with additional spec-driven documentation
 - Documentation in `/docs/` including:
   - System flow diagrams
-  - Firebase integration guides (setup, implementation, Flutter)
+  - API usage guides and documentation
 - Complete behavioral specifications in `/spec/` directory
 - Mobile-responsive Livewire components for web interface
-- Firebase integration files:
-  - `app/Services/FirebaseAuthService.php` - Firebase authentication service
-  - `app/Http/Middleware/FirebaseAuthMiddleware.php` - Route protection
-  - `app/Http/Controllers/Api/FirebaseAuthController.php` - API endpoints
-  - `config/firebase.php` - Firebase configuration
-  - `database/migrations/*_add_firebase_fields_to_users_table.php` - User schema

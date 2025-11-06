@@ -182,15 +182,15 @@ npm run build
 ```
 Backend:     Laravel 12 + PHP 8.3
 Database:    PostgreSQL
-Auth:        Laravel Sanctum + Firebase Auth
-Mobile:      Flutter + Firebase
-Queue:       FCM 推播通知
+Auth:        Laravel Sanctum
+Mobile:      Flutter
+Queue:       Background Jobs
 Frontend:    Blade + Tailwind CSS + Livewire
 ```
 
 ### 需求匹配度分析
 
-#### 1. Queue Workers 需求（FCM 推播）
+#### 1. Queue Workers 需求
 
 **Laravel Cloud**：⭐⭐⭐⭐⭐
 ```
@@ -230,20 +230,20 @@ Frontend:    Blade + Tailwind CSS + Livewire
 
 **關鍵發現**：PostgreSQL 在 Zeabur 的成本優勢極為明顯！
 
-#### 3. Firebase 整合
+#### 3. 第三方套件支援
 
-**Laravel Cloud**：⭐⭐⭐⭐
+**Laravel Cloud**：⭐⭐⭐⭐⭐
 ```
 ✅ 標準 Laravel 環境
 ✅ 支援所有 PHP 套件
-✅ kreait/laravel-firebase 正常運作
+✅ Composer 套件完全相容
 ```
 
-**Zeabur**：⭐⭐⭐⭐
+**Zeabur**：⭐⭐⭐⭐⭐
 ```
 ✅ 標準 Laravel 環境
 ✅ 支援所有 PHP 套件
-✅ kreait/laravel-firebase 正常運作
+✅ Composer 套件完全相容
 ```
 
 #### 4. 開發流程（Git + CI/CD）
@@ -712,9 +712,7 @@ Laravel Cloud (MySQL)：
 - [ ] 網站可正常訪問
 - [ ] 資料庫連線正常
 - [ ] Google OAuth 登入功能
-- [ ] Firebase Auth 登入功能
 - [ ] Queue Jobs 正常執行
-- [ ] FCM 推播正常發送
 
 ---
 
@@ -872,16 +870,17 @@ Sentry
 ```php
 // HoldYourBeer 需要監控的場景
 
-1. Firebase Auth API
-   POST /api/v1/auth/firebase/login
+1. API 端點效能
+   POST /api/v1/beers
+   GET /api/v1/beers
    → 回應時間、成功率、錯誤類型
 
 2. Google OAuth 流程
    GET /auth/google/callback
    → 轉換率、失敗原因
 
-3. FCM 推播 Queue
-   dispatch(new SendFcmNotification($user, $beer))
+3. 背景 Queue Jobs
+   dispatch(new ProcessBeerData($user, $beer))
    → 執行狀況、失敗率、積壓情況
 
 4. 資料庫查詢效能
@@ -889,8 +888,8 @@ Sentry
    → 查詢時間、N+1 問題
 
 5. 例外錯誤
-   FirebaseAuthException
-   TokenExpiredException
+   AuthenticationException
+   ValidationException
    → 錯誤堆疊、發生頻率
 ```
 
@@ -900,9 +899,9 @@ Sentry
 HoldYourBeer + Nightwatch 可自動監控：
 
 ✅ 所有 API 端點（回應時間、狀態碼、錯誤率）
-✅ Queue Jobs 執行（FCM 推播成功率、執行時間）
+✅ Queue Jobs 執行（背景任務成功率、執行時間）
 ✅ 資料庫查詢效能（識別慢查詢、N+1 問題）
-✅ Firebase 驗證錯誤（自動捕捉例外）
+✅ 認證錯誤（自動捕捉例外）
 ✅ Google OAuth 流程（追蹤整個認證流程）
 ✅ 用戶行為分析（追蹤個別用戶操作）
 
@@ -918,10 +917,10 @@ php artisan nightwatch:install
 ```
 HoldYourBeer + Sentry 可監控：
 
-✅ Firebase 驗證錯誤（例外捕捉 + 堆疊追蹤）
+✅ 認證錯誤（例外捕捉 + 堆疊追蹤）
 ✅ Google OAuth 失敗（錯誤詳情）
 ✅ 資料庫錯誤（SQL 例外）
-⚠️ FCM Queue 失敗（需在 Job 中手動 report）
+⚠️ Queue Jobs 失敗（需在 Job 中手動 report）
 ⚠️ API 效能（需付費 + 手動設定 Transactions）
 ❌ 資料庫查詢效能（不會自動追蹤）
 ❌ Queue Jobs 效能監控（僅錯誤，無效能數據）
@@ -948,11 +947,11 @@ $transaction->finish();
 // 以下程式碼 Nightwatch 自動監控，無需額外設定
 
 // 1. Eloquent 查詢效能
-User::where('firebase_uid', $uid)->first();
+User::where('email', $email)->first();
 → 自動記錄：查詢時間、SQL 語句、是否 N+1
 
 // 2. Queue Job 完整生命週期
-dispatch(new SendPushNotification($user));
+dispatch(new ProcessBeerData($user));
 → 自動記錄：排隊時間、執行時間、失敗原因、重試次數
 
 // 3. Event 系統觸發
@@ -964,7 +963,7 @@ Route::post('/api/beers', [BeerController::class, 'store']);
 → 自動記錄：中介層耗時、控制器耗時、回應時間、記憶體使用
 
 // 5. 排程任務
-$schedule->command('fcm:send-reminders')->daily();
+$schedule->command('beer:process-statistics')->daily();
 → 自動記錄：執行時間、成功/失敗、輸出日誌
 ```
 
@@ -988,7 +987,7 @@ try {
 // 3. 添加上下文資訊
 \Sentry\configureScope(function ($scope) {
     $scope->setUser(['id' => auth()->id()]);
-    $scope->setTag('firebase_uid', $user->firebase_uid);
+    $scope->setTag('user_email', $user->email);
 });
 
 // 4. 效能追蹤（需付費 Performance Monitoring）
@@ -1073,7 +1072,7 @@ php artisan sentry:publish
 
 ```
 ✅ 想要全面了解應用程式效能
-✅ 需要監控 Queue Jobs 效能（HoldYourBeer 有 FCM！）
+✅ 需要監控 Queue Jobs 效能（HoldYourBeer 有背景任務！）
 ✅ 想自動發現慢查詢、N+1 問題
 ✅ 希望零配置、開箱即用
 ✅ 使用 Laravel Cloud（原生整合）
@@ -1164,14 +1163,14 @@ php artisan sentry:publish
 
 #### 核心理由
 
-1. **FCM Queue 監控至關重要**
+1. **Queue Jobs 監控至關重要**
    ```php
    // HoldYourBeer 的核心功能
-   dispatch(new SendFcmNotification($user, $beer));
+   dispatch(new ProcessBeerData($user, $beer));
 
    Nightwatch 優勢：
    ✅ 自動追蹤執行狀態
-   ✅ 監控積壓情況（避免推播延遲）
+   ✅ 監控積壓情況（避免任務延遲）
    ✅ 失敗率統計
    ✅ 效能分析（找出瓶頸）
 
@@ -1186,7 +1185,7 @@ php artisan sentry:publish
    // Flutter App 頻繁呼叫的 API
    GET /api/v1/beers
    POST /api/v1/beers/{id}/count_actions
-   GET /api/v1/auth/firebase/me
+   GET /api/v1/user
 
    Nightwatch：
    ✅ 自動追蹤所有端點
@@ -1342,7 +1341,6 @@ php artisan nightwatch:install
 ### HoldYourBeer 相關文件
 - `README.md` - 專案概覽
 - `CLAUDE.md` - AI 助手指南
-- `docs/FIREBASE_AUTH_IMPLEMENTATION.md` - Firebase 整合
 - `docs/WEB_GOOGLE_LOGIN.md` - Google OAuth 實作
 
 ---

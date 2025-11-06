@@ -24,8 +24,6 @@ class User extends Authenticatable
         'password',
         'role',
         'email_verified_at',
-        'firebase_uid',
-        'fcm_token',
     ];
 
     /**

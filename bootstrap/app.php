@@ -19,11 +19,20 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth.locale' => \App\Http\Middleware\AuthLocaleRedirect::class,
             'log.api' => \App\Http\Middleware\LogApiRequests::class,
             'api.deprecation' => \App\Http\Middleware\ApiDeprecation::class,
-            'firebase.auth' => \App\Http\Middleware\FirebaseAuthMiddleware::class,
         ]);
 
         // Add global middleware for all requests
         $middleware->append(\App\Http\Middleware\AddSecurityHeaders::class);
+
+        // Add Web middleware group
+        $middleware->group('web', [
+            \Illuminate\Cookie\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ]);
 
         // Add API middleware group
         $middleware->group('api', [
@@ -37,6 +46,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Cookie\Middleware\EncryptCookies::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\VerifyCsrfToken::class,
             \App\Http\Middleware\AuthLocaleRedirect::class,
             \Illuminate\Auth\Middleware\Authenticate::class,
             \Illuminate\Session\Middleware\AuthenticateSession::class,

@@ -4,13 +4,13 @@
 
 ## 概述
 
-Web 應用程式使用 **Laravel Socialite** 提供 Google OAuth 登入，與 Mobile App 的 Firebase Auth 是不同的實作方式。
+Web 應用程式使用 **Laravel Socialite** 提供 Google OAuth 登入功能。
 
-### 架構差異
+### 架構說明
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                  認證架構對比                         │
+│                  Web 認證架構                         │
 ├─────────────────────────────────────────────────────┤
 │                                                      │
 │  Web Application:                                   │
@@ -20,14 +20,6 @@ Web 應用程式使用 **Laravel Socialite** 提供 Google OAuth 登入，與 Mo
 │  └──────┬───────┘   └──────┬───────┘                │
 │         └──────────────────┴─────────>              │
 │                   Laravel Session                    │
-│                                                      │
-│  Mobile Application:                                │
-│  ┌──────────────┐   ┌──────────────┐                │
-│  │ Google Auth  │   │ Apple Auth   │                │
-│  │ (Firebase)   │   │ (Firebase)   │                │
-│  └──────┬───────┘   └──────┬───────┘                │
-│         └──────────────────┴─────────>              │
-│              Firebase ID Token → Laravel API         │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -360,13 +352,9 @@ GOOGLE_REDIRECT_URI=http://localhost/auth/google/callback/
 2. 發送密碼重設郵件給用戶
 3. 用戶可通過密碼重設流程設定密碼
 
-### Q5: Web 和 Mobile 的 Google 登入資料會衝突嗎？
+### Q5: Google 登入的用戶資料如何儲存？
 
-**A:** 不會。雖然使用不同系統：
-- **Web**: 使用 `google_id` 欄位（Laravel Socialite）
-- **Mobile**: 使用 `firebase_uid` 欄位（Firebase Auth）
-
-但兩者可以綁定到同一個 email 的用戶帳號。
+**A:** Web 應用程式使用 `google_id` 欄位（Laravel Socialite）來儲存 Google 用戶的唯一識別碼，所有 Google 登入的用戶都會綁定到對應的 email 帳號。
 
 ---
 
@@ -517,9 +505,6 @@ public function handleProviderCallback($provider)
 
 ## 相關文件
 
-- [Firebase Auth 實作文件](./FIREBASE_AUTH_IMPLEMENTATION.md) - Mobile App 認證
-- [Flutter 整合指南](./FLUTTER_INTEGRATION.md) - Flutter App 開發
-- [Firebase Console 設定](./FIREBASE_SETUP.md) - Firebase 設定步驟
 - [Laravel Socialite 官方文件](https://laravel.com/docs/socialite)
 - [Google OAuth 2.0 文件](https://developers.google.com/identity/protocols/oauth2)
 

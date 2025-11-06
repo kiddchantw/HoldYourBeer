@@ -43,6 +43,10 @@ Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale'], 'where' => 
         Route::post('logout', [\App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'destroy'])
             ->name('localized.logout');
 
+        // Handle GET request to logout (perform logout and redirect to login page)
+        Route::get('logout', [\App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'destroy'])
+            ->name('localized.logout.get');
+
         // Email verification routes (localized)
         Route::get('verify-email', \App\Http\Controllers\Auth\EmailVerificationPromptController::class)
             ->name('localized.verification.notice');

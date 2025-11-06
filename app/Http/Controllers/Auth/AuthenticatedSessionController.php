@@ -54,6 +54,7 @@ class AuthenticatedSessionController extends Controller
             $locale = 'en';
         }
 
-        return redirect('/' . $locale);
+        // Redirect to the localized login page
+        return redirect()->route('localized.login', ['locale' => $locale]);
     }
 }
