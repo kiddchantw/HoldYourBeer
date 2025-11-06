@@ -181,7 +181,7 @@ npm run build
 
 ```
 Backend:     Laravel 12 + PHP 8.3
-Database:    MySQL
+Database:    PostgreSQL
 Auth:        Laravel Sanctum + Firebase Auth
 Mobile:      Flutter + Firebase
 Queue:       FCM 推播通知
@@ -208,21 +208,27 @@ Frontend:    Blade + Tailwind CSS + Livewire
 ✅ 可運作，但需額外配置
 ```
 
-#### 2. 資料庫需求（MySQL）
+#### 2. 資料庫需求（PostgreSQL）
 
-**Laravel Cloud**：⭐⭐⭐⭐⭐
+**Laravel Cloud**：⭐⭐
 ```
-✅ 專屬 MySQL 服務
-✅ 自動備份
-✅ 可預測效能（AWS EC2）
+⚠️ Serverless PostgreSQL 成本極高
+❌ Storage: $1.50/GB/月（MySQL 的 12-15 倍）
+❌ Compute: $0.16/vCPU/小時
+⚠️ 20GB 資料 = $30/月（僅儲存）
+✅ 自動擴展、休眠功能
 ```
 
-**Zeabur**：⭐⭐⭐⭐
+**Zeabur**：⭐⭐⭐⭐⭐
 ```
-✅ 支援 MySQL 服務
+✅ PostgreSQL 視為容器服務
+✅ 按實際資源計費（RAM + CPU）
+✅ 小型資料庫 ~$5/月（可能含在免費額度）
+✅ 成本比 Laravel Cloud 低 90%+
 ✅ 容易設定
-✅ 彈性計費
 ```
+
+**關鍵發現**：PostgreSQL 在 Zeabur 的成本優勢極為明顯！
 
 #### 3. Firebase 整合
 
@@ -328,6 +334,190 @@ Frontend:    Blade + Tailwind CSS + Livewire
 
 ---
 
+## 💾 PostgreSQL vs MySQL 資料庫成本對比
+
+> **重要發現**：HoldYourBeer 專案使用 PostgreSQL，這對成本有重大影響！
+
+### Laravel Cloud 資料庫定價
+
+#### MySQL 定價
+
+```
+Storage（儲存空間）：
+├─ 美國區域：$0.10/GB/月
+└─ 其他區域：$0.12/GB/月
+
+Compute（運算資源）：
+├─ Flex：$0.01/小時起（輕量級）
+└─ Pro：更高規格（持續高負載）
+
+範例（20GB 資料庫）：
+├─ Storage：20GB × $0.10 = $2.00/月
+├─ Backup：20GB × $0.10 = $2.00/月
+├─ Compute (Flex)：約 $5-10/月
+└─ 總計：約 $9-14/月
+```
+
+#### PostgreSQL 定價
+
+```
+Storage（儲存空間）：
+└─ $1.50/GB/月（⚠️ 是 MySQL 的 12-15 倍）
+
+Compute（運算資源）：
+└─ $0.16/vCPU/小時（按秒計費）
+
+範例（20GB 資料庫）：
+├─ Storage：20GB × $1.50 = $30.00/月
+├─ Compute (0.5 vCPU, 24/7)：
+│  └─ $0.16 × 0.5 × 24 × 30 = $57.60/月
+└─ 總計：約 $87.60/月
+
+使用休眠優化（12hr/天）：
+├─ Storage：$30.00/月（不變）
+├─ Compute (0.5 vCPU, 12hr)：$28.80/月
+└─ 總計：約 $58.80/月
+```
+
+### Zeabur 資料庫定價
+
+**重點**：Zeabur 將資料庫視為容器服務，MySQL 和 PostgreSQL 成本相同！
+
+```
+PostgreSQL 容器（典型配置）：
+├─ 512MB RAM：$2/月
+├─ 0.25 vCPU：$3/月
+└─ 總計：約 $5/月
+
+Developer 方案優勢：
+├─ 月費：$5
+├─ 包含 $5 免費額度
+└─ 如果資料庫用量 ≤ $5 = 完全免費！
+
+實際成本（App + PostgreSQL）：
+├─ Laravel App：~$3-5
+├─ PostgreSQL：~$5（含在額度）
+├─ Queue Worker：~$2-3
+└─ 總計：約 $8-13/月
+```
+
+### 成本對比表（HoldYourBeer 使用 PostgreSQL）
+
+| 平台 | 資料庫類型 | Storage (20GB) | Compute | 總成本/月 | 成本差異 |
+|------|----------|---------------|---------|----------|---------|
+| **Laravel Cloud** | PostgreSQL | $30 | $58 (24/7) | **~$108** | 基準 |
+| **Laravel Cloud** | PostgreSQL + 休眠 | $30 | $29 (12hr) | **~$79** | -27% |
+| **Laravel Cloud** | MySQL | $2 | $10 (24/7) | **~$32** | -70% |
+| **Zeabur** | PostgreSQL | ~$2 | ~$3 | **~$10** | **-91%** ✅ |
+| **Zeabur** | MySQL | ~$2 | ~$3 | **~$10** | **-91%** ✅ |
+
+### 關鍵洞察
+
+#### 1. Laravel Cloud 的 PostgreSQL 極為昂貴
+
+```
+問題點：
+❌ Storage 費用：$1.50/GB（MySQL 的 15 倍）
+❌ 20GB = $30/月（MySQL 只要 $2）
+❌ 100GB = $150/月（MySQL 只要 $10-12）
+❌ 小專案難以負擔
+
+適合場景：
+✅ 企業級預算（$100+/月可接受）
+✅ 需要 Serverless Postgres 特性
+✅ 重視自動擴展和休眠
+```
+
+#### 2. Zeabur 對 PostgreSQL 極為友善
+
+```
+優勢：
+✅ PostgreSQL 視為容器，不另外收儲存費
+✅ 與 MySQL 成本完全相同
+✅ 按實際資源（RAM + CPU）計費
+✅ 小型資料庫可能完全包含在免費額度
+
+PostgreSQL 使用者的福音：
+- 不需要為 Postgres 付出額外成本
+- 可放心使用 Postgres 特定功能
+- 資料量增長不會暴增費用
+```
+
+#### 3. 如果使用 PostgreSQL → Zeabur 幾乎是唯一選擇
+
+```
+成本對比：
+Laravel Cloud (Postgres): $79-108/月
+Zeabur (Postgres):        $8-13/月
+
+節省金額：$66-100/月
+年度節省：$792-1,200/年
+
+結論：
+對於使用 PostgreSQL 的 Laravel 專案，
+Zeabur 的成本優勢是壓倒性的！
+```
+
+### 遷移到 MySQL 的考量
+
+#### 優勢
+
+```
+如果遷移到 MySQL：
+✅ Laravel Cloud 成本降低 70%
+✅ MySQL 在 Laravel 中完全夠用
+✅ 大部分 Laravel 專案用 MySQL
+
+Laravel Cloud (MySQL)：
+├─ Growth + MySQL：$32/月
+└─ 比 Postgres 便宜 $76/月
+```
+
+#### 代價
+
+```
+遷移成本：
+❌ 需要資料庫遷移
+❌ 可能需要調整查詢語法
+❌ 喪失 Postgres 特定功能
+❌ 開發時間成本
+
+不建議遷移如果：
+- 已使用 Postgres 特定功能
+- 專案已接近完成
+- 團隊熟悉 Postgres
+```
+
+### 建議決策樹
+
+```
+你的 Laravel 專案用什麼資料庫？
+
+├─ PostgreSQL
+│  └─ 部署平台選擇？
+│     ├─ 預算 < $20/月
+│     │  └─ → Zeabur ⭐⭐⭐⭐⭐（唯一選擇）
+│     │
+│     ├─ 預算 $50-100/月
+│     │  ├─ 考慮遷移到 MySQL？
+│     │  │  ├─ 可以 → Laravel Cloud (MySQL)
+│     │  │  └─ 不行 → Zeabur
+│     │  │
+│     │  └─ 或直接用 Zeabur（便宜很多）
+│     │
+│     └─ 預算 $100+/月
+│        └─ Laravel Cloud (Postgres) 可選
+│           但 Zeabur 仍更划算
+│
+└─ MySQL
+   └─ 部署平台選擇？
+      ├─ 預算 < $30/月 → Zeabur
+      ├─ 預算 $30-50/月 → 兩者皆可
+      └─ 重視整合 → Laravel Cloud
+```
+
+---
+
 ## 🎖️ 綜合評分
 
 ### Laravel Cloud
@@ -337,10 +527,12 @@ Frontend:    Blade + Tailwind CSS + Livewire
 | Laravel 整合 | ⭐⭐⭐⭐⭐ | 官方平台，完美整合 |
 | Queue 管理 | ⭐⭐⭐⭐⭐ | Queue Clusters 自動化 |
 | 開發體驗 | ⭐⭐⭐⭐⭐ | Preview Envs + Push-to-Deploy |
-| 成本效益 | ⭐⭐⭐ | 小專案較貴（$20/月起） |
+| 成本效益 (MySQL) | ⭐⭐⭐ | 小專案較貴（$30-40/月） |
+| 成本效益 (PostgreSQL) | ⭐ | ⚠️ 極貴（$80-110/月） |
 | 中文支援 | ⭐ | 無中文文件 |
 | 穩定性 | ⭐⭐⭐ | 新服務，待觀察 |
 | **總評** | **⭐⭐⭐⭐** | 功能強大但成本較高 |
+| **PostgreSQL 專案** | **⭐⭐** | **不推薦：Postgres 成本過高** |
 
 ### Zeabur
 
@@ -349,10 +541,12 @@ Frontend:    Blade + Tailwind CSS + Livewire
 | Laravel 整合 | ⭐⭐⭐⭐ | 良好支援，非專用 |
 | Queue 管理 | ⭐⭐⭐ | 需手動設定 |
 | 開發體驗 | ⭐⭐⭐⭐ | 一鍵部署，簡單易用 |
-| 成本效益 | ⭐⭐⭐⭐⭐ | 極佳（$5/月起） |
+| 成本效益 (MySQL) | ⭐⭐⭐⭐⭐ | 極佳（$5-10/月） |
+| 成本效益 (PostgreSQL) | ⭐⭐⭐⭐⭐ | ✅ 傑出（$8-13/月，比 Cloud 便宜 90%） |
 | 中文支援 | ⭐⭐⭐⭐⭐ | 完整中文文件和客服 |
 | 穩定性 | ⭐⭐⭐⭐ | 已運營一年+ |
 | **總評** | **⭐⭐⭐⭐** | 高 CP 值，適合中小專案 |
+| **PostgreSQL 專案** | **⭐⭐⭐⭐⭐** | **強烈推薦：成本優勢壓倒性** |
 
 ---
 
@@ -360,16 +554,37 @@ Frontend:    Blade + Tailwind CSS + Livewire
 
 ### 建議方案：**Zeabur** （當前階段）
 
+> **⚠️ 關鍵發現**：HoldYourBeer 使用 **PostgreSQL**，這使得 Zeabur 成為幾乎唯一的合理選擇！
+
 #### 選擇理由
 
-1. **💰 成本優勢**
+1. **💰 成本優勢（PostgreSQL 專案更顯著）**
    ```
-   Zeabur:        $5/月
-   Laravel Cloud: $20/月
-   年度節省：     $180
+   使用 PostgreSQL 的成本對比：
+
+   Zeabur:        $8-13/月
+   Laravel Cloud: $79-108/月
+   年度節省：     $792-1,140 ⭐⭐⭐
+
+   成本差異：Zeabur 便宜 90%+！
+
+   原因：
+   - Laravel Cloud Postgres Storage: $1.50/GB/月
+   - Zeabur 視 Postgres 為容器，成本極低
+   - 20GB 資料在 Cloud = $30/月，在 Zeabur ≈ $2-3/月
    ```
 
-2. **🇹🇼 在地優勢**
+2. **💾 PostgreSQL 友善度**
+   ```
+   ✅ Zeabur 對 PostgreSQL 和 MySQL 收費相同
+   ✅ 不會因為選擇 Postgres 而付出額外成本
+   ✅ 可放心使用 Postgres 特定功能
+   ✅ 資料量增長不會暴增費用
+
+   ❌ Laravel Cloud 的 Postgres 極為昂貴
+   ```
+
+3. **🇹🇼 在地優勢**
    ```
    ✅ 完整中文文件
    ✅ 中文技術支援
@@ -388,10 +603,16 @@ Frontend:    Blade + Tailwind CSS + Livewire
 4. **📊 專案階段匹配**
    ```
    當前：開發/測試階段
+   資料庫：PostgreSQL
    流量：預期較低
    預算：成本敏感
 
    → Zeabur 完美匹配
+
+   特別適合 PostgreSQL 專案：
+   - 無需考慮遷移到 MySQL
+   - 保留 Postgres 生態系優勢
+   - 享受極低成本
    ```
 
 ### 使用路徑建議
@@ -416,9 +637,16 @@ Frontend:    Blade + Tailwind CSS + Livewire
 
 ### 遷移到 Laravel Cloud 的時機
 
-考慮遷移當以下條件出現：
+> **⚠️ PostgreSQL 專案特別注意**：由於 Laravel Cloud 的 PostgreSQL 極為昂貴，**強烈不建議遷移**，除非符合以下條件：
+
+考慮遷移當**所有**以下條件出現：
 
 ```
+💰 預算條件（PostgreSQL 專案）：
+├─ 月預算 > $100（PostgreSQL 在 Cloud 極貴）
+├─ 願意接受 10 倍成本（vs Zeabur）
+└─ 或願意遷移資料庫到 MySQL（降低 70% 成本）
+
 📈 業務指標：
 ├─ 日活躍用戶 > 1000
 ├─ 每日推播 > 10,000 則
@@ -429,7 +657,7 @@ Frontend:    Blade + Tailwind CSS + Livewire
 ├─ Queue 自動擴展成為剛需
 ├─ 需要 Preview Environments
 ├─ 團隊規模擴大（> 3 人）
-└─ 預算允許 $20/月+
+└─ 重視官方整合勝過成本
 
 ⚠️ Zeabur 限制：
 ├─ 手動 Queue 管理太耗時
@@ -1125,6 +1353,7 @@ php artisan nightwatch:install
 |------|------|------|
 | 2025-11-05 | 初版建立：i18n 修正 + 平台比較 | Claude Code |
 | 2025-11-05 | 新增第三部分：監控工具比較（Nightwatch vs Sentry） | Claude Code |
+| 2025-11-06 | 新增 PostgreSQL vs MySQL 成本對比，更新專案使用 PostgreSQL | Claude Code |
 
 ---
 
@@ -1132,19 +1361,22 @@ php artisan nightwatch:install
 
 ### 關鍵決策點
 
-#### 部署平台選擇
+#### 部署平台選擇（PostgreSQL 專案）
 
-1. **當前階段**：使用 **Zeabur**
-   - 理由：成本低、中文支援、快速上線
-   - 成本：$5/月
+1. **當前階段**：使用 **Zeabur** ⭐⭐⭐⭐⭐
+   - 理由：PostgreSQL 成本極低、中文支援、快速上線
+   - 成本：$8-13/月（包含 PostgreSQL）
+   - **關鍵優勢**：Postgres 比 Laravel Cloud 便宜 90%
 
-2. **成長階段**：評估 **Laravel Cloud**
-   - 觸發點：Queue 負載高、需要進階功能
-   - 成本：$20/月起
+2. **成長階段**：繼續使用 **Zeabur** 或升級 Team 方案
+   - 觸發點：流量增長、需要更多資源
+   - 成本：$20-50/月
+   - **不建議** Laravel Cloud（PostgreSQL 極貴：$80-110/月）
 
-3. **長期策略**：保持彈性
-   - 兩個平台都是優秀選擇
-   - 根據業務需求調整
+3. **長期策略**：除非預算充足，否則保持 Zeabur
+   - PostgreSQL 專案：Zeabur 幾乎是唯一合理選擇
+   - 或考慮遷移到 MySQL 後使用 Laravel Cloud
+   - 根據業務需求和預算調整
 
 #### 監控工具選擇
 
@@ -1165,9 +1397,10 @@ php artisan nightwatch:install
 #### 階段一：部署設定
 
 ✅ **立即執行**：
-1. 在 Zeabur 建立帳號並部署專案（$5/月）
-2. 設定環境變數和必要服務（MySQL、Redis）
+1. 在 Zeabur 建立帳號並部署專案（Developer $5/月）
+2. 設定環境變數和必要服務（**PostgreSQL**、Redis）
 3. 驗證所有功能正常（登入、API、Queue）
+4. 確認 PostgreSQL 資料庫正常運作
 
 #### 階段二：監控設定
 
@@ -1196,22 +1429,34 @@ php artisan nightwatch:install
 3. 評估用戶成長趨勢
 4. 根據業務需求調整方案
 
-### 推薦配置（HoldYourBeer）
+### 推薦配置（HoldYourBeer - PostgreSQL 專案）
 
 ```
-當前最佳組合：
+當前最佳組合（針對 PostgreSQL 專案優化）：
 
 部署平台：
 └─ Zeabur Developer ($5/月)
+   ├─ Laravel App 容器：~$3-5
+   ├─ PostgreSQL 容器：~$5（含在免費額度）
+   └─ Queue Worker：~$2-3
+
+資料庫：
+└─ PostgreSQL（與 MySQL 成本相同！）
+   ├─ 無額外儲存費用
+   ├─ 按容器資源計費
+   └─ 比 Laravel Cloud 便宜 90%
 
 監控工具：
 ├─ Laravel Nightwatch (Free) - Backend 完整監控
 └─ (可選) Sentry (Free) - Flutter 錯誤追蹤
 
-總成本：$5/月
-總價值：完整部署 + 深度監控
+實際總成本：$8-13/月
+vs Laravel Cloud：$79-108/月
+年度節省：$792-1,140！
+
+總價值：完整部署 + PostgreSQL + 深度監控
 ```
 
 ---
 
-**本文件涵蓋三大主題：i18n 修正、部署平台比較、監控工具比較，為 HoldYourBeer 專案提供完整的技術選型指南。**
+**本文件涵蓋四大主題：i18n 修正、部署平台比較、PostgreSQL vs MySQL 成本對比、監控工具比較，為 HoldYourBeer 專案（PostgreSQL）提供完整的技術選型指南。**
