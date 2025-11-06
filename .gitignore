@@ -33,3 +33,7 @@ laradock_setting.md
 .scribe/
 public/vendor/scribe/
 
+
+# IDE and Development Tools
+.cursor/
+.mcp.json
