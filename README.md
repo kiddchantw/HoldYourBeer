@@ -10,9 +10,15 @@ This project is developed using a Spec-driven development approach.
 
 - **Backend Framework**: Laravel 12
 - **Web Frontend**: Livewire
+- **Mobile App**: Flutter (with Firebase Auth)
 - **Database**: PostgreSQL 17
 - **PHP Version**: 8.3
 - **Development Environment**: Laradock
+- **Authentication**:
+  - Laravel Sanctum (email/password)
+  - Firebase Auth (Google Sign-In, Apple Sign-In)
+- **Push Notifications**: Firebase Cloud Messaging (FCM)
+- **Analytics**: Firebase Analytics
 
 ---
 
@@ -111,13 +117,24 @@ This API uses **URL-based versioning**. All endpoints are prefixed with a versio
 
 ### V1 Endpoints (Current Stable)
 
-- `POST /api/v1/register` - User registration
-- `POST /api/v1/login` - Authentication (login)
-- `POST /api/v1/logout` - Logout
+#### Authentication
+- `POST /api/v1/register` - User registration (email/password)
+- `POST /api/v1/login` - Authentication (email/password login)
+- `POST /api/v1/logout` - Logout (Sanctum)
+
+#### Firebase Authentication
+- `POST /api/v1/auth/firebase/login` - Firebase Auth (Google/Apple Sign-In)
+- `GET /api/v1/auth/firebase/me` - Get authenticated user info
+- `POST /api/v1/auth/firebase/fcm-token` - Update FCM token for push notifications
+- `POST /api/v1/auth/firebase/logout` - Logout (Firebase)
+
+#### Beer Tracking
 - `GET /api/v1/beers` - List user's tracked beers (supports sorting and brand filtering)
 - `POST /api/v1/beers` - Add new beer to tracking
 - `POST /api/v1/beers/{id}/count_actions` - Increment/decrement tasting count
 - `GET /api/v1/beers/{id}/tasting_logs` - View tasting history
+
+#### Brands
 - `GET /api/v1/brands` - List all available brands
 
 ### V2 Endpoints (Enhanced Features)
@@ -151,6 +168,11 @@ php artisan scribe:generate
 - 🔄 [API Migration Guide](docs/api-migration-guide.md) - 從舊版遷移至 v1 的完整指南
 - 🔖 [API Versioning Strategy](docs/api-versioning.md) - 版本控制策略與最佳實踐
 
+**🔥 Firebase Integration**:
+- 🚀 [Firebase Auth Implementation](docs/FIREBASE_AUTH_IMPLEMENTATION.md) - 完整技術設計與實作文件
+- 🔧 [Firebase Console Setup](docs/FIREBASE_SETUP.md) - Firebase Console 設定步驟指南
+- 📱 [Flutter Integration Guide](docs/FLUTTER_INTEGRATION.md) - Flutter + Firebase Auth 整合指南
+
 ---
 
 ## Development Guidelines
@@ -163,8 +185,15 @@ php artisan scribe:generate
   - 中文：顯示時使用專用計數表而非彙總日誌，以提升效能。
 - **Error Handling**: Follow standardized JSON error response format
   - 中文：遵循標準化 JSON 錯誤回應格式。
-- **Authentication**: All protected endpoints require Bearer token authentication
-  - 中文：所有受保護端點需使用 Bearer Token 驗證。
+- **Authentication**: Hybrid authentication system supporting both traditional and social login
+  - 中文：混合認證系統，同時支援傳統登入與社交登入。
+  - **Sanctum**: For email/password authentication (Web, API)
+  - **Firebase Auth**: For Google/Apple Sign-In (Mobile App)
+  - All protected endpoints require Bearer token authentication (Sanctum token or Firebase ID token)
+- **Firebase Integration**:
+  - Service Account Key must be securely stored (never commit to Git)
+  - FCM tokens are managed for push notifications
+  - Firebase ID tokens expire hourly (automatically refreshed by SDK)
 
 ---
 
