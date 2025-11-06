@@ -45,13 +45,13 @@ Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale'], 'where' => 
 
         // Email verification routes (localized)
         Route::get('verify-email', \App\Http\Controllers\Auth\EmailVerificationPromptController::class)
-            ->name('verification.notice');
+            ->name('localized.verification.notice');
         Route::get('verify-email/{id}/{hash}', \App\Http\Controllers\Auth\VerifyEmailController::class)
             ->middleware(['signed','throttle:6,1'])
-            ->name('verification.verify');
+            ->name('localized.verification.verify');
         Route::post('email/verification-notification', [\App\Http\Controllers\Auth\EmailVerificationNotificationController::class, 'store'])
             ->middleware('throttle:6,1')
-            ->name('verification.send');
+            ->name('localized.verification.send');
     });
 
     Route::middleware(['auth.locale', 'auth'])->group(function () {
