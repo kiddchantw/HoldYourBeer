@@ -17,9 +17,11 @@ class ChartsController extends Controller
         $user = $request->user();
 
         // Eager load relationships and group by brand name
-        $brandData = UserBeerCount::where('user_id', $user->id)
+        $userBeerCounts = UserBeerCount::where('user_id', $user->id)
             ->with('beer.brand')
-            ->get()
+            ->get();
+
+        $brandData = $userBeerCounts
             ->mapToGroups(function ($userBeerCount) {
                 // Check if beer and brand relationships are loaded
                 if ($userBeerCount->beer && $userBeerCount->beer->brand) {
@@ -39,8 +41,18 @@ class ChartsController extends Controller
             ];
         })->values()->all();
 
+        // Calculate statistics
+        $totalCount = $userBeerCounts->sum('count');
+        $uniqueBrands = $brandData->count();
+        $uniqueBeers = $userBeerCounts->count();
+
         return response()->json([
             'data' => $chartData,
+            'statistics' => [
+                'total_count' => $totalCount,
+                'unique_brands' => $uniqueBrands,
+                'unique_beers' => $uniqueBeers,
+            ],
             'success' => true,
             'message' => 'Brand analytics data retrieved successfully'
         ]);

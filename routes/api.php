@@ -4,7 +4,9 @@ use App\Http\Controllers\Api\V1\AuthController as V1AuthController;
 use App\Http\Controllers\Api\V1\BeerController as V1BeerController;
 use App\Http\Controllers\Api\V1\BrandController as V1BrandController;
 use App\Http\Controllers\Api\V1\FeedbackController as V1FeedbackController;
+use App\Http\Controllers\Api\V1\GoogleAuthController as V1GoogleAuthController;
 use App\Http\Controllers\Api\V2\BrandController as V2BrandController;
+use App\Http\Controllers\Api\ChartsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +24,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
     Route::middleware('throttle:auth')->group(function () {
         Route::post('/register', [V1AuthController::class, 'register'])->name('register');
         Route::post('/login', [V1AuthController::class, 'token'])->name('login');
+        Route::post('/auth/google', [V1GoogleAuthController::class, 'authenticate'])->name('auth.google');
     });
 
     // Public feedback endpoint (allows anonymous submissions)
@@ -49,6 +52,9 @@ Route::prefix('v1')->name('v1.')->group(function () {
         // Brand endpoints
         Route::get('/brands', [V1BrandController::class, 'index'])->name('brands.index');
 
+        // Charts endpoints
+        Route::get('/charts/brand-analytics', [ChartsController::class, 'brandAnalytics'])->name('charts.brand_analytics');
+
         // Feedback endpoints (authenticated users)
         Route::get('/feedback', [V1FeedbackController::class, 'index'])->name('feedback.index');
         Route::get('/feedback/{feedback}', [V1FeedbackController::class, 'show'])->name('feedback.show');
@@ -75,6 +81,7 @@ Route::prefix('v2')->name('v2.')->group(function () {
     Route::middleware('throttle:auth')->group(function () {
         Route::post('/register', [V1AuthController::class, 'register'])->name('register');
         Route::post('/login', [V1AuthController::class, 'token'])->name('login');
+        Route::post('/auth/google', [V1GoogleAuthController::class, 'authenticate'])->name('auth.google');
     });
 
     // Authenticated routes
@@ -97,6 +104,9 @@ Route::prefix('v2')->name('v2.')->group(function () {
 
         // Enhanced brand endpoints with pagination (V2 feature)
         Route::get('/brands', [V2BrandController::class, 'index'])->name('brands.index');
+
+        // Charts endpoints (inherit from V1)
+        Route::get('/charts/brand-analytics', [ChartsController::class, 'brandAnalytics'])->name('charts.brand_analytics');
     });
 });
 
@@ -140,5 +150,8 @@ Route::middleware('api.deprecation')->group(function () {
 
         // Brand endpoints
         Route::get('/brands', [V1BrandController::class, 'index']);
+
+        // Charts endpoints
+        Route::get('/charts/brand-analytics', [ChartsController::class, 'brandAnalytics']);
     });
 });
