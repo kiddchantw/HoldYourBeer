@@ -55,5 +55,12 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Register custom exception handler
+        $exceptions->render(function (Throwable $e, $request) {
+            // Delegate to our custom handler for API requests
+            if ($request->is('api/*') || $request->expectsJson()) {
+                $handler = app(\App\Exceptions\Handler::class);
+                return $handler->render($request, $e);
+            }
+        });
     })->create();
