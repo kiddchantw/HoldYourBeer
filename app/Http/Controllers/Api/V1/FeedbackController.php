@@ -234,8 +234,10 @@ class FeedbackController extends Controller
         // If marking as resolved, set resolved_at timestamp
         if (isset($validated['status']) && $validated['status'] === Feedback::STATUS_RESOLVED) {
             $feedback->markAsResolved($validated['admin_notes'] ?? null);
+            $feedback->refresh();
         } else {
             $feedback->update($validated);
+            $feedback->refresh();
         }
 
         return response()->json([
@@ -270,7 +272,14 @@ class FeedbackController extends Controller
             ], 403);
         }
 
-        $feedback->delete();
+        try {
+            $feedback->delete();
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => '刪除回饋時發生錯誤。',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
 
         return response()->json([
             'message' => '回饋已刪除。',
@@ -351,9 +360,24 @@ class FeedbackController extends Controller
      */
     private function canViewFeedback(Request $request, Feedback $feedback): bool
     {
-        return $this->isAdmin($request) ||
-               $request->user()?->id === $feedback->user_id ||
-               ($request->ip() === $feedback->ip_address && !$feedback->user_id);
+        $user = $request->user() ?? auth()->user();
+
+        // Admin can view all feedback
+        if ($this->isAdmin($request)) {
+            return true;
+        }
+
+        // User can view their own feedback
+        if ($user && $feedback->user_id && (int)$user->id === (int)$feedback->user_id) {
+            return true;
+        }
+
+        // Anonymous user can view feedback from same IP
+        if (!$feedback->user_id && $request->ip() === $feedback->ip_address) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -361,6 +385,7 @@ class FeedbackController extends Controller
      */
     private function isAdmin(Request $request): bool
     {
-        return $request->user()?->role === 'admin';
+        $user = $request->user() ?? auth()->user();
+        return $user && $user->role === 'admin';
     }
 }

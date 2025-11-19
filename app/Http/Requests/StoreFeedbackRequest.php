@@ -30,8 +30,13 @@ class StoreFeedbackRequest extends FormRequest
             'description' => ['required', 'string', 'min:10'],
             'priority' => ['nullable', 'string', Rule::in(Feedback::getPriorities())],
 
-            // For anonymous users
-            'email' => ['nullable', 'email', 'max:255', 'required_without:user_id'],
+            // For anonymous users (email is required only if user is not authenticated)
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+                $this->user() ? 'nullable' : 'required'
+            ],
             'name' => ['nullable', 'string', 'max:100'],
 
             // Technical metadata (optional)
@@ -39,6 +44,7 @@ class StoreFeedbackRequest extends FormRequest
             'browser' => ['nullable', 'string', 'max:100'],
             'device' => ['nullable', 'string', 'max:100'],
             'os' => ['nullable', 'string', 'max:100'],
+            'ip_address' => ['nullable', 'ip'],
             'metadata' => ['nullable', 'array'],
         ];
     }

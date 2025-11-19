@@ -38,6 +38,15 @@ class Feedback extends Model
     ];
 
     /**
+     * The model's default values for attributes.
+     */
+    protected $attributes = [
+        'type' => 'feedback',
+        'status' => 'new',
+        'priority' => 'medium',
+    ];
+
+    /**
      * The attributes that should be cast.
      */
     protected $casts = [
@@ -78,6 +87,18 @@ class Feedback extends Model
     public static function getTypes(): array
     {
         return [
+            self::TYPE_FEEDBACK,
+            self::TYPE_BUG_REPORT,
+            self::TYPE_FEATURE_REQUEST,
+        ];
+    }
+
+    /**
+     * Get all types with labels
+     */
+    public static function getTypeLabels(): array
+    {
+        return [
             self::TYPE_FEEDBACK => __('General Feedback'),
             self::TYPE_BUG_REPORT => __('Bug Report'),
             self::TYPE_FEATURE_REQUEST => __('Feature Request'),
@@ -88,6 +109,21 @@ class Feedback extends Model
      * Get all available statuses
      */
     public static function getStatuses(): array
+    {
+        return [
+            self::STATUS_NEW,
+            self::STATUS_IN_REVIEW,
+            self::STATUS_IN_PROGRESS,
+            self::STATUS_RESOLVED,
+            self::STATUS_CLOSED,
+            self::STATUS_REJECTED,
+        ];
+    }
+
+    /**
+     * Get all statuses with labels
+     */
+    public static function getStatusLabels(): array
     {
         return [
             self::STATUS_NEW => __('New'),
@@ -103,6 +139,19 @@ class Feedback extends Model
      * Get all available priorities
      */
     public static function getPriorities(): array
+    {
+        return [
+            self::PRIORITY_LOW,
+            self::PRIORITY_MEDIUM,
+            self::PRIORITY_HIGH,
+            self::PRIORITY_CRITICAL,
+        ];
+    }
+
+    /**
+     * Get all priorities with labels
+     */
+    public static function getPriorityLabels(): array
     {
         return [
             self::PRIORITY_LOW => __('Low'),
@@ -230,7 +279,7 @@ class Feedback extends Model
      */
     public function getTypeLabelAttribute(): string
     {
-        return self::getTypes()[$this->type] ?? $this->type;
+        return self::getTypeLabels()[$this->type] ?? $this->type;
     }
 
     /**
@@ -238,7 +287,7 @@ class Feedback extends Model
      */
     public function getStatusLabelAttribute(): string
     {
-        return self::getStatuses()[$this->status] ?? $this->status;
+        return self::getStatusLabels()[$this->status] ?? $this->status;
     }
 
     /**
@@ -246,7 +295,7 @@ class Feedback extends Model
      */
     public function getPriorityLabelAttribute(): string
     {
-        return self::getPriorities()[$this->priority] ?? $this->priority;
+        return self::getPriorityLabels()[$this->priority] ?? $this->priority;
     }
 
     /**

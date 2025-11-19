@@ -11,6 +11,7 @@ use App\Services\TastingService;
 use App\Models\UserBeerCount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 /**
  * @group V1 - Beer Tracking
@@ -222,31 +223,24 @@ class BeerController extends Controller
      */
     public function countAction(CountActionRequest $request, int $id)
     {
+        // Authorization check: only users tracking this beer can update counts
+        $beer = \App\Models\Beer::findOrFail($id);
+        Gate::authorize('update', $beer);
+
         $action = $request->validated()['action'];
         $note = $request->validated()['note'] ?? null;
 
-        try {
-            $userBeerCount = match($action) {
-                'increment' => $this->tastingService->incrementCount(Auth::id(), $id, $note),
-                'decrement' => $this->tastingService->decrementCount(Auth::id(), $id, $note),
-            };
+        // Let exceptions bubble up to the global exception handler
+        $userBeerCount = match($action) {
+            'increment' => $this->tastingService->incrementCount(Auth::id(), $id, $note),
+            'decrement' => $this->tastingService->decrementCount(Auth::id(), $id, $note),
+        };
 
-            $beer = $userBeerCount->beer;
-            $beer->tasting_count = $userBeerCount->count;
-            $beer->last_tasted_at = $userBeerCount->last_tasted_at;
+        $beer = $userBeerCount->beer;
+        $beer->tasting_count = $userBeerCount->count;
+        $beer->last_tasted_at = $userBeerCount->last_tasted_at;
 
-            return new BeerResource($beer);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
-            return response()->json([
-                'error_code' => 'RES_002',
-                'message' => 'Beer not found in your tracked list.'
-            ], 404);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error_code' => 'BIZ_001',
-                'message' => $e->getMessage()
-            ], 400);
-        }
+        return new BeerResource($beer);
     }
 
     /**
@@ -283,15 +277,13 @@ class BeerController extends Controller
      */
     public function tastingLogs(int $id)
     {
-        try {
-            $tastingLogs = $this->tastingService->getTastingLogs(Auth::id(), $id);
+        // Authorization check: only users tracking this beer can view tasting logs
+        $beer = \App\Models\Beer::findOrFail($id);
+        Gate::authorize('viewTastingLogs', $beer);
 
-            return TastingLogResource::collection($tastingLogs);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
-            return response()->json([
-                'error_code' => 'RES_002',
-                'message' => 'Beer not found in your tracked list.'
-            ], 404);
-        }
+        // Let exceptions bubble up to the global exception handler
+        $tastingLogs = $this->tastingService->getTastingLogs(Auth::id(), $id);
+
+        return TastingLogResource::collection($tastingLogs);
     }
 }

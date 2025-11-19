@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\BusinessLogicException;
 use App\Models\Beer;
 use App\Models\UserBeerCount;
 use App\Models\TastingLog;
@@ -50,7 +51,7 @@ class TastingService
      * @param string|null $note
      * @return UserBeerCount
      * @throws ModelNotFoundException
-     * @throws \Exception
+     * @throws BusinessLogicException
      */
     public function decrementCount(int $userId, int $beerId, ?string $note = null): UserBeerCount
     {
@@ -61,7 +62,11 @@ class TastingService
                 ->firstOrFail();
 
             if ($userBeerCount->count <= 0) {
-                throw new \Exception('Cannot decrement count below zero.');
+                throw new BusinessLogicException(
+                    'Cannot decrement count below zero.',
+                    'BIZ_001',
+                    400
+                );
             }
 
             $userBeerCount->count -= 1;
