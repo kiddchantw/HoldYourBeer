@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Api;
+namespace Tests\Feature\Api\V1;
 
 use App\Models\User;
 use App\Models\Brand;
@@ -78,31 +78,31 @@ class BeerEndpointsTest extends TestCase
         Sanctum::actingAs($this->user);
 
         $response = $this->getJson('/api/v1/beers');
-        
+
         $response->assertStatus(200)
                 ->assertJsonStructure([
-                    '*' => [
-                        'id',
-                        'name',
-                        'style',
-                        'brand' => [
+                    'data' => [
+                        '*' => [
                             'id',
-                            'name'
-                        ],
-                        'tasting_count',
-                        'last_tasted_at'
-                    ]
-                ])
-                ->assertJsonFragment([
-                    'id' => $this->beer->id,
-                    'name' => 'Test Beer',
-                    'style' => 'IPA',
-                    'brand' => [
-                        'id' => $this->brand->id,
-                        'name' => 'Test Brand'
+                            'name',
+                            'style',
+                            'brand' => [
+                                'id',
+                                'name'
+                            ],
+                            'tasting_count',
+                            'last_tasted_at'
+                        ]
                     ],
-                    'tasting_count' => 3
-                ]);
+                    'meta',
+                    'links'
+                ])
+                ->assertJsonPath('data.0.id', $this->beer->id)
+                ->assertJsonPath('data.0.name', 'Test Beer')
+                ->assertJsonPath('data.0.style', 'IPA')
+                ->assertJsonPath('data.0.brand.id', $this->brand->id)
+                ->assertJsonPath('data.0.brand.name', 'Test Brand')
+                ->assertJsonPath('data.0.tasting_count', 3);
     }
 
     #[Test]
@@ -124,12 +124,10 @@ class BeerEndpointsTest extends TestCase
 
         // Filter by first brand
         $response = $this->getJson("/api/v1/beers?brand_id={$this->brand->id}");
-        
+
         $response->assertStatus(200)
-                ->assertJsonCount(1)
-                ->assertJsonFragment([
-                    'name' => 'Test Beer'
-                ]);
+                ->assertJsonCount(1, 'data')
+                ->assertJsonPath('data.0.name', 'Test Beer');
     }
 
     #[Test]
@@ -142,9 +140,7 @@ class BeerEndpointsTest extends TestCase
         ]);
 
         $response->assertStatus(200)
-                ->assertJsonFragment([
-                    'tasting_count' => 4
-                ]);
+                ->assertJsonPath('data.tasting_count', 4);
 
         // Check database
         $this->assertDatabaseHas('user_beer_counts', [
@@ -169,9 +165,7 @@ class BeerEndpointsTest extends TestCase
         ]);
 
         $response->assertStatus(200)
-                ->assertJsonFragment([
-                    'tasting_count' => 2
-                ]);
+                ->assertJsonPath('data.tasting_count', 2);
 
         // Check database
         $this->assertDatabaseHas('user_beer_counts', [
@@ -199,8 +193,9 @@ class BeerEndpointsTest extends TestCase
         ]);
 
         $response->assertStatus(400)
-                ->assertJsonFragment([
-                    'error' => 'Cannot decrement count below zero.'
+                ->assertJson([
+                    'error_code' => 'BIZ_001',
+                    'message' => 'Cannot decrement count below zero.'
                 ]);
 
         // Check count remained 0
@@ -224,10 +219,7 @@ class BeerEndpointsTest extends TestCase
             'action' => 'increment'
         ]);
 
-        $response->assertStatus(404)
-                ->assertJsonFragment([
-                    'error' => 'Beer not found in your tracked list.'
-                ]);
+        $response->assertStatus(403); // Authorization failed
     }
 
     #[Test]
@@ -268,14 +260,16 @@ class BeerEndpointsTest extends TestCase
 
         $response->assertStatus(200)
                 ->assertJsonStructure([
-                    '*' => [
-                        'id',
-                        'action',
-                        'tasted_at',
-                        'note'
+                    'data' => [
+                        '*' => [
+                            'id',
+                            'action',
+                            'tasted_at',
+                            'note'
+                        ]
                     ]
                 ])
-                ->assertJsonCount(2);
+                ->assertJsonCount(2, 'data');
     }
 
     #[Test]
@@ -290,9 +284,6 @@ class BeerEndpointsTest extends TestCase
 
         $response = $this->getJson("/api/v1/beers/{$untrackedBeer->id}/tasting_logs");
 
-        $response->assertStatus(404)
-                ->assertJsonFragment([
-                    'error' => 'Beer not found in your tracked list.'
-                ]);
+        $response->assertStatus(403); // Authorization failed
     }
 }

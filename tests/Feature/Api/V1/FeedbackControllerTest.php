@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Api;
+namespace Tests\Feature\Api\V1;
 
 use App\Models\Feedback;
 use App\Models\User;
