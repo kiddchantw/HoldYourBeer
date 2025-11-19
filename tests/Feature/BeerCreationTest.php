@@ -108,7 +108,7 @@ class BeerCreationTest extends TestCase
         $response->assertStatus(201);
         $this->assertDatabaseHas('user_beer_counts', [
             'user_id' => $this->user->id,
-            'beer_id' => $response->json('id'),
+            'beer_id' => $response->json('data.id'),
             'count' => 1,
         ]);
     }

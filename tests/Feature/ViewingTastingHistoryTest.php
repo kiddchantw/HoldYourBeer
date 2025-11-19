@@ -40,19 +40,19 @@ class ViewingTastingHistoryTest extends TestCase
             'beer_id' => $beer->id,
         ]);
 
-        // Arrange: Create tasting logs
+        // Arrange: Create tasting logs (using UTC timezone as configured in config/app.php)
         TastingLog::factory()->create([
             'user_beer_count_id' => $userBeerCount->id,
             'action' => 'initial',
             'note' => 'A crisp and refreshing lager, perfect for a summer day.',
-            'tasted_at' => '2025-08-20 10:00:00',
+            'tasted_at' => '2025-08-20 02:00:00', // UTC time that converts to Aug 20, 2025 in Asia/Taipei
         ]);
 
         TastingLog::factory()->create([
             'user_beer_count_id' => $userBeerCount->id,
             'action' => 'increment',
             'note' => null,
-            'tasted_at' => '2025-08-21 18:30:00',
+            'tasted_at' => '2025-08-21 02:00:00', // UTC time that converts to Aug 21, 2025 in Asia/Taipei
         ]);
 
         // Act: Authenticate as the user and visit the tasting history page

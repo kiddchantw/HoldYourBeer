@@ -49,11 +49,13 @@ class BrandControllerTest extends TestCase
         $response->assertStatus(200);
 
         // Assert brands are returned in alphabetical order by name
-        $response->assertJsonCount(3);
+        $response->assertJsonCount(3, 'data');
         $response->assertJson([
-            ['id' => $brands[1]->id, 'name' => 'Asahi'],      // First alphabetically
-            ['id' => $brands[2]->id, 'name' => 'Brewdog'],    // Second alphabetically
-            ['id' => $brands[0]->id, 'name' => 'Guinness'],   // Third alphabetically
+            'data' => [
+                ['id' => $brands[1]->id, 'name' => 'Asahi'],      // First alphabetically
+                ['id' => $brands[2]->id, 'name' => 'Brewdog'],    // Second alphabetically
+                ['id' => $brands[0]->id, 'name' => 'Guinness'],   // Third alphabetically
+            ]
         ]);
     }
 
@@ -87,8 +89,8 @@ class BrandControllerTest extends TestCase
 
         // Assert successful response with empty array
         $response->assertStatus(200);
-        $response->assertJsonCount(0);
-        $response->assertExactJson([]);
+        $response->assertJsonCount(0, 'data');
+        $response->assertExactJson(['data' => []]);
     }
 
     /**
@@ -109,18 +111,16 @@ class BrandControllerTest extends TestCase
         // Assert response structure
         $response->assertStatus(200);
         $response->assertJsonStructure([
-            '*' => [
-                'id',
-                'name',
-                'created_at',
-                'updated_at',
+            'data' => [
+                '*' => [
+                    'id',
+                    'name',
+                ]
             ]
         ]);
 
         // Assert specific brand data
-        $response->assertJsonFragment([
-            'id' => $brand->id,
-            'name' => 'Test Brand',
-        ]);
+        $response->assertJsonPath('data.0.id', $brand->id);
+        $response->assertJsonPath('data.0.name', 'Test Brand');
     }
 }

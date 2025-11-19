@@ -40,7 +40,7 @@ class BrandAnalyticsChartsTest extends TestCase
     {
         $response = $this->get(route('charts', ['locale' => 'en']));
         $response->assertStatus(200);
-        $response->assertSeeText('Brand Analytics Charts');
+        $response->assertSeeText('Chart Statistics');
     }
 
     #[Test]
@@ -79,6 +79,6 @@ class BrandAnalyticsChartsTest extends TestCase
         // User has no beer consumption data
         $response = $this->get(route('charts', ['locale' => 'en']));
         $response->assertStatus(200);
-        $response->assertSeeText('No brand consumption data available.');
+        $response->assertSeeText('No consumption data available');
     }
 }

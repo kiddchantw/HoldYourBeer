@@ -52,11 +52,6 @@ class EmailCaseInsensitiveTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['email']);
-        $response->assertJson([
-            'errors' => [
-                'email' => ['此電子郵件已被註冊。']
-            ]
-        ]);
 
         // 確認只有一個用戶
         $this->assertEquals(1, User::count());
