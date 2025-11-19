@@ -20,7 +20,7 @@ HoldYourBeer is a Laravel-based beer tracking application that follows a **Spec-
 
 This project uses Laradock. For all local development settings, placeholder values, and the exact `docker-compose` commands for running tests, migrations, etc., please refer to the single source of truth:
 
-**➡️ `laradock_setting.md`**
+**➡️ `../laradock_setting.md`**
 
 This file contains the command templates and all necessary variables.
 

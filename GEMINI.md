@@ -16,7 +16,7 @@ The application follows a spec-driven development approach, with API specificati
 
 This project uses Laradock. For all local development settings, placeholder values, and the exact `docker-compose` commands for running tests, migrations, etc., please refer to the single source of truth:
 
-**➡️ `laradock_setting.md`**
+**➡️ `../laradock_setting.md`**
 
 This file contains the command templates and all necessary variables.
 

@@ -69,7 +69,7 @@ docker-compose up -d nginx postgres workspace
 
 ### 5. Setup Laravel Application
 
-接下來，我們需要設定 Laravel 應用程式本身。請使用 `laradock_setting.md` 中定義的佔位符來執行所有指令。
+接下來，我們需要設定 Laravel 應用程式本身。請使用 `../laradock_setting.md` 中定義的佔位符來執行所有指令。
 
 1.  **安裝依賴套件**:
     ```bash
@@ -83,14 +83,14 @@ docker-compose up -d nginx postgres workspace
         ```bash
         docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan key:generate
         ```
-    -   **重要**: 請手動編輯 `.env` 檔案，並根據 `laradock_setting.md` 中的指南填入您的資料庫設定。`DB_HOST` 應設為 `postgres`。
+    -   **重要**: 請手動編輯 `.env` 檔案，並根據 `../laradock_setting.md` 中的指南填入您的資料庫設定。`DB_HOST` 應設為 `postgres`。
 
 3.  **執行資料庫遷移**:
     ```bash
     docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan migrate
     ```
 
-> **日常開發指令**: 對於所有日常開發指令（如執行測試、進入 Tinker 等），請參考 `laradock_setting.md` 中的指令模板與範例。
+> **日常開發指令**: 對於所有日常開發指令（如執行測試、進入 Tinker 等），請參考 `../laradock_setting.md` 中的指令模板與範例。
 
 ### 6. Access The Application
 
@@ -447,7 +447,7 @@ Before a feature can be considered complete and ready for review, it must meet a
     # 或使用 artisan test (可能無法顯示詳細覆蓋率):
     docker-compose -f {YOUR_LARADOCK_PATH}/docker-compose.yml exec -w {YOUR_PROJECT_PATH} workspace php artisan test --coverage
     ```
-    > **注意**: 在 Laradock 環境中，請參考 `laradock_setting.md` 了解完整的指令執行方式。
+    > **注意**: 在 Laradock 環境中，請參考 `../laradock_setting.md` 了解完整的指令執行方式。
     
 -   **Ensure All Tests Pass**: Only commit if all tests report a `PASS` status and spec validation passes.
     - 僅在所有測試皆通過且規格驗證成功時才進行提交。
