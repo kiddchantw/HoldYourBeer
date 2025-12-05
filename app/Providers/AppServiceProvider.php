@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Brand;
+use App\Observers\BrandObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // 註冊品牌觀察者
+        Brand::observe(BrandObserver::class);
+
         // Set locale based on URL segments
         $this->app->booted(function () {
             $request = request();
