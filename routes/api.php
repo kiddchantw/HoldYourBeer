@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\Auth\EmailVerificationController;
+use App\Http\Controllers\Api\Auth\PasswordResetController;
 use App\Http\Controllers\Api\V1\AuthController as V1AuthController;
 use App\Http\Controllers\Api\V1\BeerController as V1BeerController;
 use App\Http\Controllers\Api\V1\BrandController as V1BrandController;
@@ -27,6 +29,14 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::post('/auth/google', [V1GoogleAuthController::class, 'authenticate'])->name('auth.google');
     });
 
+    // Password Reset (public routes)
+    Route::post('/forgot-password', [PasswordResetController::class, 'forgotPassword'])
+        ->middleware('throttle:6,1')
+        ->name('password.email');
+    Route::post('/reset-password', [PasswordResetController::class, 'reset'])
+        ->middleware('throttle:6,1')
+        ->name('password.store');
+
     // Public feedback endpoint (allows anonymous submissions)
     Route::post('/feedback', [V1FeedbackController::class, 'store'])->name('feedback.store');
 
@@ -37,6 +47,14 @@ Route::prefix('v1')->name('v1.')->group(function () {
         })->name('user');
 
         Route::post('/logout', [V1AuthController::class, 'logout'])->name('logout');
+
+        // Email Verification
+        Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])
+            ->middleware('throttle:6,1')
+            ->name('verification.send');
+        Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
+            ->middleware('signed')
+            ->name('verification.verify');
 
         // Beer endpoints
         Route::get('/beers', [V1BeerController::class, 'index'])->name('beers.index');
