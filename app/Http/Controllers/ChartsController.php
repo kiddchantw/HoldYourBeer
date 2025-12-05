@@ -18,58 +18,84 @@ class ChartsController extends Controller
         $this->middleware('throttle:data-export')->only('export');
     }
 
-    public function index()
+    public function index(Request $request)
     {
         \Log::info('ChartsController index method called');
         $user = auth()->user();
         \Log::info('User ID: ' . $user->id);
 
-        // 全部時間的品牌統計
-        $brandData = UserBeerCount::where('user_id', $user->id)
-            ->with('beer.brand')
-            ->get()
+        $selectedMonth = $request->input('month');
+        
+        // Base query for user's beer counts
+        $query = UserBeerCount::where('user_id', $user->id);
+        
+        // Apply date filter if selected
+        if ($selectedMonth) {
+            $startDate = Carbon::parse($selectedMonth)->startOfMonth();
+            $endDate = Carbon::parse($selectedMonth)->endOfMonth();
+            
+            // For chart data (consumption), we use updated_at as it reflects when the count was updated
+            $query->whereBetween('updated_at', [$startDate, $endDate]);
+            
+            $periodLabel = $startDate->format('Y-m');
+            $statsTitle = __('Statistics for :period', ['period' => $periodLabel]);
+        } else {
+            $periodLabel = __('All Time');
+            $statsTitle = __('All Time Statistics');
+        }
+
+        // 1. Chart Data (Brand Distribution)
+        // We need to clone the query because we'll use it for stats too, 
+        // but for the chart we need to group by brand.
+        // Note: The original query logic for $brandData was slightly different (fetching all then mapping).
+        // To support filtering efficiently, we should filter first.
+        
+        $filteredBeerCounts = $query->with('beer.brand')->get();
+
+        $brandData = $filteredBeerCounts
             ->mapToGroups(function ($userBeerCount) {
-                // Check if beer and brand relationships are loaded
                 if ($userBeerCount->beer && $userBeerCount->beer->brand) {
                     return [$userBeerCount->beer->brand->name => $userBeerCount->count];
                 }
-                return ['Unknown' => 0]; // Handle cases where relationships are missing
+                return ['Unknown' => 0];
             })
             ->map(function ($counts) {
                 return $counts->sum();
             });
 
-        // 本月統計數據
-        $currentMonth = Carbon::now()->startOfMonth();
-        $nextMonth = Carbon::now()->addMonth()->startOfMonth();
+        // 2. Statistics Cards
+        
+        // Total Consumption (Sum of counts in the period)
+        $totalCount = $filteredBeerCounts->sum('count');
 
-        // 本月總數量
-        $monthlyTotalCount = UserBeerCount::where('user_id', $user->id)
-            ->whereBetween('updated_at', [$currentMonth, $nextMonth])
-            ->sum('count');
-
-        // 本月品牌數
-        $monthlyBrandCount = UserBeerCount::where('user_id', $user->id)
-            ->whereBetween('updated_at', [$currentMonth, $nextMonth])
-            ->with('beer.brand')
-            ->get()
+        // Brand Count (Unique brands in the period)
+        $brandCount = $filteredBeerCounts
             ->pluck('beer.brand.name')
             ->filter()
             ->unique()
             ->count();
 
-        // 本月新嘗試 (假設是本月第一次喝的啤酒)
-        $monthlyNewTried = UserBeerCount::where('user_id', $user->id)
-            ->whereBetween('created_at', [$currentMonth, $nextMonth])
-            ->count();
+        // New Brands Tried
+        // Logic: "New Tried" usually means created_at is within the period.
+        // If we are in "All Time" mode, it's just total count of entries.
+        // If we are in "Month" mode, it's entries created in that month.
+        $newTriedQuery = UserBeerCount::where('user_id', $user->id);
+        if ($selectedMonth) {
+            $startDate = Carbon::parse($selectedMonth)->startOfMonth();
+            $endDate = Carbon::parse($selectedMonth)->endOfMonth();
+            $newTriedQuery->whereBetween('created_at', [$startDate, $endDate]);
+        }
+        $newTried = $newTriedQuery->count();
 
-        $monthlyStats = [
-            'totalCount' => $monthlyTotalCount,
-            'brandCount' => $monthlyBrandCount,
-            'newTried' => $monthlyNewTried,
+        $stats = [
+            'totalCount' => $totalCount,
+            'brandCount' => $brandCount,
+            'newTried' => $newTried,
+            'title' => $statsTitle,
+            'period' => $periodLabel,
         ];
 
-        \Log::info('Monthly stats calculated', $monthlyStats);
+        \Log::info('Stats calculated', $stats);
 
         // Prepare chart data
         $labels = $brandData->keys()->all();
@@ -78,16 +104,12 @@ class ChartsController extends Controller
         // Debug information
         $debug = [
             'user_id' => $user->id,
-            'brand_data' => $brandData->toArray(),
-            'monthly_stats' => $monthlyStats,
-            'labels' => $labels,
-            'data' => $data,
-            'current_month' => $currentMonth->format('Y-m'),
+            'selected_month' => $selectedMonth,
+            'stats' => $stats,
+            'labels_count' => count($labels),
         ];
 
-        \Log::info('Passing data to view', ['monthlyStats' => $monthlyStats, 'labels_count' => count($labels)]);
-
-        return view('charts.index', compact('labels', 'data', 'monthlyStats', 'debug'));
+        return view('charts.index', compact('labels', 'data', 'stats', 'debug', 'selectedMonth'));
     }
 
     /**

@@ -55,48 +55,44 @@
                         <!-- Beer Cards - Mobile First -->
                         <div class="space-y-4 md:grid md:grid-cols-1 lg:grid-cols-2 md:gap-6 md:space-y-0">
                             @foreach($trackedBeers as $beerCount)
-                                <div class="bg-gray-50 rounded-lg overflow-hidden hover:bg-gray-100 transition duration-150 ease-in-out grid grid-cols-2 min-h-[110px]">
+                                <div class="bg-gray-50 rounded-lg overflow-hidden hover:bg-gray-100 transition duration-150 ease-in-out flex justify-between items-center min-h-[110px]">
                                     <!-- 左側：啤酒資訊 -->
-                                    <div class="p-4 flex items-center justify-center">
-                                        <a href="{{ route('beers.history', ['beerId' => $beerCount->beer->id, 'locale' => app()->getLocale() ?: 'en']) }}" class="block">
-                                            <div class="flex justify-between items-start">
-                                                <div class="min-w-0 flex-1">
-                                                    <h4 class="text-lg font-medium text-gray-900 truncate">
-                                                        {{ $beerCount->beer->brand->name }} {{ $beerCount->beer->name }}
-                                                    </h4>
-                                                    <p class="text-sm text-gray-600 mt-1">
-                                                        @if($beerCount->beer->style)
-                                                            {{ $beerCount->beer->style }} •
-                                                        @endif
-                                                        <span class="font-medium">{{ $beerCount->count }} {{ $beerCount->count == 1 ? __('time') : __('times') }}</span>
-                                                    </p>
-                                                    @if($beerCount->last_tasted_at)
-                                                        <p class="text-xs text-gray-400 mt-2">
-                                                            {{ __('Last tasted') }}: {{ $beerCount->last_tasted_at->setTimezone('Asia/Taipei')->format('M j, Y') }}
-                                                        </p>
-                                                    @endif
-                                                </div>
+                                    <div class="p-4 flex-1 min-w-0 flex items-center">
+                                        <a href="{{ route('beers.history', ['beerId' => $beerCount->beer->id, 'locale' => app()->getLocale() ?: 'en']) }}" class="block w-full">
+                                            <div class="space-y-1 text-center">
+                                                <p class="text-sm text-gray-500 font-medium">
+                                                    {{ $beerCount->beer->brand->name }}
+                                                </p>
+                                                <h4 class="text-xl font-bold text-gray-900">
+                                                    {{ $beerCount->beer->name }}
+                                                </h4>
                                             </div>
                                         </a>
                                     </div>
 
                                     <!-- 右側：計數器控制 -->
-                                    <div class="p-4 flex items-center justify-center">
-                                            <form action="{{ route('tasting.decrement', ['id' => $beerCount->id, 'locale' => app()->getLocale() ?: 'en']) }}" method="POST" class="flex-1 h-full">
+                                    <div class="p-4 flex-shrink-0">
+                                        <div class="flex items-center justify-center space-x-3">
+                                            <form action="{{ route('tasting.decrement', ['id' => $beerCount->id, 'locale' => app()->getLocale() ?: 'en']) }}" method="POST">
                                                 @csrf
-                                                <button type="submit" class="w-full h-full text-3xl font-semibold text-red-700 bg-red-100 hover:bg-red-200 rounded-md">-</button>
+                                                <button type="submit" class="w-12 h-12 rounded-full flex items-center justify-center bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700 shadow-md hover:shadow-lg border border-gray-200 transition-all duration-200 transform hover:scale-105">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4"></path>
+                                                    </svg>
+                                                </button>
                                             </form>
-                                            <div class="flex-1 h-full flex items-center justify-center">
-                                                <span class="flex items-center justify-center w-full h-full rounded-md text-2xl font-bold bg-blue-100 text-blue-800 select-none">
-                                                    <span class="flex items-center justify-center w-full h-full rounded-md text-2xl font-bold bg-blue-100 text-blue-800 select-none">
-                                                        {{ $beerCount->count }}
-                                                    </span>
-                                                </span>
-                                            </div>
-                                            <form action="{{ route('tasting.increment', ['id' => $beerCount->id, 'locale' => app()->getLocale() ?: 'en']) }}" method="POST" class="flex-1 h-full">
+
+                                            <span class="text-xl font-bold text-gray-800 w-16 h-12 flex items-center justify-center tabular-nums">{{ $beerCount->count }}</span>
+
+                                            <form action="{{ route('tasting.increment', ['id' => $beerCount->id, 'locale' => app()->getLocale() ?: 'en']) }}" method="POST">
                                                 @csrf
-                                                <button type="submit" class="w-full h-full text-3xl font-semibold text-green-700 bg-green-100 hover:bg-green-200 rounded-md">+</button>
+                                                <button type="submit" class="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 shadow-md hover:shadow-xl border border-gray-200 transition-all duration-200 transform hover:scale-105">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                                    </svg>
+                                                </button>
                                             </form>
+                                        </div>
                                     </div>
                                 </div>
                             @endforeach
