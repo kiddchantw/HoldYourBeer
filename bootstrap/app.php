@@ -11,6 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    ->withSchedule(function ($schedule) {
+        // Prune expired refresh tokens daily at 2:00 AM
+        $schedule->command('tokens:prune-refresh')->daily();
+    })
     ->withMiddleware(function (Middleware $middleware): void {
         // Register middleware aliases
         $middleware->alias([

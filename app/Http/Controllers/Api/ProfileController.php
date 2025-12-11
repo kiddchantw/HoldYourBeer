@@ -30,6 +30,7 @@ class ProfileController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'email_verified_at' => $user->email_verified_at,
+                'provider' => $user->provider,
                 'created_at' => $user->created_at,
                 'updated_at' => $user->updated_at,
             ],

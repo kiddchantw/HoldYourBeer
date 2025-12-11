@@ -1,36 +1,23 @@
 <?php
 
-namespace Tests\Feature\Auth;
+namespace Tests\Feature\Feature;
 
 use App\Models\User;
-use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Password;
 use Tests\TestCase;
 
-/**
- * Related specifications: spec/features/password_reset_email.feature
- *
- * Scenarios covered:
- * - Password reset link request
- * - Password reset email notification
- * - Password reset form rendering
- * - Password reset with valid token
- *
- * Test coverage:
- * - Password reset form accessibility
- * - Email notification system
- * - Reset token validation
- * - Password update functionality
- * - Post-reset redirection
- */
 class PasswordResetTest extends TestCase
 {
     use RefreshDatabase;
 
     public function test_reset_password_link_screen_can_be_rendered(): void
     {
-        $response = $this->get('/forgot-password');
+        $response = $this->get(route('localized.password.request', ['locale' => 'en']));
 
         $response->assertStatus(200);
     }
@@ -41,49 +28,163 @@ class PasswordResetTest extends TestCase
 
         $user = User::factory()->create();
 
-        $this->post('/forgot-password', ['email' => $user->email]);
+        $response = $this->post(route('localized.password.email', ['locale' => 'en']), [
+            'email' => $user->email,
+        ]);
 
-        Notification::assertSentTo($user, ResetPassword::class);
+        Notification::assertSentTo(
+            $user,
+            \App\Notifications\ResetPasswordNotification::class
+        );
+    }
+
+    public function test_api_forgot_password_sends_notification(): void
+    {
+        Notification::fake();
+
+        $user = User::factory()->create();
+
+        $response = $this->postJson(route('v1.password.email'), [
+            'email' => $user->email,
+        ]);
+
+        $response->assertStatus(200);
+
+        Notification::assertSentTo(
+            $user,
+            \App\Notifications\ResetPasswordNotification::class
+        );
     }
 
     public function test_reset_password_screen_can_be_rendered(): void
     {
-        Notification::fake();
-
         $user = User::factory()->create();
+        $token = Password::createToken($user);
 
-        $this->post('/forgot-password', ['email' => $user->email]);
+        $response = $this->get(route('localized.password.reset', [
+            'locale' => 'en',
+            'token' => $token,
+        ]) . '?email=' . $user->email);
 
-        Notification::assertSentTo($user, ResetPassword::class, function ($notification) {
-            $response = $this->get('/reset-password/'.$notification->token);
-
-            $response->assertStatus(200);
-
-            return true;
-        });
+        $response->assertStatus(200);
     }
 
     public function test_password_can_be_reset_with_valid_token(): void
     {
-        Notification::fake();
+        Event::fake();
 
         $user = User::factory()->create();
+        $token = Password::createToken($user);
 
-        $this->post('/forgot-password', ['email' => $user->email]);
+        $response = $this->post(route('localized.password.store', ['locale' => 'en']), [
+            'token' => $token,
+            'email' => $user->email,
+            'password' => 'newpassword123',
+            'password_confirmation' => 'newpassword123',
+        ]);
 
-        Notification::assertSentTo($user, ResetPassword::class, function ($notification) use ($user) {
-            $response = $this->post('/reset-password', [
-                'token' => $notification->token,
+        $this->assertTrue(Hash::check('newpassword123', $user->fresh()->password));
+        Event::assertDispatched(PasswordReset::class);
+    }
+
+    public function test_password_cannot_be_reset_with_invalid_token(): void
+    {
+        $user = User::factory()->create();
+        $oldPassword = $user->password;
+
+        $response = $this->post(route('localized.password.store', ['locale' => 'en']), [
+            'token' => 'invalid-token',
+            'email' => $user->email,
+            'password' => 'newpassword123',
+            'password_confirmation' => 'newpassword123',
+        ]);
+
+        $this->assertEquals($oldPassword, $user->fresh()->password);
+    }
+
+    public function test_api_password_reset_with_valid_token(): void
+    {
+        Event::fake();
+
+        $user = User::factory()->create();
+        $token = Password::createToken($user);
+
+        $response = $this->postJson(route('v1.password.store'), [
+            'token' => $token,
+            'email' => $user->email,
+            'password' => 'newpassword123',
+            'password_confirmation' => 'newpassword123',
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertTrue(Hash::check('newpassword123', $user->fresh()->password));
+        Event::assertDispatched(PasswordReset::class);
+    }
+
+    public function test_api_password_reset_fails_with_invalid_token(): void
+    {
+        $user = User::factory()->create();
+        $oldPassword = $user->password;
+
+        $response = $this->postJson(route('v1.password.store'), [
+            'token' => 'invalid-token',
+            'email' => $user->email,
+            'password' => 'newpassword123',
+            'password_confirmation' => 'newpassword123',
+        ]);
+
+        $response->assertStatus(422);
+        $this->assertEquals($oldPassword, $user->fresh()->password);
+    }
+
+    public function test_password_reset_requires_email(): void
+    {
+        $response = $this->postJson(route('v1.password.email'), [
+            'email' => '',
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['email']);
+    }
+
+    public function test_password_reset_requires_valid_email(): void
+    {
+        $response = $this->postJson(route('v1.password.email'), [
+            'email' => 'invalid-email',
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['email']);
+    }
+
+    public function test_password_must_be_confirmed(): void
+    {
+        $user = User::factory()->create();
+        $token = Password::createToken($user);
+
+        $response = $this->postJson(route('v1.password.store'), [
+            'token' => $token,
+            'email' => $user->email,
+            'password' => 'newpassword123',
+            'password_confirmation' => 'differentpassword',
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['password']);
+    }
+
+    public function test_password_reset_throttling(): void
+    {
+        $user = User::factory()->create();
+
+        // Make multiple requests
+        for ($i = 0; $i < 7; $i++) {
+            $response = $this->postJson(route('v1.password.email'), [
                 'email' => $user->email,
-                'password' => 'password',
-                'password_confirmation' => 'password',
             ]);
+        }
 
-            $response
-                ->assertSessionHasNoErrors()
-                ->assertRedirect(route('login'));
-
-            return true;
-        });
+        // 7th request should be throttled
+        $response->assertStatus(429);
     }
 }
