@@ -42,8 +42,13 @@ class SocialLoginTest extends TestCase
             'email' => $email,
         ]);
 
-        Socialite::shouldReceive('driver')->with($provider)->andReturnSelf();
-        Socialite::shouldReceive('user')->andReturn($socialiteUser);
+        Socialite::shouldReceive('driver')
+            ->with($provider)
+            ->andReturnSelf();
+        Socialite::shouldReceive('stateless')
+            ->andReturnSelf();
+        Socialite::shouldReceive('user')
+            ->andReturn($socialiteUser);
 
         return $socialiteUser;
     }
@@ -65,6 +70,10 @@ class SocialLoginTest extends TestCase
         // Verify email is verified for OAuth users
         $user = User::where('email', 'google@example.com')->first();
         $this->assertNotNull($user->email_verified_at);
+
+        // Verify provider fields are set
+        $this->assertEquals('google', $user->provider);
+        $this->assertEquals('google_id_123', $user->provider_id);
     }
 
     #[Test]
@@ -108,6 +117,63 @@ class SocialLoginTest extends TestCase
     }
 
     #[Test]
+    public function existing_unverified_user_gets_verified_when_login_with_google()
+    {
+        // 建立未驗證的使用者（模擬 Email 註冊但未驗證信箱）
+        $user = User::factory()->create([
+            'email' => 'unverified@example.com',
+            'password' => Hash::make('password'),
+            'email_verified_at' => null, // 未驗證
+            'provider' => 'local', // Email 註冊
+        ]);
+
+        $this->assertNull($user->fresh()->email_verified_at);
+        $this->assertEquals('local', $user->provider);
+
+        // 用 Google 登入（同一信箱）
+        $this->mockSocialiteUser('google', 'google_id_789', 'Unverified User', 'unverified@example.com');
+
+        $response = $this->get(route('social.callback', ['provider' => 'google']));
+
+        $response->assertRedirect(route('localized.dashboard', ['locale' => 'en']));
+        $this->assertAuthenticatedAs($user);
+
+        // 驗證：OAuth 登入後，email_verified_at 應該被自動設定
+        // 但 provider 保持 'local' (首次註冊來源)
+        $user->refresh();
+        $this->assertNotNull($user->email_verified_at, 'OAuth login should automatically verify the email');
+        $this->assertEquals('local', $user->provider, 'Provider should remain as original registration method');
+    }
+
+    #[Test]
+    public function existing_verified_user_keeps_verification_when_login_with_google()
+    {
+        // 建立已驗證的使用者
+        $originalVerifiedAt = now()->subDays(7);
+        $user = User::factory()->create([
+            'email' => 'verified@example.com',
+            'password' => Hash::make('password'),
+            'email_verified_at' => $originalVerifiedAt,
+        ]);
+
+        // 用 Google 登入
+        $this->mockSocialiteUser('google', 'google_id_999', 'Verified User', 'verified@example.com');
+
+        $response = $this->get(route('social.callback', ['provider' => 'google']));
+
+        $response->assertRedirect(route('localized.dashboard', ['locale' => 'en']));
+        $this->assertAuthenticatedAs($user);
+
+        // 驗證：已驗證的使用者，驗證時間不應該改變
+        $user->refresh();
+        $this->assertEquals(
+            $originalVerifiedAt->timestamp,
+            $user->email_verified_at->timestamp,
+            'Already verified users should keep their original verification timestamp'
+        );
+    }
+
+    #[Test]
     public function existing_user_can_login_with_apple()
     {
         $user = User::factory()->create([
@@ -131,8 +197,13 @@ class SocialLoginTest extends TestCase
     #[Test]
     public function social_login_redirects_to_login_on_failure()
     {
-        Socialite::shouldReceive('driver')->with('google')->andReturnSelf();
-        Socialite::shouldReceive('user')->andThrow(new \Exception('Socialite error'));
+        Socialite::shouldReceive('driver')
+            ->with('google')
+            ->andReturnSelf();
+        Socialite::shouldReceive('stateless')
+            ->andReturnSelf();
+        Socialite::shouldReceive('user')
+            ->andThrow(new \Exception('Socialite error'));
 
         $response = $this->get(route('social.callback', ['provider' => 'google']));
 

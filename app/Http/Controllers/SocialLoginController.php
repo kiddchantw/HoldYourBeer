@@ -53,15 +53,34 @@ class SocialLoginController extends Controller
         $user = User::where('email', $socialUser->getEmail())->first();
 
         if ($user) {
-            // Existing user - just login
+            // Existing user - update verification status and provider info if needed
+            // OAuth providers (like Google) have already verified the email
+            $updates = [];
+
+            if (!$user->email_verified_at) {
+                $updates['email_verified_at'] = now();
+            }
+
+            // If this is the first time logging in with OAuth, set provider
+            if (!$user->provider) {
+                $updates['provider'] = $actualProvider;
+                $updates['provider_id'] = $socialUser->getId();
+            }
+
+            if (!empty($updates)) {
+                $user->update($updates);
+            }
+
             Auth::login($user, true);
         } else {
-            // Create new user
+            // Create new user with OAuth provider info
             $user = User::create([
                 'name' => $socialUser->getName() ?? $socialUser->getNickname() ?? $socialUser->getEmail(),
                 'email' => $socialUser->getEmail(),
                 'password' => Hash::make(Str::random(16)), // Random password for OAuth users
                 'email_verified_at' => now(), // OAuth users are already verified
+                'provider' => $actualProvider,
+                'provider_id' => $socialUser->getId(),
             ]);
 
             event(new Registered($user));

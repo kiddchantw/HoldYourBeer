@@ -24,6 +24,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'role',
         'email_verified_at',
+        'provider',
+        'provider_id',
     ];
 
     /**
@@ -71,5 +73,21 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendPasswordResetNotification($token): void
     {
         $this->notify(new \App\Notifications\ResetPasswordNotification($token));
+    }
+
+    /**
+     * Check if user is an OAuth user (Google, Apple, Facebook, etc.)
+     */
+    public function isOAuthUser(): bool
+    {
+        return in_array($this->provider, ['google', 'apple', 'facebook']);
+    }
+
+    /**
+     * Check if user is a local (email/password) user
+     */
+    public function isLocalUser(): bool
+    {
+        return $this->provider === 'local' || $this->provider === null;
     }
 }
