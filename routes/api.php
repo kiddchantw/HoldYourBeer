@@ -26,6 +26,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
     Route::middleware('throttle:auth')->group(function () {
         Route::post('/register', [V1AuthController::class, 'register'])->name('register');
         Route::post('/login', [V1AuthController::class, 'token'])->name('login');
+        Route::post('/refresh', [V1AuthController::class, 'refresh'])->name('refresh');
         Route::post('/auth/google', [V1GoogleAuthController::class, 'authenticate'])->name('auth.google');
     });
 

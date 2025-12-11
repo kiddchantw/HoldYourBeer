@@ -47,7 +47,19 @@ return [
     |
     */
 
-    'expiration' => null,
+    'expiration' => env('SANCTUM_EXPIRATION', 60), // Access Token: 60 minutes
+
+    /*
+    |--------------------------------------------------------------------------
+    | Refresh Token Expiration Minutes
+    |--------------------------------------------------------------------------
+    |
+    | This value controls the expiration time for refresh tokens in minutes.
+    | Default: 43200 minutes = 30 days
+    |
+    */
+
+    'refresh_token_expiration' => env('REFRESH_TOKEN_EXPIRATION', 43200),
 
     /*
     |--------------------------------------------------------------------------
