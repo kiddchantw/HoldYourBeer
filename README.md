@@ -168,6 +168,12 @@ php artisan scribe:generate
   - 中文：次數修改與日誌寫入需原子性處理，確保資料一致性。
 - **Performance**: Use dedicated count tables rather than aggregating logs for display
   - 中文：顯示時使用專用計數表而非彙總日誌，以提升效能。
+- **Caching Strategy**: Implement caching for read-heavy endpoints to improve performance
+  - 中文：為讀取密集的端點實作快取以提升效能。
+  - Cache invalidation via Model Observers ensures data consistency
+  - 中文：透過 Model Observer 自動失效快取，確保資料一致性。
+  - See [Cache Keys Documentation](docs/cache-keys.md) for all cache keys used in the application
+  - 中文：查看[快取鍵文件](docs/cache-keys.md)了解所有使用的快取鍵。
 - **Error Handling**: Follow standardized JSON error response format
   - 中文：遵循標準化 JSON 錯誤回應格式。
 - **Authentication**: Laravel Sanctum for email/password authentication (Web, API)

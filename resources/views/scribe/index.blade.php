@@ -77,6 +77,9 @@
                                                                                 <li class="tocify-item level-2" data-unique="v1-authentication-POSTapi-v1-login">
                                 <a href="#v1-authentication-POSTapi-v1-login">Login and get token</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="v1-authentication-POSTapi-v1-refresh">
+                                <a href="#v1-authentication-POSTapi-v1-refresh">Refresh access token</a>
+                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="v1-authentication-POSTapi-v1-auth-google">
                                 <a href="#v1-authentication-POSTapi-v1-auth-google">Authenticate with Google ID Token</a>
                             </li>
@@ -240,7 +243,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: December 5, 2025</li>
+        <li>Last updated: December 11, 2025</li>
     </ul>
 </div>
 
@@ -287,7 +290,7 @@ You can switch the language used with the tabs at the top right (or from the nav
 <p>
 </p>
 
-<p>Create a new user account and receive an authentication token.</p>
+<p>Create a new user account and receive an authentication token and refresh token.</p>
 
 <span id="example-requests-POSTapi-v1-register">
 <blockquote>Example request:</blockquote>
@@ -302,7 +305,8 @@ You can switch the language used with the tabs at the top right (or from the nav
     \"name\": \"John Doe\",
     \"email\": \"john@example.com\",
     \"password\": \"password123\",
-    \"password_confirmation\": \"password123\"
+    \"password_confirmation\": \"password123\",
+    \"device_name\": \"iPhone 13\"
 }"
 </code></pre></div>
 
@@ -321,7 +325,8 @@ let body = {
     "name": "John Doe",
     "email": "john@example.com",
     "password": "password123",
-    "password_confirmation": "password123"
+    "password_confirmation": "password123",
+    "device_name": "iPhone 13"
 };
 
 fetch(url, {
@@ -347,7 +352,10 @@ fetch(url, {
         &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
         &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
     },
-    &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;
+    &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;,
+    &quot;refresh_token&quot;: &quot;xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc&quot;,
+    &quot;token_type&quot;: &quot;Bearer&quot;,
+    &quot;expires_in&quot;: 10800
 }</code>
  </pre>
             <blockquote>
@@ -485,6 +493,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Password confirmation. Must match password. Example: <code>password123</code></p>
         </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>device_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="device_name"                data-endpoint="POSTapi-v1-register"
+               value="iPhone 13"
+               data-component="body">
+    <br>
+<p>optional The device name for tracking. Example: <code>iPhone 13</code></p>
+        </div>
         </form>
 
                     <h2 id="v1-authentication-POSTapi-v1-login">Login and get token</h2>
@@ -492,7 +512,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>
 </p>
 
-<p>Authenticate a user with email and password and receive an API token.</p>
+<p>Authenticate a user with email and password and receive an API token and refresh token.</p>
 
 <span id="example-requests-POSTapi-v1-login">
 <blockquote>Example request:</blockquote>
@@ -505,7 +525,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"email\": \"john@example.com\",
-    \"password\": \"password123\"
+    \"password\": \"password123\",
+    \"device_name\": \"iPhone 13\"
 }"
 </code></pre></div>
 
@@ -522,7 +543,8 @@ const headers = {
 
 let body = {
     "email": "john@example.com",
-    "password": "password123"
+    "password": "password123",
+    "device_name": "iPhone 13"
 };
 
 fetch(url, {
@@ -548,7 +570,10 @@ fetch(url, {
         &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
         &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
     },
-    &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;
+    &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;,
+    &quot;refresh_token&quot;: &quot;xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc&quot;,
+    &quot;token_type&quot;: &quot;Bearer&quot;,
+    &quot;expires_in&quot;: 10800
 }</code>
  </pre>
             <blockquote>
@@ -661,6 +686,170 @@ You can check the Dev Tools console for debugging information.</code></pre>
                data-component="body">
     <br>
 <p>The user's password. Example: <code>password123</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>device_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="device_name"                data-endpoint="POSTapi-v1-login"
+               value="iPhone 13"
+               data-component="body">
+    <br>
+<p>optional The device name for tracking. Example: <code>iPhone 13</code></p>
+        </div>
+        </form>
+
+                    <h2 id="v1-authentication-POSTapi-v1-refresh">Refresh access token</h2>
+
+<p>
+</p>
+
+<p>Use a valid refresh token to obtain a new access token.</p>
+
+<span id="example-requests-POSTapi-v1-refresh">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://local.holdyourbeers.com/api/v1/refresh" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"refresh_token\": \"abc123def456ghi789jkl012mno345pqr678stu901vwx234yz567abc890def123\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://local.holdyourbeers.com/api/v1/refresh"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "refresh_token": "abc123def456ghi789jkl012mno345pqr678stu901vwx234yz567abc890def123"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-refresh">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;access_token&quot;: &quot;2|xyz456abc789def012ghi345jkl678mno901pqr234stu567vwx890yz&quot;,
+    &quot;token_type&quot;: &quot;Bearer&quot;,
+    &quot;expires_in&quot;: 10800
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (401):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Invalid or expired refresh token.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-refresh" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-refresh"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-refresh"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-refresh" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-refresh">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-refresh" data-method="POST"
+      data-path="api/v1/refresh"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-refresh', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-refresh"
+                    onclick="tryItOut('POSTapi-v1-refresh');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-refresh"
+                    onclick="cancelTryOut('POSTapi-v1-refresh');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-refresh"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/refresh</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-refresh"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-v1-refresh"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>refresh_token</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="refresh_token"                data-endpoint="POSTapi-v1-refresh"
+               value="abc123def456ghi789jkl012mno345pqr678stu901vwx234yz567abc890def123"
+               data-component="body">
+    <br>
+<p>The refresh token received during login/register. Example: <code>abc123def456ghi789jkl012mno345pqr678stu901vwx234yz567abc890def123</code></p>
         </div>
         </form>
 
@@ -837,7 +1026,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Invalidate the current access token and log the user out.</p>
+<p>Invalidate the current access token and revoke all refresh tokens for the user.</p>
 
 <span id="example-requests-POSTapi-v1-logout">
 <blockquote>Example request:</blockquote>
@@ -848,7 +1037,11 @@ You can check the Dev Tools console for debugging information.</code></pre>
     "http://local.holdyourbeers.com/api/v1/logout" \
     --header "Authorization: Bearer {YOUR_TOKEN_HERE}" \
     --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Accept: application/json" \
+    --data "{
+    \"refresh_token\": \"architecto\"
+}"
+</code></pre></div>
 
 
 <div class="javascript-example">
@@ -862,9 +1055,14 @@ const headers = {
     "Accept": "application/json",
 };
 
+let body = {
+    "refresh_token": "architecto"
+};
+
 fetch(url, {
     method: "POST",
     headers,
+    body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
@@ -963,14 +1161,27 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>refresh_token</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="refresh_token"                data-endpoint="POSTapi-v1-logout"
+               value="architecto"
+               data-component="body">
+    <br>
+<p>optional The refresh token to revoke. If not provided, all refresh tokens will be revoked. Example: <code>architecto</code></p>
+        </div>
+        </form>
 
                     <h2 id="v1-authentication-POSTapi-v2-register">Register a new user</h2>
 
 <p>
 </p>
 
-<p>Create a new user account and receive an authentication token.</p>
+<p>Create a new user account and receive an authentication token and refresh token.</p>
 
 <span id="example-requests-POSTapi-v2-register">
 <blockquote>Example request:</blockquote>
@@ -985,7 +1196,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"name\": \"John Doe\",
     \"email\": \"john@example.com\",
     \"password\": \"password123\",
-    \"password_confirmation\": \"password123\"
+    \"password_confirmation\": \"password123\",
+    \"device_name\": \"iPhone 13\"
 }"
 </code></pre></div>
 
@@ -1004,7 +1216,8 @@ let body = {
     "name": "John Doe",
     "email": "john@example.com",
     "password": "password123",
-    "password_confirmation": "password123"
+    "password_confirmation": "password123",
+    "device_name": "iPhone 13"
 };
 
 fetch(url, {
@@ -1030,7 +1243,10 @@ fetch(url, {
         &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
         &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
     },
-    &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;
+    &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;,
+    &quot;refresh_token&quot;: &quot;xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc&quot;,
+    &quot;token_type&quot;: &quot;Bearer&quot;,
+    &quot;expires_in&quot;: 10800
 }</code>
  </pre>
             <blockquote>
@@ -1168,6 +1384,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Password confirmation. Must match password. Example: <code>password123</code></p>
         </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>device_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="device_name"                data-endpoint="POSTapi-v2-register"
+               value="iPhone 13"
+               data-component="body">
+    <br>
+<p>optional The device name for tracking. Example: <code>iPhone 13</code></p>
+        </div>
         </form>
 
                     <h2 id="v1-authentication-POSTapi-v2-login">Login and get token</h2>
@@ -1175,7 +1403,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>
 </p>
 
-<p>Authenticate a user with email and password and receive an API token.</p>
+<p>Authenticate a user with email and password and receive an API token and refresh token.</p>
 
 <span id="example-requests-POSTapi-v2-login">
 <blockquote>Example request:</blockquote>
@@ -1188,7 +1416,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"email\": \"john@example.com\",
-    \"password\": \"password123\"
+    \"password\": \"password123\",
+    \"device_name\": \"iPhone 13\"
 }"
 </code></pre></div>
 
@@ -1205,7 +1434,8 @@ const headers = {
 
 let body = {
     "email": "john@example.com",
-    "password": "password123"
+    "password": "password123",
+    "device_name": "iPhone 13"
 };
 
 fetch(url, {
@@ -1231,7 +1461,10 @@ fetch(url, {
         &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
         &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
     },
-    &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;
+    &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;,
+    &quot;refresh_token&quot;: &quot;xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc&quot;,
+    &quot;token_type&quot;: &quot;Bearer&quot;,
+    &quot;expires_in&quot;: 10800
 }</code>
  </pre>
             <blockquote>
@@ -1344,6 +1577,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
                data-component="body">
     <br>
 <p>The user's password. Example: <code>password123</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>device_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="device_name"                data-endpoint="POSTapi-v2-login"
+               value="iPhone 13"
+               data-component="body">
+    <br>
+<p>optional The device name for tracking. Example: <code>iPhone 13</code></p>
         </div>
         </form>
 
@@ -1520,7 +1765,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Invalidate the current access token and log the user out.</p>
+<p>Invalidate the current access token and revoke all refresh tokens for the user.</p>
 
 <span id="example-requests-POSTapi-v2-logout">
 <blockquote>Example request:</blockquote>
@@ -1531,7 +1776,11 @@ You can check the Dev Tools console for debugging information.</code></pre>
     "http://local.holdyourbeers.com/api/v2/logout" \
     --header "Authorization: Bearer {YOUR_TOKEN_HERE}" \
     --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Accept: application/json" \
+    --data "{
+    \"refresh_token\": \"architecto\"
+}"
+</code></pre></div>
 
 
 <div class="javascript-example">
@@ -1545,9 +1794,14 @@ const headers = {
     "Accept": "application/json",
 };
 
+let body = {
+    "refresh_token": "architecto"
+};
+
 fetch(url, {
     method: "POST",
     headers,
+    body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
@@ -1646,14 +1900,27 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>refresh_token</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="refresh_token"                data-endpoint="POSTapi-v2-logout"
+               value="architecto"
+               data-component="body">
+    <br>
+<p>optional The refresh token to revoke. If not provided, all refresh tokens will be revoked. Example: <code>architecto</code></p>
+        </div>
+        </form>
 
                     <h2 id="v1-authentication-POSTapi-register">Register a new user</h2>
 
 <p>
 </p>
 
-<p>Create a new user account and receive an authentication token.</p>
+<p>Create a new user account and receive an authentication token and refresh token.</p>
 
 <span id="example-requests-POSTapi-register">
 <blockquote>Example request:</blockquote>
@@ -1668,7 +1935,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"name\": \"John Doe\",
     \"email\": \"john@example.com\",
     \"password\": \"password123\",
-    \"password_confirmation\": \"password123\"
+    \"password_confirmation\": \"password123\",
+    \"device_name\": \"iPhone 13\"
 }"
 </code></pre></div>
 
@@ -1687,7 +1955,8 @@ let body = {
     "name": "John Doe",
     "email": "john@example.com",
     "password": "password123",
-    "password_confirmation": "password123"
+    "password_confirmation": "password123",
+    "device_name": "iPhone 13"
 };
 
 fetch(url, {
@@ -1713,7 +1982,10 @@ fetch(url, {
         &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
         &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
     },
-    &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;
+    &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;,
+    &quot;refresh_token&quot;: &quot;xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc&quot;,
+    &quot;token_type&quot;: &quot;Bearer&quot;,
+    &quot;expires_in&quot;: 10800
 }</code>
  </pre>
             <blockquote>
@@ -1851,6 +2123,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Password confirmation. Must match password. Example: <code>password123</code></p>
         </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>device_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="device_name"                data-endpoint="POSTapi-register"
+               value="iPhone 13"
+               data-component="body">
+    <br>
+<p>optional The device name for tracking. Example: <code>iPhone 13</code></p>
+        </div>
         </form>
 
                     <h2 id="v1-authentication-POSTapi-login">Login and get token</h2>
@@ -1858,7 +2142,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>
 </p>
 
-<p>Authenticate a user with email and password and receive an API token.</p>
+<p>Authenticate a user with email and password and receive an API token and refresh token.</p>
 
 <span id="example-requests-POSTapi-login">
 <blockquote>Example request:</blockquote>
@@ -1871,7 +2155,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"email\": \"john@example.com\",
-    \"password\": \"password123\"
+    \"password\": \"password123\",
+    \"device_name\": \"iPhone 13\"
 }"
 </code></pre></div>
 
@@ -1888,7 +2173,8 @@ const headers = {
 
 let body = {
     "email": "john@example.com",
-    "password": "password123"
+    "password": "password123",
+    "device_name": "iPhone 13"
 };
 
 fetch(url, {
@@ -1914,7 +2200,10 @@ fetch(url, {
         &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
         &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
     },
-    &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;
+    &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;,
+    &quot;refresh_token&quot;: &quot;xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc&quot;,
+    &quot;token_type&quot;: &quot;Bearer&quot;,
+    &quot;expires_in&quot;: 10800
 }</code>
  </pre>
             <blockquote>
@@ -2028,6 +2317,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>The user's password. Example: <code>password123</code></p>
         </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>device_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="device_name"                data-endpoint="POSTapi-login"
+               value="iPhone 13"
+               data-component="body">
+    <br>
+<p>optional The device name for tracking. Example: <code>iPhone 13</code></p>
+        </div>
         </form>
 
                     <h2 id="v1-authentication-POSTapi-logout">Logout</h2>
@@ -2036,7 +2337,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Invalidate the current access token and log the user out.</p>
+<p>Invalidate the current access token and revoke all refresh tokens for the user.</p>
 
 <span id="example-requests-POSTapi-logout">
 <blockquote>Example request:</blockquote>
@@ -2047,7 +2348,11 @@ You can check the Dev Tools console for debugging information.</code></pre>
     "http://local.holdyourbeers.com/api/logout" \
     --header "Authorization: Bearer {YOUR_TOKEN_HERE}" \
     --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Accept: application/json" \
+    --data "{
+    \"refresh_token\": \"architecto\"
+}"
+</code></pre></div>
 
 
 <div class="javascript-example">
@@ -2061,9 +2366,14 @@ const headers = {
     "Accept": "application/json",
 };
 
+let body = {
+    "refresh_token": "architecto"
+};
+
 fetch(url, {
     method: "POST",
     headers,
+    body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
@@ -2162,7 +2472,20 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>refresh_token</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="refresh_token"                data-endpoint="POSTapi-logout"
+               value="architecto"
+               data-component="body">
+    <br>
+<p>optional The refresh token to revoke. If not provided, all refresh tokens will be revoked. Example: <code>architecto</code></p>
+        </div>
+        </form>
 
                 <h1 id="v1-beer-tracking">V1 - Beer Tracking</h1>
 
@@ -3068,7 +3391,7 @@ with tasting counts and last tasted dates.</p>
     --data "{
     \"per_page\": 1,
     \"page\": 22,
-    \"sort\": \"-name\",
+    \"sort\": \"name\",
     \"brand_id\": 16
 }"
 </code></pre></div>
@@ -3097,7 +3420,7 @@ const headers = {
 let body = {
     "per_page": 1,
     "page": 22,
-    "sort": "-name",
+    "sort": "name",
     "brand_id": 16
 };
 
@@ -3310,10 +3633,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="sort"                data-endpoint="GETapi-v2-beers"
-               value="-name"
+               value="name"
                data-component="body">
     <br>
-<p>Example: <code>-name</code></p>
+<p>Example: <code>name</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>name</code></li> <li><code>-name</code></li></ul>
         </div>
@@ -3946,7 +4269,7 @@ with tasting counts and last tasted dates.</p>
     --data "{
     \"per_page\": 1,
     \"page\": 22,
-    \"sort\": \"-tasted_at\",
+    \"sort\": \"-name\",
     \"brand_id\": 16
 }"
 </code></pre></div>
@@ -3975,7 +4298,7 @@ const headers = {
 let body = {
     "per_page": 1,
     "page": 22,
-    "sort": "-tasted_at",
+    "sort": "-name",
     "brand_id": 16
 };
 
@@ -4188,10 +4511,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="sort"                data-endpoint="GETapi-beers"
-               value="-tasted_at"
+               value="-name"
                data-component="body">
     <br>
-<p>Example: <code>-tasted_at</code></p>
+<p>Example: <code>-name</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>name</code></li> <li><code>-name</code></li></ul>
         </div>
@@ -5726,7 +6049,7 @@ fetch(url, {
 content-type: application/json
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 59
-x-request-id: req_69322151afca82.52948356
+x-request-id: req_693aeb9ce26d76.16541186
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6005,7 +6328,7 @@ fetch(url, {
 content-type: application/json
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 59
-x-request-id: req_69322151c574d5.30109184
+x-request-id: req_693aeb9cedae70.10679643
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6190,7 +6513,7 @@ fetch(url, {
 content-type: application/json
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 59
-x-request-id: req_69322151cb8525.24106760
+x-request-id: req_693aeb9cf36cf3.62438700
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6357,7 +6680,7 @@ fetch(url, {
 content-type: application/json
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 59
-x-request-id: req_69322151cfbca2.77906928
+x-request-id: req_693aeb9d034197.41493388
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6517,7 +6840,7 @@ fetch(url, {
 content-type: application/json
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 59
-x-request-id: req_69322151d30910.31477514
+x-request-id: req_693aeb9d06c3d2.95563562
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6695,7 +7018,7 @@ x-api-current-version: v1
 link: &lt;http://local.holdyourbeers.com/docs&gt;; rel=&quot;deprecation&quot;
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 59
-x-request-id: req_69322151d63ba3.66514491
+x-request-id: req_693aeb9d0a32e5.08330966
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
