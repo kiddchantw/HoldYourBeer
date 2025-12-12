@@ -33,6 +33,7 @@ class GoogleAuthController extends Controller
      *     "name": "John Doe",
      *     "email": "john@example.com",
      *     "email_verified_at": "2025-11-07T10:00:00.000000Z",
+     *     "provider": "google",
      *     "created_at": "2025-11-07T10:00:00.000000Z",
      *     "updated_at": "2025-11-07T10:00:00.000000Z"
      *   }

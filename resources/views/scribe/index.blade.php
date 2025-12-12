@@ -349,6 +349,7 @@ fetch(url, {
         &quot;name&quot;: &quot;John Doe&quot;,
         &quot;email&quot;: &quot;john@example.com&quot;,
         &quot;email_verified_at&quot;: null,
+        &quot;provider&quot;: &quot;local&quot;,
         &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
         &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
     },
@@ -567,6 +568,7 @@ fetch(url, {
         &quot;name&quot;: &quot;John Doe&quot;,
         &quot;email&quot;: &quot;john@example.com&quot;,
         &quot;email_verified_at&quot;: null,
+        &quot;provider&quot;: &quot;local&quot;,
         &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
         &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
     },
@@ -910,6 +912,7 @@ fetch(url, {
         &quot;name&quot;: &quot;John Doe&quot;,
         &quot;email&quot;: &quot;john@example.com&quot;,
         &quot;email_verified_at&quot;: &quot;2025-11-07T10:00:00.000000Z&quot;,
+        &quot;provider&quot;: &quot;google&quot;,
         &quot;created_at&quot;: &quot;2025-11-07T10:00:00.000000Z&quot;,
         &quot;updated_at&quot;: &quot;2025-11-07T10:00:00.000000Z&quot;
     }
@@ -1240,6 +1243,7 @@ fetch(url, {
         &quot;name&quot;: &quot;John Doe&quot;,
         &quot;email&quot;: &quot;john@example.com&quot;,
         &quot;email_verified_at&quot;: null,
+        &quot;provider&quot;: &quot;local&quot;,
         &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
         &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
     },
@@ -1458,6 +1462,7 @@ fetch(url, {
         &quot;name&quot;: &quot;John Doe&quot;,
         &quot;email&quot;: &quot;john@example.com&quot;,
         &quot;email_verified_at&quot;: null,
+        &quot;provider&quot;: &quot;local&quot;,
         &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
         &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
     },
@@ -1649,6 +1654,7 @@ fetch(url, {
         &quot;name&quot;: &quot;John Doe&quot;,
         &quot;email&quot;: &quot;john@example.com&quot;,
         &quot;email_verified_at&quot;: &quot;2025-11-07T10:00:00.000000Z&quot;,
+        &quot;provider&quot;: &quot;google&quot;,
         &quot;created_at&quot;: &quot;2025-11-07T10:00:00.000000Z&quot;,
         &quot;updated_at&quot;: &quot;2025-11-07T10:00:00.000000Z&quot;
     }
@@ -1979,6 +1985,7 @@ fetch(url, {
         &quot;name&quot;: &quot;John Doe&quot;,
         &quot;email&quot;: &quot;john@example.com&quot;,
         &quot;email_verified_at&quot;: null,
+        &quot;provider&quot;: &quot;local&quot;,
         &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
         &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
     },
@@ -2197,6 +2204,7 @@ fetch(url, {
         &quot;name&quot;: &quot;John Doe&quot;,
         &quot;email&quot;: &quot;john@example.com&quot;,
         &quot;email_verified_at&quot;: null,
+        &quot;provider&quot;: &quot;local&quot;,
         &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
         &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
     },
@@ -2513,7 +2521,7 @@ with tasting counts and last tasted dates.</p>
     --data "{
     \"per_page\": 1,
     \"page\": 22,
-    \"sort\": \"-name\",
+    \"sort\": \"name\",
     \"brand_id\": 16
 }"
 </code></pre></div>
@@ -2542,7 +2550,7 @@ const headers = {
 let body = {
     "per_page": 1,
     "page": 22,
-    "sort": "-name",
+    "sort": "name",
     "brand_id": 16
 };
 
@@ -2755,10 +2763,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="sort"                data-endpoint="GETapi-v1-beers"
-               value="-name"
+               value="name"
                data-component="body">
     <br>
-<p>Example: <code>-name</code></p>
+<p>Example: <code>name</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>name</code></li> <li><code>-name</code></li></ul>
         </div>
@@ -4269,7 +4277,7 @@ with tasting counts and last tasted dates.</p>
     --data "{
     \"per_page\": 1,
     \"page\": 22,
-    \"sort\": \"-name\",
+    \"sort\": \"name\",
     \"brand_id\": 16
 }"
 </code></pre></div>
@@ -4298,7 +4306,7 @@ const headers = {
 let body = {
     "per_page": 1,
     "page": 22,
-    "sort": "-name",
+    "sort": "name",
     "brand_id": 16
 };
 
@@ -4511,10 +4519,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="sort"                data-endpoint="GETapi-beers"
-               value="-name"
+               value="name"
                data-component="body">
     <br>
-<p>Example: <code>-name</code></p>
+<p>Example: <code>name</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>name</code></li> <li><code>-name</code></li></ul>
         </div>
@@ -6049,7 +6057,7 @@ fetch(url, {
 content-type: application/json
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 59
-x-request-id: req_693aeb9ce26d76.16541186
+x-request-id: req_693b5107ed8c08.40352664
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6328,7 +6336,7 @@ fetch(url, {
 content-type: application/json
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 59
-x-request-id: req_693aeb9cedae70.10679643
+x-request-id: req_693b5108063bb6.95704026
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6513,7 +6521,7 @@ fetch(url, {
 content-type: application/json
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 59
-x-request-id: req_693aeb9cf36cf3.62438700
+x-request-id: req_693b51080d9f34.79170374
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6680,7 +6688,7 @@ fetch(url, {
 content-type: application/json
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 59
-x-request-id: req_693aeb9d034197.41493388
+x-request-id: req_693b5108128857.38177767
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6840,7 +6848,7 @@ fetch(url, {
 content-type: application/json
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 59
-x-request-id: req_693aeb9d06c3d2.95563562
+x-request-id: req_693b510816ee36.44707198
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -7018,7 +7026,7 @@ x-api-current-version: v1
 link: &lt;http://local.holdyourbeers.com/docs&gt;; rel=&quot;deprecation&quot;
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 59
-x-request-id: req_693aeb9d0a32e5.08330966
+x-request-id: req_693b51081b3930.69031411
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block

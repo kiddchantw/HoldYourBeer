@@ -38,6 +38,7 @@ class AuthController extends Controller
      *     "name": "John Doe",
      *     "email": "john@example.com",
      *     "email_verified_at": null,
+     *     "provider": "local",
      *     "created_at": "2025-11-05T10:00:00.000000Z",
      *     "updated_at": "2025-11-05T10:00:00.000000Z"
      *   },
@@ -115,6 +116,7 @@ class AuthController extends Controller
      *     "name": "John Doe",
      *     "email": "john@example.com",
      *     "email_verified_at": null,
+     *     "provider": "local",
      *     "created_at": "2025-11-05T10:00:00.000000Z",
      *     "updated_at": "2025-11-05T10:00:00.000000Z"
      *   },
