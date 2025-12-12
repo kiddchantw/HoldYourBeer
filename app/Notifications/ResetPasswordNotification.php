@@ -34,10 +34,12 @@ class ResetPasswordNotification extends ResetPassword
     {
         $locale = app()->getLocale() ?: 'en';
 
-        return url(route('localized.password.reset', [
-            'locale' => $locale,
-            'token' => $this->token,
-            'email' => $notifiable->getEmailForPasswordReset(),
-        ], false));
+        // return url(route('localized.password.reset', [
+        //     'locale' => $locale,
+        //     'token' => $this->token,
+        //     'email' => $notifiable->getEmailForPasswordReset(),
+        // ], false));
+
+        return url("/{$locale}/reset-password/{$this->token}?email=" . urlencode($notifiable->getEmailForPasswordReset()));
     }
 }

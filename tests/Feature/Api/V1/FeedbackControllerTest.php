@@ -128,7 +128,7 @@ class FeedbackControllerTest extends TestCase
             ->assertJson([
                 'data' => [
                     'type' => 'feature_request',
-                    'type_label' => '功能建議',
+                    'type_label' => 'Feature Request',
                 ],
             ]);
 

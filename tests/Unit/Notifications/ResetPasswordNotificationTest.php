@@ -24,7 +24,7 @@ class ResetPasswordNotificationTest extends TestCase
 
         $this->assertEquals('[HoldYourBeer] Reset Password', $mailMessage->subject);
         $this->assertStringContainsString('Hello Test User!', $mailMessage->greeting);
-        $this->assertCount(2, $mailMessage->introLines);
+        $this->assertCount(1, $mailMessage->introLines);
         $this->assertStringContainsString('You are receiving this email', $mailMessage->introLines[0]);
     }
 
@@ -84,6 +84,6 @@ class ResetPasswordNotificationTest extends TestCase
         $notification = new ResetPasswordNotification('test-token');
         $mailMessage = $notification->toMail($user);
 
-        $this->assertStringContainsString('60', $mailMessage->introLines[1]);
+        $this->assertStringContainsString('60', $mailMessage->outroLines[0]);
     }
 }

@@ -41,6 +41,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Add API middleware group
         $middleware->group('api', [
             \App\Http\Middleware\LogApiRequests::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
             'throttle:api',
         ]);
 
