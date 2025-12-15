@@ -14,9 +14,9 @@
         </div>
     </x-slot>
 
-    <div class="py-12 relative overflow-hidden">
+    <div class="pt-12 pb-6 relative overflow-hidden flex-1">
         <x-background />
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10 mt-6">
 
             <!-- Beer Collection Section -->
             <!-- <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg"> -->
