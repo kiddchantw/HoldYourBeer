@@ -9,7 +9,7 @@
 
 **Categories**: Authentication, OAuth, Email Verification
 
-**Commits**: 待建立 commit
+**Commits**: 已在之前的 Session 中提交 (及本次 docs update ca10cd9)
 
 ---
 
