@@ -68,6 +68,11 @@ class Handler extends ExceptionHandler
             return $this->renderApiException($request, $e);
         }
 
+        // WEB: Handle ModelNotFoundException
+        if ($e instanceof ModelNotFoundException) {
+            return back()->with('error', '找不到指定的資源');
+        }
+
         return parent::render($request, $e);
     }
 
