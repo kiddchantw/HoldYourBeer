@@ -25,6 +25,11 @@ class ChartsController extends Controller
         \Log::info('User ID: ' . $user->id);
 
         $selectedMonth = $request->input('month');
+
+        // Ensure selectedMonth is a string (prevent htmlspecialchars error if array is passed)
+        if (is_array($selectedMonth)) {
+            $selectedMonth = null;
+        }
         
         // Base query for user's beer counts
         $query = UserBeerCount::where('user_id', $user->id);
@@ -91,8 +96,8 @@ class ChartsController extends Controller
             'totalCount' => $totalCount,
             'brandCount' => $brandCount,
             'newTried' => $newTried,
-            'title' => $statsTitle,
-            'period' => $periodLabel,
+            'title' => (string)$statsTitle,
+            'period' => (string)$periodLabel,
         ];
 
         \Log::info('Stats calculated', $stats);
