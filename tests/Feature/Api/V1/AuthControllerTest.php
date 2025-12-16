@@ -38,8 +38,8 @@ class AuthControllerTest extends TestCase
         $data = [
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
         ];
 
         $response = $this->postJson('/api/v1/register', $data);
@@ -82,12 +82,12 @@ class AuthControllerTest extends TestCase
     public function it_can_login_a_user_and_return_a_token()
     {
         $user = User::factory()->create([
-            'password' => Hash::make('password'),
+            'password' => Hash::make('password123'),
         ]);
 
         $data = [
             'email' => $user->email,
-            'password' => 'password',
+            'password' => 'password123',
         ];
 
         $response = $this->postJson('/api/v1/login', $data);

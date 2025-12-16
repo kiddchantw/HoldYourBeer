@@ -46,7 +46,7 @@ class AuthenticationTest extends TestCase
 
         $response = $this->post('/en/login', [
             'email' => $user->email,
-            'password' => 'password',
+            'password' => 'password123',
         ]);
 
         // Debug: Check response status and any errors

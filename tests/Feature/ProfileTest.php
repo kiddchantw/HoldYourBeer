@@ -27,6 +27,8 @@ class ProfileTest extends TestCase
 {
     use RefreshDatabase;
 
+    use RefreshDatabase;
+
     public function test_profile_page_is_displayed(): void
     {
         $user = User::factory()->create();
@@ -85,7 +87,7 @@ class ProfileTest extends TestCase
         $response = $this
             ->actingAs($user)
             ->delete('/profile', [
-                'password' => 'password',
+                'password' => 'password123',
             ]);
 
         $response
@@ -104,7 +106,7 @@ class ProfileTest extends TestCase
             ->actingAs($user)
             ->from('/profile')
             ->delete('/profile', [
-                'password' => 'wrong-password',
+                'password' => 'wrongpass123',
             ]);
 
         $response
@@ -112,5 +114,40 @@ class ProfileTest extends TestCase
             ->assertRedirect('/profile');
 
         $this->assertNotNull($user->fresh());
+    }
+
+    public function test_profile_page_displays_connected_accounts_section(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->get('/profile');
+
+        $response->assertOk();
+        // Since we created lang/en/profile.php, we assume default locale is 'en' or fallback is 'en'
+        // We can check for the default English string 'Connected Accounts'
+        $response->assertSee('Connected Accounts');
+        $response->assertSee('Google');
+        $response->assertSee('Apple');
+    }
+
+    public function test_profile_page_shows_connected_status(): void
+    {
+        $user = User::factory()->create();
+        \App\Models\UserOAuthProvider::create([
+            'user_id' => $user->id,
+            'provider' => 'google',
+            'provider_id' => '123',
+            'provider_email' => 'test@gmail.com',
+            'linked_at' => now(),
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->get('/profile');
+
+        $response->assertOk();
+        $response->assertSee('Connected');
     }
 }

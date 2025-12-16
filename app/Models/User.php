@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -89,5 +91,68 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isLocalUser(): bool
     {
         return $this->provider === 'local' || $this->provider === null;
+    }
+    /**
+     * Check if user is an admin.
+     */
+    public function getIsAdminAttribute(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Get all OAuth providers linked to this user
+     */
+    public function oauthProviders(): HasMany
+    {
+        return $this->hasMany(UserOAuthProvider::class);
+    }
+
+    /**
+     * Check if user has linked a specific OAuth provider
+     */
+    public function hasOAuthProvider(string $provider): bool
+    {
+        return $this->oauthProviders()
+            ->where('provider', $provider)
+            ->exists();
+    }
+
+    /**
+     * Get all linked OAuth providers as a collection
+     */
+    public function getLinkedProviders(): Collection
+    {
+        return $this->oauthProviders()
+            ->orderBy('linked_at', 'desc')
+            ->get();
+    }
+
+    /**
+     * Get the number of authentication methods available
+     * (password + OAuth providers)
+     */
+    public function getAuthMethodsCount(): int
+    {
+        $count = 0;
+
+        // Check if user has password
+        if ($this->password) {
+            $count++;
+        }
+
+        // Add OAuth providers count
+        $count += $this->oauthProviders()->count();
+
+        return $count;
+    }
+
+    /**
+     * Check if user can safely unlink an OAuth provider
+     * (must have at least one other auth method)
+     */
+    public function canUnlinkOAuthProvider(): bool
+    {
+        return $this->getAuthMethodsCount() > 1;
     }
 }
