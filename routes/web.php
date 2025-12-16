@@ -83,10 +83,25 @@ Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale'], 'where' => 
             return view('admin.dashboard');
         })->name('admin.dashboard');
         Route::get('/users', [DashboardController::class, 'users'])->name('admin.users.index');
+
+        // Brand CRUD routes
+        Route::resource('brands', \App\Http\Controllers\Admin\BrandController::class)
+            ->except(['show'])
+            ->names('admin.brands');
+
+        // Brand soft delete routes
+        Route::post('brands/{id}/restore', [\App\Http\Controllers\Admin\BrandController::class, 'restore'])->name('admin.brands.restore');
+        Route::delete('brands/{id}/force-delete', [\App\Http\Controllers\Admin\BrandController::class, 'forceDelete'])->name('admin.brands.force-delete');
     });
 
     Route::get('/auth/{provider}/redirect', [SocialLoginController::class, 'redirectToProvider'])->name('localized.social.redirect');
     Route::get('/auth/{provider}/callback', [SocialLoginController::class, 'handleProviderCallback'])->name('localized.social.callback');
+
+    // OAuth link/unlink routes (require authentication)
+    Route::middleware('auth')->group(function () {
+        Route::get('/auth/{provider}/link', [SocialLoginController::class, 'linkProvider'])->name('localized.social.link');
+        Route::delete('/auth/{provider}/unlink', [SocialLoginController::class, 'unlinkProvider'])->name('localized.social.unlink');
+    });
 });
 
 // Non-localized admin routes to avoid locale-collision on "/admin/*"
@@ -99,6 +114,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 // Social login routes (without locale prefix)
 Route::get('/auth/{provider}/redirect', [SocialLoginController::class, 'redirectToProvider'])->name('social.redirect');
 Route::get('/auth/{provider}/callback', [SocialLoginController::class, 'handleProviderCallback'])->name('social.callback');
+
+// OAuth link/unlink routes (require authentication, without locale prefix)
+Route::middleware('auth')->group(function () {
+    Route::get('/auth/{provider}/link', [SocialLoginController::class, 'linkProvider'])->name('social.link');
+    Route::delete('/auth/{provider}/unlink', [SocialLoginController::class, 'unlinkProvider'])->name('social.unlink');
+});
 
 // Test OAuth configuration (development only)
 if (app()->environment('local')) {
