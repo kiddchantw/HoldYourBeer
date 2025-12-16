@@ -7,45 +7,62 @@
 
     <div class="py-12 relative overflow-hidden">
         <x-background />
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10 space-y-6">
-            <div class="p-4 sm:p-8 bg-white/60 backdrop-blur-sm shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Left Column -->
+                <div class="space-y-6">
+                    <!-- Profile Information -->
+                    <div class="p-4 sm:p-8 bg-white/60 backdrop-blur-sm shadow sm:rounded-lg">
+                        <div class="max-w-xl">
+                            @include('profile.partials.update-profile-information-form')
+                        </div>
+                    </div>
+
+                    <!-- Connected Accounts -->
+                    <div class="p-4 sm:p-8 bg-white/60 backdrop-blur-sm shadow sm:rounded-lg">
+                        <div class="max-w-xl">
+                            @include('profile.partials.connected-accounts-form')
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="p-4 sm:p-8 bg-white/60 backdrop-blur-sm shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
-            </div>
+                <!-- Right Column -->
+                <div class="space-y-6">
+                    <!-- Update Password -->
+                    <div class="p-4 sm:p-8 bg-white/60 backdrop-blur-sm shadow sm:rounded-lg">
+                        <div class="max-w-xl">
+                            @include('profile.partials.update-password-form')
+                        </div>
+                    </div>
 
-            <div class="p-4 sm:p-8 bg-white/60 backdrop-blur-sm shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    <section class="space-y-6">
-                        <header>
-                            <h2 class="text-lg font-medium text-gray-900">
-                                {{ __('Logout') }}
-                            </h2>
+                    <!-- Logout -->
+                    <div class="p-4 sm:p-8 bg-white/60 backdrop-blur-sm shadow sm:rounded-lg">
+                        <div class="max-w-xl">
+                            <section class="space-y-6">
+                                <header>
+                                    <h2 class="text-lg font-medium text-gray-900">
+                                        {{ __('Logout') }}
+                                    </h2>
+                                    <p class="mt-1 text-sm text-gray-600">
+                                        {{ __('Click the button below to log out of your account.') }}
+                                    </p>
+                                </header>
+                                <form method="POST" action="{{ route('localized.logout', ['locale' => app()->getLocale() ?: 'en']) }}">
+                                    @csrf
+                                    <x-danger-button>
+                                        {{ __('Logout') }}
+                                    </x-danger-button>
+                                </form>
+                            </section>
+                        </div>
+                    </div>
 
-                            <p class="mt-1 text-sm text-gray-600">
-                                {{ __('Click the button below to log out of your account.') }}
-                            </p>
-                        </header>
-
-                        <form method="POST" action="{{ route('localized.logout', ['locale' => app()->getLocale() ?: 'en']) }}">
-                            @csrf
-                            <x-danger-button>
-                                {{ __('Logout') }}
-                            </x-danger-button>
-                        </form>
-                    </section>
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white/60 backdrop-blur-sm shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
+                    <!-- Delete Account -->
+                    <div class="p-4 sm:p-8 bg-white/60 backdrop-blur-sm shadow sm:rounded-lg">
+                        <div class="max-w-xl">
+                            @include('profile.partials.delete-user-form')
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
