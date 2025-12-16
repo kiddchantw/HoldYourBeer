@@ -79,5 +79,20 @@
     "This password reset link will expire in :count minutes.": "此密碼重設連結將在 :count 分鐘後失效。",
     "If you did not request a password reset, no further action is required.": "如果您沒有要求重設密碼，則無需進一步操作。",
     "Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.": "忘記密碼了嗎？沒問題。只需告訴我們您的電子郵件地址，我們將透過電子郵件向您發送密碼重設連結，讓您可以選擇新密碼。",
-    "Email Password Reset Link": "發送密碼重設連結"
+    "Email Password Reset Link": "發送密碼重設連結",
+    "All Time": "所有時間",
+    "All Time Statistics": "所有時間統計",
+    "Statistics for :period": ":period 統計",
+    "Filter by Month": "按月份篩選",
+    "Clear Filter": "清除篩選",
+    "Period": "期間",
+    "Total": "總計",
+    "Consumption": "消費量",
+    "Brand": "品牌",
+    "Count": "數量",
+    "New": "新",
+    "Brands": "品牌",
+    "Bar": "長條圖",
+    "Pie": "圓餅圖",
+    "Line": "折線圖"
 }

@@ -8,6 +8,12 @@ info:
 
     **Note**: Legacy non-versioned endpoints (e.g., `/api/beers`) are deprecated and will be removed on 2026-12-31.
     Please migrate to versioned endpoints (e.g., `/api/v1/beers`).
+
+    **Password Requirements**: Passwords must meet the following criteria:
+    - Minimum 8 characters
+    - Must contain at least one letter (uppercase or lowercase)
+    - Must contain at least one number
+    - Example: `password123`, `MyPass456`
   version: 1.1.0
 
 paths:

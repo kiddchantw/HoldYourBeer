@@ -37,3 +37,4 @@ public/vendor/scribe/
 # IDE and Development Tools
 .cursor/
 .mcp.json
+.claude_backup_*

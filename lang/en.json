@@ -58,5 +58,20 @@
     "This password reset link will expire in :count minutes.": "This password reset link will expire in :count minutes.",
     "If you did not request a password reset, no further action is required.": "If you did not request a password reset, no further action is required.",
     "Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.": "Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.",
-    "Email Password Reset Link": "Email Password Reset Link"
+    "Email Password Reset Link": "Email Password Reset Link",
+    "All Time": "All Time",
+    "All Time Statistics": "All Time Statistics",
+    "Statistics for :period": "Statistics for :period",
+    "Filter by Month": "Filter by Month",
+    "Clear Filter": "Clear Filter",
+    "Period": "Period",
+    "Total": "Total",
+    "Consumption": "Consumption",
+    "Brand": "Brand",
+    "Count": "Count",
+    "New": "New",
+    "Brands": "Brands",
+    "Bar": "Bar",
+    "Pie": "Pie",
+    "Line": "Line"
 }
