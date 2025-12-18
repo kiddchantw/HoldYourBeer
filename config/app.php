@@ -86,6 +86,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Mobile Deep Link Configuration
+    |--------------------------------------------------------------------------
+    |
+    | These settings control how email verification links are generated for
+    | mobile apps. Use 'universal' for production (Universal Links/App Links)
+    | or 'scheme' for local development (custom URL scheme).
+    |
+    */
+
+    'mobile_link_mode' => env('MOBILE_LINK_MODE', 'universal'), // 'universal' or 'scheme'
+    'mobile_scheme' => env('MOBILE_SCHEME', 'holdyourbeer'), // Custom URL scheme (e.g., 'holdyourbeer://')
+    'mobile_web_base' => env('MOBILE_WEB_BASE', 'https://holdyourbeers.com'), // Base URL for Universal Links
+
+    /*
+    |--------------------------------------------------------------------------
     | Encryption Key
     |--------------------------------------------------------------------------
     |

@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\BeerController as V1BeerController;
 use App\Http\Controllers\Api\V1\BrandController as V1BrandController;
 use App\Http\Controllers\Api\V1\FeedbackController as V1FeedbackController;
 use App\Http\Controllers\Api\V1\GoogleAuthController as V1GoogleAuthController;
+use App\Http\Controllers\Api\V1\ShopController as V1ShopController;
 use App\Http\Controllers\Api\V2\BrandController as V2BrandController;
 use App\Http\Controllers\Api\ChartsController;
 use Illuminate\Http\Request;
@@ -41,6 +42,13 @@ Route::prefix('v1')->name('v1.')->group(function () {
     // Public feedback endpoint (allows anonymous submissions)
     Route::post('/feedback', [V1FeedbackController::class, 'store'])->name('feedback.store');
 
+    // Email Verification (public route)
+    // Note: signed middleware only works for HTTP URLs, not custom schemes
+    // For custom scheme URLs, signature is verified manually in the controller
+    Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
+        ->middleware('throttle:6,1')
+        ->name('verification.verify');
+
     // Authenticated routes
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/user', function (Request $request) {
@@ -49,13 +57,10 @@ Route::prefix('v1')->name('v1.')->group(function () {
 
         Route::post('/logout', [V1AuthController::class, 'logout'])->name('logout');
 
-        // Email Verification
+        // Email Verification Resend (requires authentication)
         Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])
             ->middleware('throttle:6,1')
             ->name('verification.send');
-        Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
-            ->middleware('signed')
-            ->name('verification.verify');
 
         // Beer endpoints
         Route::get('/beers', [V1BeerController::class, 'index'])->name('beers.index');
@@ -70,6 +75,9 @@ Route::prefix('v1')->name('v1.')->group(function () {
 
         // Brand endpoints
         Route::get('/brands', [V1BrandController::class, 'index'])->name('brands.index');
+
+        // Shop endpoints
+        Route::get('/shops/suggestions', [V1ShopController::class, 'suggestions'])->name('shops.suggestions');
 
         // Charts endpoints
         Route::get('/charts/brand-analytics', [ChartsController::class, 'brandAnalytics'])->name('charts.brand_analytics');

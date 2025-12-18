@@ -39,6 +39,14 @@ Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale'], 'where' => 
         Route::post('login', [\App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'store']);
     });
 
+    // Email verification route (public, no auth required)
+    // This allows users to verify email even if not logged in
+    // Note: We don't use 'signed' middleware here because the signature is generated for API route
+    // The controller will manually verify the signature
+    Route::get('verify-email/{id}/{hash}', \App\Http\Controllers\Auth\VerifyEmailController::class)
+        ->middleware('throttle:6,1')
+        ->name('localized.verification.verify');
+
     Route::middleware(['auth.locale','auth'])->group(function () {
         Route::post('logout', [\App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'destroy'])
             ->name('localized.logout');
@@ -47,12 +55,9 @@ Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale'], 'where' => 
         Route::get('logout', [\App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'destroy'])
             ->name('localized.logout.get');
 
-        // Email verification routes (localized)
+        // Email verification prompt (requires auth)
         Route::get('verify-email', \App\Http\Controllers\Auth\EmailVerificationPromptController::class)
             ->name('localized.verification.notice');
-        Route::get('verify-email/{id}/{hash}', \App\Http\Controllers\Auth\VerifyEmailController::class)
-            ->middleware(['signed','throttle:6,1'])
-            ->name('localized.verification.verify');
         Route::post('email/verification-notification', [\App\Http\Controllers\Auth\EmailVerificationNotificationController::class, 'store'])
             ->middleware('throttle:6,1')
             ->name('localized.verification.send');
