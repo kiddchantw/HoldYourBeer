@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\Beer;
+use App\Models\Shop;
 use App\Models\UserBeerCount;
 use App\Models\TastingLog;
 use Illuminate\Support\Facades\DB;
@@ -94,25 +95,77 @@ class TastingService
     public function addBeerToTracking(int $userId, array $beerData): Beer
     {
         return DB::transaction(function () use ($userId, $beerData) {
+            // Extract shop_name and quantity from beerData
+            $shopName = $beerData['shop_name'] ?? null;
+            $quantity = $beerData['quantity'] ?? 1;
+
+            unset($beerData['shop_name']);
+            unset($beerData['quantity']);
+
+            // Create or get shop
+            $shop = null;
+            if (!empty($shopName)) {
+                $shop = Shop::firstOrCreate(['name' => trim($shopName)]);
+            }
+
+            // Create beer
             $beer = Beer::create($beerData);
 
-            UserBeerCount::create([
+            // Sync beer_shop (crowd-sourced data)
+            if ($shop) {
+                $this->syncBeerShop($beer, $shop);
+            }
+
+            // Create user beer count
+            $userBeerCount = UserBeerCount::create([
                 'user_id' => $userId,
                 'beer_id' => $beer->id,
-                'count' => 1,
+                'count' => $quantity,
                 'last_tasted_at' => now(),
             ]);
 
+            // Create tasting log with shop_id (personal record)
             TastingLog::create([
-                'user_beer_count_id' => UserBeerCount::where('user_id', $userId)
-                    ->where('beer_id', $beer->id)
-                    ->first()->id,
+                'user_beer_count_id' => $userBeerCount->id,
                 'action' => 'initial',
                 'tasted_at' => now(),
+                'shop_id' => $shop?->id,
             ]);
 
             return $beer->fresh('brand');
         });
+    }
+
+    /**
+     * Sync beer-shop relationship (crowd-sourced data).
+     *
+     * If the (beer, shop) combination already exists, increment report_count.
+     * Otherwise, create a new record with report_count = 1.
+     *
+     * @param Beer $beer
+     * @param Shop $shop
+     * @return void
+     */
+    protected function syncBeerShop(Beer $beer, Shop $shop): void
+    {
+        $exists = $beer->shops()
+            ->where('shop_id', $shop->id)
+            ->exists();
+
+        if (!$exists) {
+            // First time this beer-shop combination is reported
+            $beer->shops()->attach($shop->id, [
+                'first_reported_at' => now(),
+                'last_reported_at' => now(),
+                'report_count' => 1,
+            ]);
+        } else {
+            // Already exists, update report count
+            $beer->shops()->updateExistingPivot($shop->id, [
+                'last_reported_at' => now(),
+                'report_count' => DB::raw('report_count + 1'),
+            ]);
+        }
     }
 
     /**
