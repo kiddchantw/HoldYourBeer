@@ -33,19 +33,21 @@ class AuthController extends Controller
      * @bodyParam device_name string optional The device name for tracking. Example: iPhone 13
      *
      * @response 201 {
-     *   "user": {
-     *     "id": 1,
-     *     "name": "John Doe",
-     *     "email": "john@example.com",
-     *     "email_verified_at": null,
-     *     "provider": "local",
-     *     "created_at": "2025-11-05T10:00:00.000000Z",
-     *     "updated_at": "2025-11-05T10:00:00.000000Z"
-     *   },
-     *   "token": "1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz",
-     *   "refresh_token": "xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc",
-     *   "token_type": "Bearer",
-     *   "expires_in": 10800
+     *   "data": {
+     *     "user": {
+     *       "id": 1,
+     *       "name": "John Doe",
+     *       "email": "john@example.com",
+     *       "email_verified_at": null,
+     *       "provider": "local",
+     *       "created_at": "2025-11-05T10:00:00.000000Z",
+     *       "updated_at": "2025-11-05T10:00:00.000000Z"
+     *     },
+     *     "token": "1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz",
+     *     "refresh_token": "xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc",
+     *     "token_type": "Bearer",
+     *     "expires_in": 10800
+     *   }
      * }
      *
      * @response 422 {
@@ -83,19 +85,21 @@ class AuthController extends Controller
         $expiresIn = config('sanctum.expiration', 180) * 60;
 
         return response()->json([
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'email_verified_at' => $user->email_verified_at,
-                'provider' => $user->provider,
-                'created_at' => $user->created_at,
-                'updated_at' => $user->updated_at,
-            ],
-            'token' => $token,
-            'refresh_token' => $refreshTokenData['plain_token'],
-            'token_type' => 'Bearer',
-            'expires_in' => $expiresIn,
+            'data' => [
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'email_verified_at' => $user->email_verified_at,
+                    'provider' => $user->provider,
+                    'created_at' => $user->created_at,
+                    'updated_at' => $user->updated_at,
+                ],
+                'token' => $token,
+                'refresh_token' => $refreshTokenData['plain_token'],
+                'token_type' => 'Bearer',
+                'expires_in' => $expiresIn,
+            ]
         ], 201);
     }
 
@@ -111,19 +115,21 @@ class AuthController extends Controller
      * @bodyParam device_name string optional The device name for tracking. Example: iPhone 13
      *
      * @response 200 {
-     *   "user": {
-     *     "id": 1,
-     *     "name": "John Doe",
-     *     "email": "john@example.com",
-     *     "email_verified_at": null,
-     *     "provider": "local",
-     *     "created_at": "2025-11-05T10:00:00.000000Z",
-     *     "updated_at": "2025-11-05T10:00:00.000000Z"
-     *   },
-     *   "token": "1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz",
-     *   "refresh_token": "xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc",
-     *   "token_type": "Bearer",
-     *   "expires_in": 10800
+     *   "data": {
+     *     "user": {
+     *       "id": 1,
+     *       "name": "John Doe",
+     *       "email": "john@example.com",
+     *       "email_verified_at": null,
+     *       "provider": "local",
+     *       "created_at": "2025-11-05T10:00:00.000000Z",
+     *       "updated_at": "2025-11-05T10:00:00.000000Z"
+     *     },
+     *     "token": "1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz",
+     *     "refresh_token": "xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc",
+     *     "token_type": "Bearer",
+     *     "expires_in": 10800
+     *   }
      * }
      *
      * @response 422 {
@@ -174,19 +180,21 @@ class AuthController extends Controller
         $expiresIn = config('sanctum.expiration', 180) * 60;
 
         return response()->json([
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'email_verified_at' => $user->email_verified_at,
-                'provider' => $user->provider,
-                'created_at' => $user->created_at,
-                'updated_at' => $user->updated_at,
-            ],
-            'token' => $token,
-            'refresh_token' => $refreshTokenData['plain_token'],
-            'token_type' => 'Bearer',
-            'expires_in' => $expiresIn,
+            'data' => [
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'email_verified_at' => $user->email_verified_at,
+                    'provider' => $user->provider,
+                    'created_at' => $user->created_at,
+                    'updated_at' => $user->updated_at,
+                ],
+                'token' => $token,
+                'refresh_token' => $refreshTokenData['plain_token'],
+                'token_type' => 'Bearer',
+                'expires_in' => $expiresIn,
+            ]
         ]);
     }
 
@@ -232,9 +240,11 @@ class AuthController extends Controller
      * @bodyParam refresh_token string required The refresh token received during login/register. Example: abc123def456ghi789jkl012mno345pqr678stu901vwx234yz567abc890def123
      *
      * @response 200 {
-     *   "access_token": "2|xyz456abc789def012ghi345jkl678mno901pqr234stu567vwx890yz",
-     *   "token_type": "Bearer",
-     *   "expires_in": 10800
+     *   "data": {
+     *     "access_token": "2|xyz456abc789def012ghi345jkl678mno901pqr234stu567vwx890yz",
+     *     "token_type": "Bearer",
+     *     "expires_in": 10800
+     *   }
      * }
      *
      * @response 401 {
@@ -265,9 +275,11 @@ class AuthController extends Controller
         $expiresIn = config('sanctum.expiration', 180) * 60;
 
         return response()->json([
-            'access_token' => $accessToken,
-            'token_type' => 'Bearer',
-            'expires_in' => $expiresIn,
+            'data' => [
+                'access_token' => $accessToken,
+                'token_type' => 'Bearer',
+                'expires_in' => $expiresIn,
+            ]
         ]);
     }
 }

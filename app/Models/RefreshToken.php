@@ -43,7 +43,7 @@ class RefreshToken extends Model
         $plainToken = Str::random(64);
         $hashedToken = hash('sha256', $plainToken);
 
-        $expirationMinutes = config('sanctum.refresh_token_expiration', 43200);
+        $expirationMinutes = (int) config('sanctum.refresh_token_expiration', 43200);
 
         $refreshToken = self::create([
             'user_id' => $user->id,
