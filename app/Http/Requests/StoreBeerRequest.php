@@ -25,6 +25,8 @@ class StoreBeerRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'brand_id' => ['required', 'integer', 'exists:brands,id'],
             'style' => ['nullable', 'string', 'max:255'],
+            'shop_name' => ['nullable', 'string', 'max:255'],
+            'quantity' => ['nullable', 'integer', 'min:1'],
         ];
     }
 

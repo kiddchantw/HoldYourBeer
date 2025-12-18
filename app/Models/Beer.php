@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Beer extends Model
@@ -31,6 +32,16 @@ class Beer extends Model
     public function userBeerCounts(): HasMany
     {
         return $this->hasMany(UserBeerCount::class);
+    }
+
+    /**
+     * Get all shops that sell this beer (crowd-sourced data).
+     */
+    public function shops(): BelongsToMany
+    {
+        return $this->belongsToMany(Shop::class)
+            ->withPivot(['first_reported_at', 'last_reported_at', 'report_count'])
+            ->withTimestamps();
     }
 
     /**
