@@ -234,6 +234,16 @@
                             </li>
                                                                         </ul>
                             </ul>
+                    <ul id="tocify-header-v1-shop-suggestions" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="v1-shop-suggestions">
+                    <a href="#v1-shop-suggestions">V1 - Shop Suggestions</a>
+                </li>
+                                    <ul id="tocify-subheader-v1-shop-suggestions" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="v1-shop-suggestions-GETapi-v1-shops-suggestions">
+                                <a href="#v1-shop-suggestions-GETapi-v1-shops-suggestions">Get shop suggestions for autocomplete</a>
+                            </li>
+                                                                        </ul>
+                            </ul>
             </div>
 
     <ul class="toc-footer" id="toc-footer">
@@ -243,7 +253,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: December 11, 2025</li>
+        <li>Last updated: December 17, 2025</li>
     </ul>
 </div>
 
@@ -344,19 +354,21 @@ fetch(url, {
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;user&quot;: {
-        &quot;id&quot;: 1,
-        &quot;name&quot;: &quot;John Doe&quot;,
-        &quot;email&quot;: &quot;john@example.com&quot;,
-        &quot;email_verified_at&quot;: null,
-        &quot;provider&quot;: &quot;local&quot;,
-        &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
-        &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
-    },
-    &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;,
-    &quot;refresh_token&quot;: &quot;xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc&quot;,
-    &quot;token_type&quot;: &quot;Bearer&quot;,
-    &quot;expires_in&quot;: 10800
+    &quot;data&quot;: {
+        &quot;user&quot;: {
+            &quot;id&quot;: 1,
+            &quot;name&quot;: &quot;John Doe&quot;,
+            &quot;email&quot;: &quot;john@example.com&quot;,
+            &quot;email_verified_at&quot;: null,
+            &quot;provider&quot;: &quot;local&quot;,
+            &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
+        },
+        &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;,
+        &quot;refresh_token&quot;: &quot;xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc&quot;,
+        &quot;token_type&quot;: &quot;Bearer&quot;,
+        &quot;expires_in&quot;: 10800
+    }
 }</code>
  </pre>
             <blockquote>
@@ -563,19 +575,21 @@ fetch(url, {
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;user&quot;: {
-        &quot;id&quot;: 1,
-        &quot;name&quot;: &quot;John Doe&quot;,
-        &quot;email&quot;: &quot;john@example.com&quot;,
-        &quot;email_verified_at&quot;: null,
-        &quot;provider&quot;: &quot;local&quot;,
-        &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
-        &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
-    },
-    &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;,
-    &quot;refresh_token&quot;: &quot;xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc&quot;,
-    &quot;token_type&quot;: &quot;Bearer&quot;,
-    &quot;expires_in&quot;: 10800
+    &quot;data&quot;: {
+        &quot;user&quot;: {
+            &quot;id&quot;: 1,
+            &quot;name&quot;: &quot;John Doe&quot;,
+            &quot;email&quot;: &quot;john@example.com&quot;,
+            &quot;email_verified_at&quot;: null,
+            &quot;provider&quot;: &quot;local&quot;,
+            &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
+        },
+        &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;,
+        &quot;refresh_token&quot;: &quot;xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc&quot;,
+        &quot;token_type&quot;: &quot;Bearer&quot;,
+        &quot;expires_in&quot;: 10800
+    }
 }</code>
  </pre>
             <blockquote>
@@ -754,9 +768,11 @@ fetch(url, {
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;access_token&quot;: &quot;2|xyz456abc789def012ghi345jkl678mno901pqr234stu567vwx890yz&quot;,
-    &quot;token_type&quot;: &quot;Bearer&quot;,
-    &quot;expires_in&quot;: 10800
+    &quot;data&quot;: {
+        &quot;access_token&quot;: &quot;2|xyz456abc789def012ghi345jkl678mno901pqr234stu567vwx890yz&quot;,
+        &quot;token_type&quot;: &quot;Bearer&quot;,
+        &quot;expires_in&quot;: 10800
+    }
 }</code>
  </pre>
             <blockquote>
@@ -1238,19 +1254,21 @@ fetch(url, {
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;user&quot;: {
-        &quot;id&quot;: 1,
-        &quot;name&quot;: &quot;John Doe&quot;,
-        &quot;email&quot;: &quot;john@example.com&quot;,
-        &quot;email_verified_at&quot;: null,
-        &quot;provider&quot;: &quot;local&quot;,
-        &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
-        &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
-    },
-    &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;,
-    &quot;refresh_token&quot;: &quot;xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc&quot;,
-    &quot;token_type&quot;: &quot;Bearer&quot;,
-    &quot;expires_in&quot;: 10800
+    &quot;data&quot;: {
+        &quot;user&quot;: {
+            &quot;id&quot;: 1,
+            &quot;name&quot;: &quot;John Doe&quot;,
+            &quot;email&quot;: &quot;john@example.com&quot;,
+            &quot;email_verified_at&quot;: null,
+            &quot;provider&quot;: &quot;local&quot;,
+            &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
+        },
+        &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;,
+        &quot;refresh_token&quot;: &quot;xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc&quot;,
+        &quot;token_type&quot;: &quot;Bearer&quot;,
+        &quot;expires_in&quot;: 10800
+    }
 }</code>
  </pre>
             <blockquote>
@@ -1457,19 +1475,21 @@ fetch(url, {
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;user&quot;: {
-        &quot;id&quot;: 1,
-        &quot;name&quot;: &quot;John Doe&quot;,
-        &quot;email&quot;: &quot;john@example.com&quot;,
-        &quot;email_verified_at&quot;: null,
-        &quot;provider&quot;: &quot;local&quot;,
-        &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
-        &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
-    },
-    &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;,
-    &quot;refresh_token&quot;: &quot;xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc&quot;,
-    &quot;token_type&quot;: &quot;Bearer&quot;,
-    &quot;expires_in&quot;: 10800
+    &quot;data&quot;: {
+        &quot;user&quot;: {
+            &quot;id&quot;: 1,
+            &quot;name&quot;: &quot;John Doe&quot;,
+            &quot;email&quot;: &quot;john@example.com&quot;,
+            &quot;email_verified_at&quot;: null,
+            &quot;provider&quot;: &quot;local&quot;,
+            &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
+        },
+        &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;,
+        &quot;refresh_token&quot;: &quot;xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc&quot;,
+        &quot;token_type&quot;: &quot;Bearer&quot;,
+        &quot;expires_in&quot;: 10800
+    }
 }</code>
  </pre>
             <blockquote>
@@ -1980,19 +2000,21 @@ fetch(url, {
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;user&quot;: {
-        &quot;id&quot;: 1,
-        &quot;name&quot;: &quot;John Doe&quot;,
-        &quot;email&quot;: &quot;john@example.com&quot;,
-        &quot;email_verified_at&quot;: null,
-        &quot;provider&quot;: &quot;local&quot;,
-        &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
-        &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
-    },
-    &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;,
-    &quot;refresh_token&quot;: &quot;xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc&quot;,
-    &quot;token_type&quot;: &quot;Bearer&quot;,
-    &quot;expires_in&quot;: 10800
+    &quot;data&quot;: {
+        &quot;user&quot;: {
+            &quot;id&quot;: 1,
+            &quot;name&quot;: &quot;John Doe&quot;,
+            &quot;email&quot;: &quot;john@example.com&quot;,
+            &quot;email_verified_at&quot;: null,
+            &quot;provider&quot;: &quot;local&quot;,
+            &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
+        },
+        &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;,
+        &quot;refresh_token&quot;: &quot;xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc&quot;,
+        &quot;token_type&quot;: &quot;Bearer&quot;,
+        &quot;expires_in&quot;: 10800
+    }
 }</code>
  </pre>
             <blockquote>
@@ -2199,19 +2221,21 @@ fetch(url, {
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;user&quot;: {
-        &quot;id&quot;: 1,
-        &quot;name&quot;: &quot;John Doe&quot;,
-        &quot;email&quot;: &quot;john@example.com&quot;,
-        &quot;email_verified_at&quot;: null,
-        &quot;provider&quot;: &quot;local&quot;,
-        &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
-        &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
-    },
-    &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;,
-    &quot;refresh_token&quot;: &quot;xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc&quot;,
-    &quot;token_type&quot;: &quot;Bearer&quot;,
-    &quot;expires_in&quot;: 10800
+    &quot;data&quot;: {
+        &quot;user&quot;: {
+            &quot;id&quot;: 1,
+            &quot;name&quot;: &quot;John Doe&quot;,
+            &quot;email&quot;: &quot;john@example.com&quot;,
+            &quot;email_verified_at&quot;: null,
+            &quot;provider&quot;: &quot;local&quot;,
+            &quot;created_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;,
+            &quot;updated_at&quot;: &quot;2025-11-05T10:00:00.000000Z&quot;
+        },
+        &quot;token&quot;: &quot;1|abc123def456ghi789jkl012mno345pqr678stu901vwx234yz&quot;,
+        &quot;refresh_token&quot;: &quot;xyz789abc456def123ghi890jkl567mno234pqr901stu678vwx345yz012abc&quot;,
+        &quot;token_type&quot;: &quot;Bearer&quot;,
+        &quot;expires_in&quot;: 10800
+    }
 }</code>
  </pre>
             <blockquote>
@@ -2521,7 +2545,7 @@ with tasting counts and last tasted dates.</p>
     --data "{
     \"per_page\": 1,
     \"page\": 22,
-    \"sort\": \"name\",
+    \"sort\": \"-tasted_at\",
     \"brand_id\": 16
 }"
 </code></pre></div>
@@ -2550,7 +2574,7 @@ const headers = {
 let body = {
     "per_page": 1,
     "page": 22,
-    "sort": "name",
+    "sort": "-tasted_at",
     "brand_id": 16
 };
 
@@ -2763,10 +2787,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="sort"                data-endpoint="GETapi-v1-beers"
-               value="name"
+               value="-tasted_at"
                data-component="body">
     <br>
-<p>Example: <code>name</code></p>
+<p>Example: <code>-tasted_at</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>name</code></li> <li><code>-name</code></li></ul>
         </div>
@@ -2805,7 +2829,9 @@ Must be one of:
     --data "{
     \"name\": \"Guinness Draught\",
     \"brand_id\": 1,
-    \"style\": \"Dry Stout\"
+    \"style\": \"Dry Stout\",
+    \"shop_name\": \"g\",
+    \"quantity\": 66
 }"
 </code></pre></div>
 
@@ -2824,7 +2850,9 @@ const headers = {
 let body = {
     "name": "Guinness Draught",
     "brand_id": 1,
-    "style": "Dry Stout"
+    "style": "Dry Stout",
+    "shop_name": "g",
+    "quantity": 66
 };
 
 fetch(url, {
@@ -2989,6 +3017,30 @@ You can check the Dev Tools console for debugging information.</code></pre>
                data-component="body">
     <br>
 <p>The beer style (e.g., IPA, Stout). Example: <code>Dry Stout</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>shop_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="shop_name"                data-endpoint="POSTapi-v1-beers"
+               value="g"
+               data-component="body">
+    <br>
+<p>Must not be greater than 255 characters. Example: <code>g</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>quantity</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="quantity"                data-endpoint="POSTapi-v1-beers"
+               value="66"
+               data-component="body">
+    <br>
+<p>Must be at least 1. Example: <code>66</code></p>
         </div>
         </form>
 
@@ -3399,7 +3451,7 @@ with tasting counts and last tasted dates.</p>
     --data "{
     \"per_page\": 1,
     \"page\": 22,
-    \"sort\": \"name\",
+    \"sort\": \"-name\",
     \"brand_id\": 16
 }"
 </code></pre></div>
@@ -3428,7 +3480,7 @@ const headers = {
 let body = {
     "per_page": 1,
     "page": 22,
-    "sort": "name",
+    "sort": "-name",
     "brand_id": 16
 };
 
@@ -3641,10 +3693,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="sort"                data-endpoint="GETapi-v2-beers"
-               value="name"
+               value="-name"
                data-component="body">
     <br>
-<p>Example: <code>name</code></p>
+<p>Example: <code>-name</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>name</code></li> <li><code>-name</code></li></ul>
         </div>
@@ -3683,7 +3735,9 @@ Must be one of:
     --data "{
     \"name\": \"Guinness Draught\",
     \"brand_id\": 1,
-    \"style\": \"Dry Stout\"
+    \"style\": \"Dry Stout\",
+    \"shop_name\": \"g\",
+    \"quantity\": 66
 }"
 </code></pre></div>
 
@@ -3702,7 +3756,9 @@ const headers = {
 let body = {
     "name": "Guinness Draught",
     "brand_id": 1,
-    "style": "Dry Stout"
+    "style": "Dry Stout",
+    "shop_name": "g",
+    "quantity": 66
 };
 
 fetch(url, {
@@ -3867,6 +3923,30 @@ You can check the Dev Tools console for debugging information.</code></pre>
                data-component="body">
     <br>
 <p>The beer style (e.g., IPA, Stout). Example: <code>Dry Stout</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>shop_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="shop_name"                data-endpoint="POSTapi-v2-beers"
+               value="g"
+               data-component="body">
+    <br>
+<p>Must not be greater than 255 characters. Example: <code>g</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>quantity</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="quantity"                data-endpoint="POSTapi-v2-beers"
+               value="66"
+               data-component="body">
+    <br>
+<p>Must be at least 1. Example: <code>66</code></p>
         </div>
         </form>
 
@@ -4277,7 +4357,7 @@ with tasting counts and last tasted dates.</p>
     --data "{
     \"per_page\": 1,
     \"page\": 22,
-    \"sort\": \"name\",
+    \"sort\": \"tasted_at\",
     \"brand_id\": 16
 }"
 </code></pre></div>
@@ -4306,7 +4386,7 @@ const headers = {
 let body = {
     "per_page": 1,
     "page": 22,
-    "sort": "name",
+    "sort": "tasted_at",
     "brand_id": 16
 };
 
@@ -4519,10 +4599,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="sort"                data-endpoint="GETapi-beers"
-               value="name"
+               value="tasted_at"
                data-component="body">
     <br>
-<p>Example: <code>name</code></p>
+<p>Example: <code>tasted_at</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>name</code></li> <li><code>-name</code></li></ul>
         </div>
@@ -4561,7 +4641,9 @@ Must be one of:
     --data "{
     \"name\": \"Guinness Draught\",
     \"brand_id\": 1,
-    \"style\": \"Dry Stout\"
+    \"style\": \"Dry Stout\",
+    \"shop_name\": \"g\",
+    \"quantity\": 66
 }"
 </code></pre></div>
 
@@ -4580,7 +4662,9 @@ const headers = {
 let body = {
     "name": "Guinness Draught",
     "brand_id": 1,
-    "style": "Dry Stout"
+    "style": "Dry Stout",
+    "shop_name": "g",
+    "quantity": 66
 };
 
 fetch(url, {
@@ -4745,6 +4829,30 @@ You can check the Dev Tools console for debugging information.</code></pre>
                data-component="body">
     <br>
 <p>The beer style (e.g., IPA, Stout). Example: <code>Dry Stout</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>shop_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="shop_name"                data-endpoint="POSTapi-beers"
+               value="g"
+               data-component="body">
+    <br>
+<p>Must not be greater than 255 characters. Example: <code>g</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>quantity</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="quantity"                data-endpoint="POSTapi-beers"
+               value="66"
+               data-component="body">
+    <br>
+<p>Must be at least 1. Example: <code>66</code></p>
         </div>
         </form>
 
@@ -6055,9 +6163,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-ratelimit-limit: 60
-x-ratelimit-remaining: 59
-x-request-id: req_693b5107ed8c08.40352664
+x-request-id: req_694266c7050b17.82176840
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6067,7 +6173,7 @@ access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS
 access-control-allow-headers: Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN
 access-control-expose-headers: X-API-Version, X-RateLimit-Limit, X-RateLimit-Remaining
 access-control-max-age: 3600
-access-control-allow-origin: *
+vary: Origin
  </code></pre></details>         <pre>
 
 <code class="language-json" style="max-height: 300px;">{
@@ -6334,9 +6440,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-ratelimit-limit: 60
-x-ratelimit-remaining: 59
-x-request-id: req_693b5108063bb6.95704026
+x-request-id: req_694266c7115e25.12041384
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6346,7 +6450,7 @@ access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS
 access-control-allow-headers: Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN
 access-control-expose-headers: X-API-Version, X-RateLimit-Limit, X-RateLimit-Remaining
 access-control-max-age: 3600
-access-control-allow-origin: *
+vary: Origin
  </code></pre></details>         <pre>
 
 <code class="language-json" style="max-height: 300px;">{
@@ -6519,9 +6623,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-ratelimit-limit: 60
-x-ratelimit-remaining: 59
-x-request-id: req_693b51080d9f34.79170374
+x-request-id: req_694266c717cd38.14371202
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6531,7 +6633,7 @@ access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS
 access-control-allow-headers: Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN
 access-control-expose-headers: X-API-Version, X-RateLimit-Limit, X-RateLimit-Remaining
 access-control-max-age: 3600
-access-control-allow-origin: *
+vary: Origin
  </code></pre></details>         <pre>
 
 <code class="language-json" style="max-height: 300px;">{
@@ -6686,9 +6788,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-ratelimit-limit: 60
-x-ratelimit-remaining: 59
-x-request-id: req_693b5108128857.38177767
+x-request-id: req_694266c71c0807.95807203
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6698,7 +6798,7 @@ access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS
 access-control-allow-headers: Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN
 access-control-expose-headers: X-API-Version, X-RateLimit-Limit, X-RateLimit-Remaining
 access-control-max-age: 3600
-access-control-allow-origin: *
+vary: Origin
  </code></pre></details>         <pre>
 
 <code class="language-json" style="max-height: 300px;">{
@@ -6846,9 +6946,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-ratelimit-limit: 60
-x-ratelimit-remaining: 59
-x-request-id: req_693b510816ee36.44707198
+x-request-id: req_694266c71f4014.14976768
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6858,7 +6956,7 @@ access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS
 access-control-allow-headers: Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN
 access-control-expose-headers: X-API-Version, X-RateLimit-Limit, X-RateLimit-Remaining
 access-control-max-age: 3600
-access-control-allow-origin: *
+vary: Origin
  </code></pre></details>         <pre>
 
 <code class="language-json" style="max-height: 300px;">{
@@ -7019,14 +7117,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-api-deprecation: true
-x-api-deprecation-info: Non-versioned API endpoints are deprecated. Please use /api/v1/* endpoints.
-x-api-sunset-date: 2026-12-31
-x-api-current-version: v1
-link: &lt;http://local.holdyourbeers.com/docs&gt;; rel=&quot;deprecation&quot;
-x-ratelimit-limit: 60
-x-ratelimit-remaining: 59
-x-request-id: req_693b51081b3930.69031411
+x-request-id: req_694266c7229cf5.90453419
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -7036,7 +7127,7 @@ access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS
 access-control-allow-headers: Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN
 access-control-expose-headers: X-API-Version, X-RateLimit-Limit, X-RateLimit-Remaining
 access-control-max-age: 3600
-access-control-allow-origin: *
+vary: Origin
  </code></pre></details>         <pre>
 
 <code class="language-json" style="max-height: 300px;">{
@@ -8461,6 +8552,196 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>optional Number of items per page. Default: 15. Example: <code>20</code></p>
             </div>
                 </form>
+
+                <h1 id="v1-shop-suggestions">V1 - Shop Suggestions</h1>
+
+    <p>APIs for shop autocomplete suggestions</p>
+
+                                <h2 id="v1-shop-suggestions-GETapi-v1-shops-suggestions">Get shop suggestions for autocomplete</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Returns a list of shop names matching the query, sorted by popularity (report_count).</p>
+
+<span id="example-requests-GETapi-v1-shops-suggestions">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://local.holdyourbeers.com/api/v1/shops/suggestions?query=%E5%85%A8" \
+    --header "Authorization: Bearer {YOUR_TOKEN_HERE}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"query\": \"b\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://local.holdyourbeers.com/api/v1/shops/suggestions"
+);
+
+const params = {
+    "query": "全",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
+
+const headers = {
+    "Authorization": "Bearer {YOUR_TOKEN_HERE}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "query": "b"
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-shops-suggestions">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;data&quot;: [
+        {
+            &quot;id&quot;: 1,
+            &quot;name&quot;: &quot;全聯福利中心&quot;,
+            &quot;total_reports&quot;: 25
+        },
+        {
+            &quot;id&quot;: 2,
+            &quot;name&quot;: &quot;全家便利商店&quot;,
+            &quot;total_reports&quot;: 18
+        }
+    ]
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-shops-suggestions" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-shops-suggestions"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-shops-suggestions"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-shops-suggestions" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-shops-suggestions">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-shops-suggestions" data-method="GET"
+      data-path="api/v1/shops/suggestions"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-shops-suggestions', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-shops-suggestions"
+                    onclick="tryItOut('GETapi-v1-shops-suggestions');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-shops-suggestions"
+                    onclick="cancelTryOut('GETapi-v1-shops-suggestions');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-shops-suggestions"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/shops/suggestions</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-shops-suggestions"
+               value="Bearer {YOUR_TOKEN_HERE}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_TOKEN_HERE}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-v1-shops-suggestions"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-v1-shops-suggestions"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>query</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="query"                data-endpoint="GETapi-v1-shops-suggestions"
+               value="全"
+               data-component="query">
+    <br>
+<p>The search query (min 2 characters). Example: <code>全</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>query</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="query"                data-endpoint="GETapi-v1-shops-suggestions"
+               value="b"
+               data-component="body">
+    <br>
+<p>Must be at least 1 character. Must not be greater than 255 characters. Example: <code>b</code></p>
+        </div>
+        </form>
 
             
 

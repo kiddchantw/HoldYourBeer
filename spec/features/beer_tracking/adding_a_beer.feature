@@ -81,3 +81,32 @@ Feature: Adding a New Beer to the Collection
     And I should be redirected to the dashboard
     And I should see a success message
     And my tasting count should be initialized to 1
+
+  # 場景: 兩階段新增啤酒流程（含店家資訊）
+  Scenario: Adding a new beer with shop info (2-step process)
+    Given I am on the "Add Beer" page
+    Then I should see "Step 1 of 2"
+    When I fill in "Brand" with "Asahi"
+    And I fill in "Beer Name" with "Super Dry"
+    And I click "Next Step"
+    Then I should see "Step 2 of 2"
+    And I should see "Purchase Shop (Optional)"
+    When I type "7-11" in the shop field
+    Then I should see shop suggestions
+    When I select "7-11" from suggestions
+    And I click "Save Beer"
+    Then I should be on the dashboard
+    And the beer "Super Dry" should be added to my collection
+    And the purchase location should be recorded as "7-11"
+
+  # 場景: 跳過選填資訊直接儲存
+  Scenario: Saving a beer without shop info (skip step 2)
+    Given I am on the "Add Beer" page
+    When I fill in "Brand" with "Kirin"
+    And I fill in "Beer Name" with "Ichiban"
+    And I click "Next Step"
+    Then I should see "Step 2 of 2"
+    When I click "Save Beer" without filling optional fields
+    Then I should be on the dashboard
+    And the beer "Ichiban" should be added to my collection
+    And the purchase location should be empty

@@ -335,6 +335,17 @@ paths:
                 style:
                   type: string
                   example: "Stout"
+                shop_name:
+                  type: string
+                  nullable: true
+                  description: "Optional shop name where the beer was purchased. Will be automatically created if not exists."
+                  example: "Costco"
+                quantity:
+                  type: integer
+                  default: 1
+                  minimum: 1
+                  description: "Initial quantity consumed/purchased. Default is 1."
+                  example: 3
       responses:
         '201':
           description: The new beer was created and added to the user's tracked list.
@@ -417,6 +428,34 @@ paths:
                 items:
                   $ref: '#/components/schemas/Brand'
 
+  /api/v1/shops/suggestions:
+    get:
+      summary: Get shop suggestions for autocomplete
+      description: Returns a list of shops matching the query string, sorted by report count (confidence).
+      tags:
+        - Shops
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: query
+          in: query
+          description: "Search term (prefix match). Minimum 1 character."
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            example: "Costco"
+      responses:
+        '200':
+          description: A list of suggested shops.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Shop'
+
+
 components:
   schemas:
     Brand:
@@ -428,6 +467,20 @@ components:
         name:
           type: string
           example: "Guinness"
+
+    Shop:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Costco"
+        total_reports:
+          type: integer
+          description: "Approximate number of times this shop has been reported/used."
+          example: 150
 
     Beer:
       type: object
@@ -471,6 +524,10 @@ components:
           format: date-time
           description: The timestamp of when the action was logged.
           example: "2025-08-12T21:00:00Z"
+        shop:
+          $ref: '#/components/schemas/Shop'
+          nullable: true
+          description: The shop where the beer was purchased (if applicable).
 
   securitySchemes:
     bearerAuth:

@@ -127,6 +127,9 @@ This API uses **URL-based versioning**. All endpoints are prefixed with a versio
 #### Brands
 - `GET /api/v1/brands` - List all available brands
 
+#### Shops
+- `GET /api/v1/shops/suggestions` - Auto-complete suggestions for shops (sorted by popularity)
+
 ### V2 Endpoints (Enhanced Features)
 
 All v1 endpoints are available in v2, plus:
