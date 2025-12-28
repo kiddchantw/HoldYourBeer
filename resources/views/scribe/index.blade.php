@@ -186,14 +186,14 @@
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-POSTapi-v1-reset-password">
                                 <a href="#endpoints-POSTapi-v1-reset-password">Handle an incoming new password request.</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-v1-email-verify--id---hash-">
+                                <a href="#endpoints-GETapi-v1-email-verify--id---hash-">Mark the authenticated user's email address as verified.</a>
+                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-GETapi-v1-user">
                                 <a href="#endpoints-GETapi-v1-user">GET api/v1/user</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-POSTapi-v1-email-verification-notification">
                                 <a href="#endpoints-POSTapi-v1-email-verification-notification">Resend the email verification notification.</a>
-                            </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-v1-email-verify--id---hash-">
-                                <a href="#endpoints-GETapi-v1-email-verify--id---hash-">Mark the authenticated user's email address as verified.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-GETapi-v1-charts-brand-analytics">
                                 <a href="#endpoints-GETapi-v1-charts-brand-analytics">Get brand analytics data for charts</a>
@@ -244,6 +244,16 @@
                             </li>
                                                                         </ul>
                             </ul>
+                    <ul id="tocify-header-v2-global-beer-search" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="v2-global-beer-search">
+                    <a href="#v2-global-beer-search">V2 - Global Beer Search</a>
+                </li>
+                                    <ul id="tocify-subheader-v2-global-beer-search" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="v2-global-beer-search-GETapi-v2-beers-search">
+                                <a href="#v2-global-beer-search-GETapi-v2-beers-search">Search global beers</a>
+                            </li>
+                                                                        </ul>
+                            </ul>
             </div>
 
     <ul class="toc-footer" id="toc-footer">
@@ -253,7 +263,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: December 17, 2025</li>
+        <li>Last updated: December 28, 2025</li>
     </ul>
 </div>
 
@@ -2792,7 +2802,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>-tasted_at</code></p>
 Must be one of:
-<ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>name</code></li> <li><code>-name</code></li></ul>
+<ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>beer_name</code></li> <li><code>-beer_name</code></li></ul>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>brand_id</code></b>&nbsp;&nbsp;
@@ -2828,10 +2838,12 @@ Must be one of:
     --header "Accept: application/json" \
     --data "{
     \"name\": \"Guinness Draught\",
+    \"brand\": \"Suntory\",
     \"brand_id\": 1,
     \"style\": \"Dry Stout\",
-    \"shop_name\": \"g\",
-    \"quantity\": 66
+    \"shop_name\": \"7-11\",
+    \"quantity\": 1,
+    \"note\": \"Enjoyed it!\"
 }"
 </code></pre></div>
 
@@ -2849,10 +2861,12 @@ const headers = {
 
 let body = {
     "name": "Guinness Draught",
+    "brand": "Suntory",
     "brand_id": 1,
     "style": "Dry Stout",
-    "shop_name": "g",
-    "quantity": 66
+    "shop_name": "7-11",
+    "quantity": 1,
+    "note": "Enjoyed it!"
 };
 
 fetch(url, {
@@ -2995,16 +3009,28 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>The beer's name. Example: <code>Guinness Draught</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>brand</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="brand"                data-endpoint="POSTapi-v1-beers"
+               value="Suntory"
+               data-component="body">
+    <br>
+<p>The brand name (case-insensitive). Either brand or brand_id is required. Example: <code>Suntory</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>brand_id</code></b>&nbsp;&nbsp;
 <small>integer</small>&nbsp;
- &nbsp;
+<i>optional</i> &nbsp;
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="brand_id"                data-endpoint="POSTapi-v1-beers"
                value="1"
                data-component="body">
     <br>
-<p>The brand ID this beer belongs to. Example: <code>1</code></p>
+<p>The brand ID. Either brand or brand_id is required. Example: <code>1</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>style</code></b>&nbsp;&nbsp;
@@ -3025,10 +3051,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="shop_name"                data-endpoint="POSTapi-v1-beers"
-               value="g"
+               value="7-11"
                data-component="body">
     <br>
-<p>Must not be greater than 255 characters. Example: <code>g</code></p>
+<p>The shop where the beer was purchased. Example: <code>7-11</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>quantity</code></b>&nbsp;&nbsp;
@@ -3037,10 +3063,22 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="quantity"                data-endpoint="POSTapi-v1-beers"
-               value="66"
+               value="1"
                data-component="body">
     <br>
-<p>Must be at least 1. Example: <code>66</code></p>
+<p>The number of beers. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>note</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="note"                data-endpoint="POSTapi-v1-beers"
+               value="Enjoyed it!"
+               data-component="body">
+    <br>
+<p>Optional note for this tasting. Example: <code>Enjoyed it!</code></p>
         </div>
         </form>
 
@@ -3451,7 +3489,7 @@ with tasting counts and last tasted dates.</p>
     --data "{
     \"per_page\": 1,
     \"page\": 22,
-    \"sort\": \"-name\",
+    \"sort\": \"-beer_name\",
     \"brand_id\": 16
 }"
 </code></pre></div>
@@ -3480,7 +3518,7 @@ const headers = {
 let body = {
     "per_page": 1,
     "page": 22,
-    "sort": "-name",
+    "sort": "-beer_name",
     "brand_id": 16
 };
 
@@ -3693,12 +3731,12 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="sort"                data-endpoint="GETapi-v2-beers"
-               value="-name"
+               value="-beer_name"
                data-component="body">
     <br>
-<p>Example: <code>-name</code></p>
+<p>Example: <code>-beer_name</code></p>
 Must be one of:
-<ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>name</code></li> <li><code>-name</code></li></ul>
+<ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>beer_name</code></li> <li><code>-beer_name</code></li></ul>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>brand_id</code></b>&nbsp;&nbsp;
@@ -3734,10 +3772,12 @@ Must be one of:
     --header "Accept: application/json" \
     --data "{
     \"name\": \"Guinness Draught\",
+    \"brand\": \"Suntory\",
     \"brand_id\": 1,
     \"style\": \"Dry Stout\",
-    \"shop_name\": \"g\",
-    \"quantity\": 66
+    \"shop_name\": \"7-11\",
+    \"quantity\": 1,
+    \"note\": \"Enjoyed it!\"
 }"
 </code></pre></div>
 
@@ -3755,10 +3795,12 @@ const headers = {
 
 let body = {
     "name": "Guinness Draught",
+    "brand": "Suntory",
     "brand_id": 1,
     "style": "Dry Stout",
-    "shop_name": "g",
-    "quantity": 66
+    "shop_name": "7-11",
+    "quantity": 1,
+    "note": "Enjoyed it!"
 };
 
 fetch(url, {
@@ -3901,16 +3943,28 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>The beer's name. Example: <code>Guinness Draught</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>brand</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="brand"                data-endpoint="POSTapi-v2-beers"
+               value="Suntory"
+               data-component="body">
+    <br>
+<p>The brand name (case-insensitive). Either brand or brand_id is required. Example: <code>Suntory</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>brand_id</code></b>&nbsp;&nbsp;
 <small>integer</small>&nbsp;
- &nbsp;
+<i>optional</i> &nbsp;
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="brand_id"                data-endpoint="POSTapi-v2-beers"
                value="1"
                data-component="body">
     <br>
-<p>The brand ID this beer belongs to. Example: <code>1</code></p>
+<p>The brand ID. Either brand or brand_id is required. Example: <code>1</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>style</code></b>&nbsp;&nbsp;
@@ -3931,10 +3985,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="shop_name"                data-endpoint="POSTapi-v2-beers"
-               value="g"
+               value="7-11"
                data-component="body">
     <br>
-<p>Must not be greater than 255 characters. Example: <code>g</code></p>
+<p>The shop where the beer was purchased. Example: <code>7-11</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>quantity</code></b>&nbsp;&nbsp;
@@ -3943,10 +3997,22 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="quantity"                data-endpoint="POSTapi-v2-beers"
-               value="66"
+               value="1"
                data-component="body">
     <br>
-<p>Must be at least 1. Example: <code>66</code></p>
+<p>The number of beers. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>note</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="note"                data-endpoint="POSTapi-v2-beers"
+               value="Enjoyed it!"
+               data-component="body">
+    <br>
+<p>Optional note for this tasting. Example: <code>Enjoyed it!</code></p>
         </div>
         </form>
 
@@ -4357,7 +4423,7 @@ with tasting counts and last tasted dates.</p>
     --data "{
     \"per_page\": 1,
     \"page\": 22,
-    \"sort\": \"tasted_at\",
+    \"sort\": \"-tasted_at\",
     \"brand_id\": 16
 }"
 </code></pre></div>
@@ -4386,7 +4452,7 @@ const headers = {
 let body = {
     "per_page": 1,
     "page": 22,
-    "sort": "tasted_at",
+    "sort": "-tasted_at",
     "brand_id": 16
 };
 
@@ -4599,12 +4665,12 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="sort"                data-endpoint="GETapi-beers"
-               value="tasted_at"
+               value="-tasted_at"
                data-component="body">
     <br>
-<p>Example: <code>tasted_at</code></p>
+<p>Example: <code>-tasted_at</code></p>
 Must be one of:
-<ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>name</code></li> <li><code>-name</code></li></ul>
+<ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>beer_name</code></li> <li><code>-beer_name</code></li></ul>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>brand_id</code></b>&nbsp;&nbsp;
@@ -4640,10 +4706,12 @@ Must be one of:
     --header "Accept: application/json" \
     --data "{
     \"name\": \"Guinness Draught\",
+    \"brand\": \"Suntory\",
     \"brand_id\": 1,
     \"style\": \"Dry Stout\",
-    \"shop_name\": \"g\",
-    \"quantity\": 66
+    \"shop_name\": \"7-11\",
+    \"quantity\": 1,
+    \"note\": \"Enjoyed it!\"
 }"
 </code></pre></div>
 
@@ -4661,10 +4729,12 @@ const headers = {
 
 let body = {
     "name": "Guinness Draught",
+    "brand": "Suntory",
     "brand_id": 1,
     "style": "Dry Stout",
-    "shop_name": "g",
-    "quantity": 66
+    "shop_name": "7-11",
+    "quantity": 1,
+    "note": "Enjoyed it!"
 };
 
 fetch(url, {
@@ -4807,16 +4877,28 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>The beer's name. Example: <code>Guinness Draught</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>brand</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="brand"                data-endpoint="POSTapi-beers"
+               value="Suntory"
+               data-component="body">
+    <br>
+<p>The brand name (case-insensitive). Either brand or brand_id is required. Example: <code>Suntory</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>brand_id</code></b>&nbsp;&nbsp;
 <small>integer</small>&nbsp;
- &nbsp;
+<i>optional</i> &nbsp;
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="brand_id"                data-endpoint="POSTapi-beers"
                value="1"
                data-component="body">
     <br>
-<p>The brand ID this beer belongs to. Example: <code>1</code></p>
+<p>The brand ID. Either brand or brand_id is required. Example: <code>1</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>style</code></b>&nbsp;&nbsp;
@@ -4837,10 +4919,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="shop_name"                data-endpoint="POSTapi-beers"
-               value="g"
+               value="7-11"
                data-component="body">
     <br>
-<p>Must not be greater than 255 characters. Example: <code>g</code></p>
+<p>The shop where the beer was purchased. Example: <code>7-11</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>quantity</code></b>&nbsp;&nbsp;
@@ -4849,10 +4931,22 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="quantity"                data-endpoint="POSTapi-beers"
-               value="66"
+               value="1"
                data-component="body">
     <br>
-<p>Must be at least 1. Example: <code>66</code></p>
+<p>The number of beers. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>note</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="note"                data-endpoint="POSTapi-beers"
+               value="Enjoyed it!"
+               data-component="body">
+    <br>
+<p>Optional note for this tasting. Example: <code>Enjoyed it!</code></p>
         </div>
         </form>
 
@@ -6115,6 +6209,185 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </div>
         </form>
 
+                    <h2 id="endpoints-GETapi-v1-email-verify--id---hash-">Mark the authenticated user&#039;s email address as verified.</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>This endpoint is public but protected by signed URL middleware (for HTTP URLs)
+or manual signature verification (for custom scheme URLs).
+It can verify email even if the user is not logged in.</p>
+
+<span id="example-requests-GETapi-v1-email-verify--id---hash-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://local.holdyourbeers.com/api/v1/email/verify/architecto/architecto" \
+    --header "Authorization: Bearer {YOUR_TOKEN_HERE}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://local.holdyourbeers.com/api/v1/email/verify/architecto/architecto"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_TOKEN_HERE}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-email-verify--id---hash-">
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+x-request-id: req_6950ae03466c59.77274198
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-xss-protection: 1; mode=block
+referrer-policy: strict-origin-when-cross-origin
+content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; https://cdn.jsdelivr.net https://unpkg.com; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://cdn.jsdelivr.net https://unpkg.com; img-src &#039;self&#039; data: https: blob:; font-src &#039;self&#039; data: https://cdn.jsdelivr.net; connect-src &#039;self&#039; http://local.holdyourbeers.com; frame-ancestors &#039;none&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
+access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS
+access-control-allow-headers: Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN
+access-control-expose-headers: X-API-Version, X-RateLimit-Limit, X-RateLimit-Remaining
+access-control-max-age: 3600
+vary: Origin
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;error_code&quot;: &quot;SYS_001&quot;,
+    &quot;message&quot;: &quot;An internal server error occurred. Please try again later.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-email-verify--id---hash-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-email-verify--id---hash-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-email-verify--id---hash-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-email-verify--id---hash-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-email-verify--id---hash-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-email-verify--id---hash-" data-method="GET"
+      data-path="api/v1/email/verify/{id}/{hash}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-email-verify--id---hash-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-email-verify--id---hash-"
+                    onclick="tryItOut('GETapi-v1-email-verify--id---hash-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-email-verify--id---hash-"
+                    onclick="cancelTryOut('GETapi-v1-email-verify--id---hash-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-email-verify--id---hash-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/email/verify/{id}/{hash}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-email-verify--id---hash-"
+               value="Bearer {YOUR_TOKEN_HERE}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_TOKEN_HERE}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-v1-email-verify--id---hash-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-v1-email-verify--id---hash-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="id"                data-endpoint="GETapi-v1-email-verify--id---hash-"
+               value="architecto"
+               data-component="url">
+    <br>
+<p>The ID of the verify. Example: <code>architecto</code></p>
+            </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>hash</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="hash"                data-endpoint="GETapi-v1-email-verify--id---hash-"
+               value="architecto"
+               data-component="url">
+    <br>
+<p>Example: <code>architecto</code></p>
+            </div>
+                    </form>
+
                     <h2 id="endpoints-GETapi-v1-user">GET api/v1/user</h2>
 
 <p>
@@ -6163,7 +6436,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_694266c7050b17.82176840
+x-request-id: req_6950ae0353ed86.29282172
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6392,183 +6665,6 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                         </form>
 
-                    <h2 id="endpoints-GETapi-v1-email-verify--id---hash-">Mark the authenticated user&#039;s email address as verified.</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-
-
-<span id="example-requests-GETapi-v1-email-verify--id---hash-">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
-    --get "http://local.holdyourbeers.com/api/v1/email/verify/architecto/architecto" \
-    --header "Authorization: Bearer {YOUR_TOKEN_HERE}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://local.holdyourbeers.com/api/v1/email/verify/architecto/architecto"
-);
-
-const headers = {
-    "Authorization": "Bearer {YOUR_TOKEN_HERE}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-fetch(url, {
-    method: "GET",
-    headers,
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-GETapi-v1-email-verify--id---hash-">
-            <blockquote>
-            <p>Example response (401):</p>
-        </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-x-request-id: req_694266c7115e25.12041384
-x-content-type-options: nosniff
-x-frame-options: DENY
-x-xss-protection: 1; mode=block
-referrer-policy: strict-origin-when-cross-origin
-content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; https://cdn.jsdelivr.net https://unpkg.com; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://cdn.jsdelivr.net https://unpkg.com; img-src &#039;self&#039; data: https: blob:; font-src &#039;self&#039; data: https://cdn.jsdelivr.net; connect-src &#039;self&#039; http://local.holdyourbeers.com; frame-ancestors &#039;none&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
-access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS
-access-control-allow-headers: Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN
-access-control-expose-headers: X-API-Version, X-RateLimit-Limit, X-RateLimit-Remaining
-access-control-max-age: 3600
-vary: Origin
- </code></pre></details>         <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;error_code&quot;: &quot;AUTH_001&quot;,
-    &quot;message&quot;: &quot;Unauthenticated.&quot;
-}</code>
- </pre>
-    </span>
-<span id="execution-results-GETapi-v1-email-verify--id---hash-" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-email-verify--id---hash-"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-email-verify--id---hash-"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-GETapi-v1-email-verify--id---hash-" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-email-verify--id---hash-">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-GETapi-v1-email-verify--id---hash-" data-method="GET"
-      data-path="api/v1/email/verify/{id}/{hash}"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-email-verify--id---hash-', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-GETapi-v1-email-verify--id---hash-"
-                    onclick="tryItOut('GETapi-v1-email-verify--id---hash-');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-GETapi-v1-email-verify--id---hash-"
-                    onclick="cancelTryOut('GETapi-v1-email-verify--id---hash-');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-email-verify--id---hash-"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-green">GET</small>
-            <b><code>api/v1/email/verify/{id}/{hash}</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-email-verify--id---hash-"
-               value="Bearer {YOUR_TOKEN_HERE}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {YOUR_TOKEN_HERE}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="GETapi-v1-email-verify--id---hash-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="GETapi-v1-email-verify--id---hash-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="id"                data-endpoint="GETapi-v1-email-verify--id---hash-"
-               value="architecto"
-               data-component="url">
-    <br>
-<p>The ID of the verify. Example: <code>architecto</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>hash</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="hash"                data-endpoint="GETapi-v1-email-verify--id---hash-"
-               value="architecto"
-               data-component="url">
-    <br>
-<p>Example: <code>architecto</code></p>
-            </div>
-                    </form>
-
                     <h2 id="endpoints-GETapi-v1-charts-brand-analytics">Get brand analytics data for charts</h2>
 
 <p>
@@ -6623,7 +6719,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_694266c717cd38.14371202
+x-request-id: req_6950ae035e16c1.36516841
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6788,7 +6884,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_694266c71c0807.95807203
+x-request-id: req_6950ae036345f8.81868700
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6946,7 +7042,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_694266c71f4014.14976768
+x-request-id: req_6950ae0367e161.89490233
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -7117,7 +7213,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_694266c7229cf5.90453419
+x-request-id: req_6950ae036dabe3.09466921
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -8740,6 +8836,252 @@ You can check the Dev Tools console for debugging information.</code></pre>
                data-component="body">
     <br>
 <p>Must be at least 1 character. Must not be greater than 255 characters. Example: <code>b</code></p>
+        </div>
+        </form>
+
+                <h1 id="v2-global-beer-search">V2 - Global Beer Search</h1>
+
+    <p>APIs for searching the global beer database (Version 2)</p>
+
+                                <h2 id="v2-global-beer-search-GETapi-v2-beers-search">Search global beers</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Retrieve a list of beers from the global database, filtered by brand or name.
+This endpoint does not return user-specific tracking data.</p>
+
+<span id="example-requests-GETapi-v2-beers-search">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://local.holdyourbeers.com/api/v2/beers/search?search=Draught&amp;brand_id=1&amp;limit=20" \
+    --header "Authorization: Bearer {YOUR_TOKEN_HERE}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"search\": \"bngzmiyvdljnikhw\",
+    \"brand_id\": 16,
+    \"limit\": 22
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://local.holdyourbeers.com/api/v2/beers/search"
+);
+
+const params = {
+    "search": "Draught",
+    "brand_id": "1",
+    "limit": "20",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
+
+const headers = {
+    "Authorization": "Bearer {YOUR_TOKEN_HERE}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "search": "bngzmiyvdljnikhw",
+    "brand_id": 16,
+    "limit": 22
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v2-beers-search">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;data&quot;: [
+        {
+            &quot;id&quot;: 1,
+            &quot;name&quot;: &quot;Guinness Draught&quot;,
+            &quot;style&quot;: &quot;Dry Stout&quot;,
+            &quot;brand&quot;: {
+                &quot;id&quot;: 1,
+                &quot;name&quot;: &quot;Guinness&quot;
+            },
+            &quot;tasting_count&quot;: null,
+            &quot;last_tasted_at&quot;: null
+        }
+    ]
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v2-beers-search" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v2-beers-search"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v2-beers-search"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v2-beers-search" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v2-beers-search">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v2-beers-search" data-method="GET"
+      data-path="api/v2/beers/search"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v2-beers-search', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v2-beers-search"
+                    onclick="tryItOut('GETapi-v2-beers-search');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v2-beers-search"
+                    onclick="cancelTryOut('GETapi-v2-beers-search');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v2-beers-search"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v2/beers/search</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v2-beers-search"
+               value="Bearer {YOUR_TOKEN_HERE}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_TOKEN_HERE}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-v2-beers-search"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-v2-beers-search"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>search</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="search"                data-endpoint="GETapi-v2-beers-search"
+               value="Draught"
+               data-component="query">
+    <br>
+<p>Fuzzy search by beer name. Example: <code>Draught</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>brand_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="brand_id"                data-endpoint="GETapi-v2-beers-search"
+               value="1"
+               data-component="query">
+    <br>
+<p>Filter by brand ID. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>limit</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="limit"                data-endpoint="GETapi-v2-beers-search"
+               value="20"
+               data-component="query">
+    <br>
+<p>Limit the number of results (1-50). Defaults to 20. Example: <code>20</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>search</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="search"                data-endpoint="GETapi-v2-beers-search"
+               value="bngzmiyvdljnikhw"
+               data-component="body">
+    <br>
+<p>Must be at least 1 character. Example: <code>bngzmiyvdljnikhw</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>brand_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="brand_id"                data-endpoint="GETapi-v2-beers-search"
+               value="16"
+               data-component="body">
+    <br>
+<p>The <code>id</code> of an existing record in the brands table. Example: <code>16</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>limit</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="limit"                data-endpoint="GETapi-v2-beers-search"
+               value="22"
+               data-component="body">
+    <br>
+<p>Must be at least 1. Must not be greater than 50. Example: <code>22</code></p>
         </div>
         </form>
 

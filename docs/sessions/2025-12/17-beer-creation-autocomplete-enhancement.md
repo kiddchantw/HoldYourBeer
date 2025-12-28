@@ -1534,3 +1534,35 @@ foreach ($myTastingLocations as $location) {
 4. **文檔維護**
    - 更新 README 說明新功能
    - 更新 OpenAPI spec 供前端開發者參考
+
+---
+
+## 🔧 Post-Implementation Adjustments (2025-12-23)
+
+### Goal
+Fix API compatibility issues with Flutter client and harmonize brand creation logic across platforms.
+
+### Changes
+
+#### 1. StoreBeerRequest Flexibility
+- **Issue**: Flutter app sends `brand` name string, but API expected `brand_id`.
+- **Fix**: Updated `app/Http/Requests/StoreBeerRequest.php` to accept either `brand` (string) or `brand_id` (integer).
+- **Logic**: Added `prepareForValidation()` to:
+    - Normalize brand name (trim).
+    - Perform case-insensitive lookup (`LOWER(name) = ?`).
+    - Auto-create brand if it doesn't exist (using original casing).
+    - Merge `brand_id` into request data for seamless validation.
+
+#### 2. Tasting Count in API Response
+- **Issue**: Initial API response after creating a beer didn't include `tasting_count`, causing the Flutter UI to show 0 until refresh.
+- **Fix**: Updated `app/Services/TastingService.php` (`addBeerToTracking`) to explicitly attach `tasting_count` and `last_tasted_at` from the newly created `UserBeerCount` to the returned `Beer` model. This ensures `BeerResource` includes these fields.
+
+#### 3. Case-Insensitive Brand Creation (Web)
+- **Issue**: Web interface (`CreateBeer.php` and legacy `BeerController.php`) used case-sensitive `firstOrCreate`, leading to potential duplicates (e.g., "Suntory" vs "suntory").
+- **Fix**: Updated both files to use the same case-insensitive lookup, ensuring consistent behavior across Web and API.
+
+#### 4. API Spec Update
+- **Action**: Regenerated `openapi.yaml` using Scribe to reflect the `brand` parameter support in `POST /api/v1/beers`.
+
+### Status
+✅ **Completed**. API is now fully compatible with the updated Flutter client logic.
