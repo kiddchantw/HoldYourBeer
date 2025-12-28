@@ -145,8 +145,13 @@ class CreateBeer extends Component
         try {
             DB::beginTransaction();
 
-            // 1. 處理 Brand
-            $brand = Brand::firstOrCreate(['name' => trim($this->brand_name)]);
+            // 1. 處理 Brand (不區分大小寫)
+            $brandName = trim($this->brand_name);
+            $brand = Brand::whereRaw('LOWER(name) = ?', [strtolower($brandName)])->first();
+            
+            if (!$brand) {
+                $brand = Brand::create(['name' => $brandName]);
+            }
 
             // 2. 處理 Beer
             $beer = Beer::firstOrCreate(

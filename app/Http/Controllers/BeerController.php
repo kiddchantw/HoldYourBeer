@@ -53,10 +53,13 @@ class BeerController extends Controller
         try {
             DB::beginTransaction();
 
-            // Create or find brand
-            $brand = Brand::firstOrCreate([
-                'name' => trim($request->brand_name)
-            ]);
+            // Create or find brand (不區分大小寫)
+            $brandName = trim($request->brand_name);
+            $brand = Brand::whereRaw('LOWER(name) = ?', [strtolower($brandName)])->first();
+            
+            if (!$brand) {
+                $brand = Brand::create(['name' => $brandName]);
+            }
 
             // Check if user already has this beer
             $existingBeer = Beer::where('brand_id', $brand->id)

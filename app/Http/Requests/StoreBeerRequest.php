@@ -15,6 +15,29 @@ class StoreBeerRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        // If brand name is provided instead of brand_id, find or create the brand
+        if ($this->has('brand') && !$this->has('brand_id')) {
+            $brandName = trim($this->input('brand'));
+            
+            // Case-insensitive brand lookup
+            $brand = \App\Models\Brand::whereRaw('LOWER(name) = ?', [strtolower($brandName)])->first();
+            
+            if (!$brand) {
+                // Create new brand with proper casing
+                $brand = \App\Models\Brand::create(['name' => $brandName]);
+            }
+            
+            $this->merge([
+                'brand_id' => $brand->id,
+            ]);
+        }
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
@@ -23,10 +46,13 @@ class StoreBeerRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'brand_id' => ['required', 'integer', 'exists:brands,id'],
+            // Accept either brand (name) or brand_id
+            'brand' => ['nullable', 'string', 'max:255', 'required_without:brand_id'],
+            'brand_id' => ['nullable', 'integer', 'exists:brands,id', 'required_without:brand'],
             'style' => ['nullable', 'string', 'max:255'],
             'shop_name' => ['nullable', 'string', 'max:255'],
             'quantity' => ['nullable', 'integer', 'min:1'],
+            'note' => ['nullable', 'string', 'max:1000'],
         ];
     }
 
@@ -40,7 +66,9 @@ class StoreBeerRequest extends FormRequest
         return [
             'name.required' => 'The beer name is required.',
             'name.max' => 'The beer name must not exceed 255 characters.',
-            'brand_id.required' => 'The brand is required.',
+            'brand.required_without' => 'Either brand name or brand ID is required.',
+            'brand.max' => 'The brand name must not exceed 255 characters.',
+            'brand_id.required_without' => 'Either brand name or brand ID is required.',
             'brand_id.exists' => 'The selected brand does not exist.',
             'style.max' => 'The beer style must not exceed 255 characters.',
         ];

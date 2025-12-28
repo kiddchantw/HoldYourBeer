@@ -76,7 +76,7 @@ class BeerController extends Controller
         $validated = $request->validate([
             'per_page' => ['integer', 'min:1', 'max:100'],
             'page' => ['integer', 'min:1'],
-            'sort' => ['string', 'in:-tasted_at,tasted_at,name,-name'],
+            'sort' => ['string', 'in:-tasted_at,tasted_at,beer_name,-beer_name'],
             'brand_id' => ['integer', 'exists:brands,id'],
         ]);
 
@@ -92,11 +92,11 @@ class BeerController extends Controller
             $query->orderBy('last_tasted_at', 'desc');
         } elseif ($sort === 'tasted_at') {
             $query->orderBy('last_tasted_at', 'asc');
-        } elseif ($sort === 'name') {
+        } elseif ($sort === 'beer_name') {
             $query->join('beers', 'user_beer_counts.beer_id', '=', 'beers.id')
                 ->orderBy('beers.name', 'asc')
                 ->select('user_beer_counts.*');
-        } elseif ($sort === '-name') {
+        } elseif ($sort === '-beer_name') {
             $query->join('beers', 'user_beer_counts.beer_id', '=', 'beers.id')
                 ->orderBy('beers.name', 'desc')
                 ->select('user_beer_counts.*');
@@ -148,8 +148,12 @@ class BeerController extends Controller
      * @authenticated
      *
      * @bodyParam name string required The beer's name. Example: Guinness Draught
-     * @bodyParam brand_id integer required The brand ID this beer belongs to. Example: 1
+     * @bodyParam brand string The brand name (case-insensitive). Either brand or brand_id is required. Example: Suntory
+     * @bodyParam brand_id integer The brand ID. Either brand or brand_id is required. Example: 1
      * @bodyParam style string The beer style (e.g., IPA, Stout). Example: Dry Stout
+     * @bodyParam shop_name string The shop where the beer was purchased. Example: 7-11
+     * @bodyParam quantity integer The number of beers. Example: 1
+     * @bodyParam note string Optional note for this tasting. Example: Enjoyed it!
      *
      * @response 201 {
      *   "data": {
