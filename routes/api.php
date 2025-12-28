@@ -49,6 +49,9 @@ Route::prefix('v1')->name('v1.')->group(function () {
         ->middleware('throttle:6,1')
         ->name('verification.verify');
 
+    // Public Brand Endpoints
+    Route::get('/brands', [V1BrandController::class, 'index'])->name('brands.index');
+
     // Authenticated routes
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/user', function (Request $request) {
@@ -73,8 +76,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
 
         Route::get('/beers/{id}/tasting_logs', [V1BeerController::class, 'tastingLogs'])->name('beers.tasting_logs');
 
-        // Brand endpoints
-        Route::get('/brands', [V1BrandController::class, 'index'])->name('brands.index');
+
 
         // Shop endpoints
         Route::get('/shops/suggestions', [V1ShopController::class, 'suggestions'])->name('shops.suggestions');
@@ -134,6 +136,9 @@ Route::prefix('v2')->name('v2.')->group(function () {
 
         // Charts endpoints (inherit from V1)
         Route::get('/charts/brand-analytics', [ChartsController::class, 'brandAnalytics'])->name('charts.brand_analytics');
+
+        // New Global Beer Search (V2 only)
+        Route::get('/beers/search', [\App\Http\Controllers\Api\V2\BeerController::class, 'index'])->name('beers.search');
     });
 });
 

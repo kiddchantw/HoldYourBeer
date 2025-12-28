@@ -92,47 +92,91 @@ class TastingService
      * @param array $beerData
      * @return Beer
      */
+    /**
+     * Add a new beer to user's tracking list.
+     *
+     * @param int $userId
+     * @param array $beerData
+     * @return Beer
+     */
     public function addBeerToTracking(int $userId, array $beerData): Beer
     {
         return DB::transaction(function () use ($userId, $beerData) {
-            // Extract shop_name and quantity from beerData
+            // Extract shop_name, quantity, and note from beerData
             $shopName = $beerData['shop_name'] ?? null;
             $quantity = $beerData['quantity'] ?? 1;
-
+            $note = $beerData['note'] ?? null;
+ 
             unset($beerData['shop_name']);
             unset($beerData['quantity']);
-
+            unset($beerData['note']);
+ 
             // Create or get shop
             $shop = null;
             if (!empty($shopName)) {
                 $shop = Shop::firstOrCreate(['name' => trim($shopName)]);
             }
-
-            // Create beer
-            $beer = Beer::create($beerData);
-
+ 
+            // 1. Create or get beer (Handle global beer uniqueness)
+            // Use firstOrCreate to avoid Unique Constraint Violation
+            $beer = Beer::firstOrCreate(
+                [
+                    'brand_id' => $beerData['brand_id'],
+                    'name' => $beerData['name']
+                ],
+                $beerData // Other fields like style if creating new
+            );
+ 
             // Sync beer_shop (crowd-sourced data)
             if ($shop) {
                 $this->syncBeerShop($beer, $shop);
             }
+ 
+            // 2. Check if user is already tracking this beer
+            $userBeerCount = UserBeerCount::where('user_id', $userId)
+                ->where('beer_id', $beer->id)
+                ->lockForUpdate()
+                ->first();
 
-            // Create user beer count
-            $userBeerCount = UserBeerCount::create([
-                'user_id' => $userId,
-                'beer_id' => $beer->id,
-                'count' => $quantity,
-                'last_tasted_at' => now(),
-            ]);
+            if ($userBeerCount) {
+                // Scenario A: User is already tracking -> Increment count
+                $userBeerCount->count += $quantity;
+                $userBeerCount->last_tasted_at = now();
+                $userBeerCount->save();
 
-            // Create tasting log with shop_id (personal record)
-            TastingLog::create([
-                'user_beer_count_id' => $userBeerCount->id,
-                'action' => 'initial',
-                'tasted_at' => now(),
-                'shop_id' => $shop?->id,
-            ]);
+                // Create tasting log (increment action)
+                TastingLog::create([
+                    'user_beer_count_id' => $userBeerCount->id,
+                    'action' => 'increment', // Treat as additional tasting
+                    'tasted_at' => now(),
+                    'shop_id' => $shop ? $shop->id : null,
+                    'note' => $note,
+                ]);
+            } else {
+                // Scenario B: First time tracking -> Create new record
+                $userBeerCount = UserBeerCount::create([
+                    'user_id' => $userId,
+                    'beer_id' => $beer->id,
+                    'count' => $quantity,
+                    'last_tasted_at' => now(),
+                ]);
 
-            return $beer->fresh('brand');
+                // Create tasting log (initial action)
+                TastingLog::create([
+                    'user_beer_count_id' => $userBeerCount->id,
+                    'action' => 'initial',
+                    'tasted_at' => now(),
+                    'shop_id' => $shop ? $shop->id : null,
+                    'note' => $note,
+                ]);
+            }
+
+            // Attach tasting count to beer for API response
+            $beer = $beer->fresh('brand'); // Refresh to get latest data
+            $beer->tasting_count = $userBeerCount->count;
+            $beer->last_tasted_at = $userBeerCount->last_tasted_at;
+            
+            return $beer;
         });
     }
 
