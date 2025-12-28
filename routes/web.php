@@ -2,10 +2,14 @@
 
 use App\Http\Controllers\BeerController;
 use App\Http\Controllers\ChartsController;
+use App\Http\Controllers\CookieConsentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SocialLoginController;
 use Illuminate\Support\Facades\Route;
+
+// Cookie Consent Route (no auth required)
+Route::post('/cookie-consent', [CookieConsentController::class, 'store'])->name('cookie-consent.store');
 
 // Routes without locale prefix (default English)
 Route::get('/', function () {
@@ -16,6 +20,11 @@ Route::get('/', function () {
     return redirect()->route('localized.dashboard', ['locale' => 'en']);
 });
 
+// Privacy Policy Route (fallback for non-localized URL)
+Route::get('/privacy-policy', function () {
+    return redirect()->route('localized.privacy-policy', ['locale' => app()->getLocale()]);
+})->name('privacy-policy');
+
 // Routes with locale prefix
 Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale'], 'where' => ['locale' => 'en|zh-TW']], function() {
     Route::get('/', function () {
@@ -25,6 +34,11 @@ Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale'], 'where' => 
         }
         return redirect()->route('localized.dashboard', ['locale' => app()->getLocale()]);
     });
+
+    // Privacy Policy Route (支援多語系)
+    Route::get('/privacy-policy', function () {
+        return view('privacy-policy');
+    })->name('localized.privacy-policy');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('localized.dashboard');
 

@@ -54,4 +54,21 @@ return [
         'redirect' => env('APPLE_REDIRECT_URI'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Google Analytics Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Google Analytics 4 (GA4) Measurement ID for tracking web analytics.
+    | Get your Measurement ID from Firebase Console or Google Analytics.
+    |
+    | - measurement_id: GA4 Measurement ID (格式: G-XXXXXXXXXX)
+    | - enabled: 控制是否啟用 GA 追蹤 (預設: false)
+    |
+    */
+    'google_analytics' => [
+        'measurement_id' => env('GOOGLE_ANALYTICS_ID'),
+        'enabled' => env('GOOGLE_ANALYTICS_ENABLED', false),
+    ],
+
 ];

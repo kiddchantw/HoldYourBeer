@@ -11,6 +11,9 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <!-- Google Analytics -->
+        <x-google-analytics />
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -33,5 +36,8 @@
                 {{ $slot }}
             </div>
         </div>
+
+        <!-- Cookie Consent Banner -->
+        <x-cookie-consent />
     </body>
 </html>
