@@ -210,6 +210,19 @@ sequenceDiagram
 - [x] Feature tests - 驗證翻譯 key 正確 (19 個測試全部通過)
 - [ ] Manual testing - 切換語系驗證 (待使用者確認)
 
+#### Phase 4.1: 進階邏輯修正與 UI 優化 [✅ Completed]
+- [x] **邏輯修正 - 淨數量計算**：
+  - ✅ `total_daily` 改為計算「新增 - 刪除」的淨值。
+  - ✅ 修正 `deleteForDate` / `addForDate` 使用「當前時間」導致分組錯誤的問題，改為使用「選擇日期 + 當前時間」。
+  - ✅ 允許在總數量顯示為 0 時仍可刪除歷史紀錄 (校正資料不一致)。
+- [x] **UI 修復 - Header 同步與顯示**：
+  - ✅ 實作 Header「Current Count」即時更新 (Livewire dispatch `count-updated` + Alpine.js listener)。
+  - ✅ 修正 `x-text` 初始化閃爍問題 (提供預設值)。
+  - ✅ 強制顯示 Header (覆蓋 localStorage `headerClosed` 設定，解決部分使用者看不到 Header 的問題)。
+- [x] **UI 修復 - Modal 顯示**：
+  - ✅ 使用 `x-teleport="body"` 解決在空列表狀態下 Modal 被父容器 `overflow` 截斷的問題。
+  - ✅ 調整 Modal 遮罩透明度 (75% -> 50%) 減輕視覺壓迫感。
+
 ---
 
 ## 🚧 Blockers & Solutions
@@ -239,6 +252,11 @@ sequenceDiagram
    - 更新 `TastingService` 與相關 Controller，全面支援 `note` (備註) 欄位。
    - API `countAction` 與 `store` 接口皆已支援接收 `note` 參數。
    - 修正 `CountActionRequest` 驗證規則，允許 `note` 欄位。
+
+4. **穩定性與細節優化**：
+   - 完善的「淨數量」計算邏輯，確保增刪操作正確反映在當日卡片。
+   - 解決 Header 顯示相關的同步與狀態問題 (Livewire/Alpine 整合)。
+   - 優化 Modal 在各種佈局下的顯示兼容性。
 
 ### Files Created/Modified
 ```
