@@ -46,13 +46,18 @@ class TastingHistory extends Component
             ->groupBy(function ($log) {
                 return $log->tasted_at->timezone('Asia/Taipei')->format('Y-m-d');
             })->map(function ($logs) {
+                // 計算淨數量：新增數 - 刪除數
+                $addCount = $logs->whereIn('action', ['add', 'increment', 'initial'])->count();
+                $deleteCount = $logs->whereIn('action', ['delete', 'decrement'])->count();
+                $netTotal = $addCount - $deleteCount;
+
                 return [
                     'date' => $logs->first()->tasted_at->timezone('Asia/Taipei'),
-                    'total_daily' => $logs->whereIn('action', ['add', 'increment', 'initial'])->count(),
+                    'total_daily' => max(0, $netTotal), // 確保不會是負數
                     'logs' => $logs
                 ];
             })->filter(function ($group) {
-                // 過濾掉 total_daily 為 0 的日期（例如：新增1個又刪除1個）
+                // 過濾掉淨數量為 0 的日期（例如：新增1個又刪除1個）
                 return $group['total_daily'] > 0;
             });
     }
@@ -141,6 +146,7 @@ class TastingHistory extends Component
 
         // Clear success message after 3 seconds
         $this->dispatch('clear-success-message');
+        $this->dispatch('count-updated', ['count' => $this->userBeerCount->count]);
     }
 
     /**
@@ -148,7 +154,10 @@ class TastingHistory extends Component
      */
     public function addForDate(string $date)
     {
-        DB::transaction(function () {
+        // 使用傳入的日期，設定為當天的當前時間
+        $tastedAt = \Carbon\Carbon::parse($date, 'Asia/Taipei')->setTimeFromTimeString(now('Asia/Taipei')->format('H:i:s'));
+
+        DB::transaction(function () use ($tastedAt) {
             $this->userBeerCount->count += 1;
             $this->userBeerCount->last_tasted_at = now();
             $this->userBeerCount->save();
@@ -156,7 +165,7 @@ class TastingHistory extends Component
             TastingLog::create([
                 'user_beer_count_id' => $this->userBeerCount->id,
                 'action' => 'add',
-                'tasted_at' => now(),
+                'tasted_at' => $tastedAt,
                 'note' => null,
             ]);
         });
@@ -165,6 +174,7 @@ class TastingHistory extends Component
         $this->userBeerCount = $this->userBeerCount->fresh();
         $this->successMessage = __('Added 1 unit!');
         $this->dispatch('clear-success-message');
+        $this->dispatch('count-updated', ['count' => $this->userBeerCount->count]);
     }
 
     /**
@@ -172,19 +182,21 @@ class TastingHistory extends Component
      */
     public function deleteForDate(string $date)
     {
-        if ($this->userBeerCount->count <= 0) {
-            return;
-        }
+        // 移除 count <= 0 的檢查，以允許刪除卡片上的紀錄 (即使總數不一致)
 
-        DB::transaction(function () {
-            $this->userBeerCount->count -= 1;
+        // 使用傳入的日期，設定為當天的當前時間
+        $tastedAt = \Carbon\Carbon::parse($date, 'Asia/Taipei')->setTimeFromTimeString(now('Asia/Taipei')->format('H:i:s'));
+
+        DB::transaction(function () use ($tastedAt) {
+            // 確保數量不會低於 0
+            $this->userBeerCount->count = max(0, $this->userBeerCount->count - 1);
             $this->userBeerCount->last_tasted_at = now();
             $this->userBeerCount->save();
 
             TastingLog::create([
                 'user_beer_count_id' => $this->userBeerCount->id,
                 'action' => 'delete',
-                'tasted_at' => now(),
+                'tasted_at' => $tastedAt,
                 'note' => null,
             ]);
         });
@@ -193,6 +205,7 @@ class TastingHistory extends Component
         $this->userBeerCount = $this->userBeerCount->fresh();
         $this->successMessage = __('Removed 1 unit!');
         $this->dispatch('clear-success-message');
+        $this->dispatch('count-updated', ['count' => $this->userBeerCount->count]);
     }
 
     /**

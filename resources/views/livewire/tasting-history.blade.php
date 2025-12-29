@@ -133,89 +133,91 @@
 
     <!-- Add Record Modal -->
     @if($showAddModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <!-- Background overlay -->
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" wire:click="closeAddModal"></div>
+        <template x-teleport="body">
+            <div class="fixed inset-0 z-[99] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-data>
+                <!-- Background overlay -->
+                <div class="fixed inset-0 bg-gray-500 bg-opacity-50 transition-opacity" wire:click="closeAddModal"></div>
 
-            <!-- Modal panel -->
-            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <div class="relative transform overflow-hidden rounded-t-2xl sm:rounded-2xl bg-white text-left shadow-xl transition-all w-full sm:max-w-lg">
-                    <!-- Handle bar for mobile -->
-                    <div class="flex justify-center pt-3 pb-2 sm:hidden">
-                        <div class="w-12 h-1.5 bg-gray-300 rounded-full"></div>
-                    </div>
+                <!-- Modal panel -->
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div class="relative transform overflow-hidden rounded-t-2xl sm:rounded-2xl bg-white text-left shadow-xl transition-all w-full sm:max-w-lg">
+                        <!-- Handle bar for mobile -->
+                        <div class="flex justify-center pt-3 pb-2 sm:hidden">
+                            <div class="w-12 h-1.5 bg-gray-300 rounded-full"></div>
+                        </div>
 
-                    <div class="bg-white px-6 pb-6 pt-4">
-                        <!-- Modal Title -->
-                        <h3 class="text-xl font-bold text-gray-900 mb-6" id="modal-title">
-                            {{ __('Add Record') }}
-                        </h3>
+                        <div class="bg-white px-6 pb-6 pt-4">
+                            <!-- Modal Title -->
+                            <h3 class="text-xl font-bold text-gray-900 mb-6" id="modal-title">
+                                {{ __('Add Record') }}
+                            </h3>
 
-                        <!-- Quantity Selector -->
-                        <div class="mb-6">
-                            <label class="block text-gray-700 font-medium mb-3">{{ __('Quantity') }}</label>
-                            <div class="flex items-center justify-center space-x-4">
+                            <!-- Quantity Selector -->
+                            <div class="mb-6">
+                                <label class="block text-gray-700 font-medium mb-3">{{ __('Quantity') }}</label>
+                                <div class="flex items-center justify-center space-x-4">
+                                    <button 
+                                        wire:click="decreaseQuantity"
+                                        class="w-12 h-12 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-600 hover:border-gray-400 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                        @if($quantity <= 1) disabled @endif
+                                    >
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                                        </svg>
+                                    </button>
+                                    <span class="text-3xl font-bold text-gray-900 w-16 text-center">{{ $quantity }}</span>
+                                    <button 
+                                        wire:click="increaseQuantity"
+                                        class="w-12 h-12 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-600 hover:border-gray-400 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                        @if($quantity >= 99) disabled @endif
+                                    >
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                @error('quantity') 
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Tasting Note -->
+                            <div class="mb-6">
+                                <label class="block text-gray-700 font-medium mb-2">{{ __('Tasting Note (Optional)') }}</label>
+                                <textarea 
+                                    wire:model="note"
+                                    rows="3"
+                                    maxlength="150"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 resize-none"
+                                    placeholder="{{ __('How did it taste? (e.g., fruity, slightly bitter...)') }}"
+                                ></textarea>
+                                @error('note') 
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                                <p class="mt-1 text-xs text-gray-400 text-right">{{ strlen($note) }}/150</p>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="flex items-center space-x-4">
                                 <button 
-                                    wire:click="decreaseQuantity"
-                                    class="w-12 h-12 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-600 hover:border-gray-400 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                    @if($quantity <= 1) disabled @endif
+                                    wire:click="closeAddModal"
+                                    class="flex-1 py-3 px-4 text-gray-700 font-medium hover:bg-gray-100 rounded-lg transition-colors"
                                 >
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
-                                    </svg>
+                                    {{ __('Cancel') }}
                                 </button>
-                                <span class="text-3xl font-bold text-gray-900 w-16 text-center">{{ $quantity }}</span>
                                 <button 
-                                    wire:click="increaseQuantity"
-                                    class="w-12 h-12 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-600 hover:border-gray-400 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                    @if($quantity >= 99) disabled @endif
+                                    wire:click="saveRecord"
+                                    wire:loading.attr="disabled"
+                                    class="flex-1 py-3 px-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all disabled:opacity-50"
                                 >
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                    </svg>
+                                    <span wire:loading.remove wire:target="saveRecord">{{ __('Save Record') }}</span>
+                                    <span wire:loading wire:target="saveRecord">{{ __('Saving...') }}</span>
                                 </button>
                             </div>
-                            @error('quantity') 
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Tasting Note -->
-                        <div class="mb-6">
-                            <label class="block text-gray-700 font-medium mb-2">{{ __('Tasting Note (Optional)') }}</label>
-                            <textarea 
-                                wire:model="note"
-                                rows="3"
-                                maxlength="150"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 resize-none"
-                                placeholder="{{ __('How did it taste? (e.g., fruity, slightly bitter...)') }}"
-                            ></textarea>
-                            @error('note') 
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                            <p class="mt-1 text-xs text-gray-400 text-right">{{ strlen($note) }}/150</p>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="flex items-center space-x-4">
-                            <button 
-                                wire:click="closeAddModal"
-                                class="flex-1 py-3 px-4 text-gray-700 font-medium hover:bg-gray-100 rounded-lg transition-colors"
-                            >
-                                {{ __('Cancel') }}
-                            </button>
-                            <button 
-                                wire:click="saveRecord"
-                                wire:loading.attr="disabled"
-                                class="flex-1 py-3 px-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all disabled:opacity-50"
-                            >
-                                <span wire:loading.remove wire:target="saveRecord">{{ __('Save Record') }}</span>
-                                <span wire:loading wire:target="saveRecord">{{ __('Saving...') }}</span>
-                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </template>
     @endif
 </div>

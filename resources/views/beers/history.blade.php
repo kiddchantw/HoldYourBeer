@@ -1,11 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center"
+             x-data="{ currentCount: {{ $userBeerCount->count }} }"
+             @count-updated.window="currentCount = $event.detail.count"
+        >
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ $beer->brand->name }} {{ $beer->name }}
             </h2>
             <div class="text-gray-600 font-medium">
-                {{ __('Current Count') }}: {{ $userBeerCount->count }}
+                {{ __('Current Count') }}: <span x-text="currentCount">{{ $userBeerCount->count }}</span>
             </div>
         </div>
     </x-slot>
@@ -60,6 +63,22 @@
             display: none !important;
         }
     </style>
+
+    <script>
+        // Force header to show on this page
+        document.addEventListener('DOMContentLoaded', function() {
+            const header = document.getElementById('page-header');
+            if (header) {
+                header.style.display = '';
+                header.style.opacity = '1';
+                header.style.maxHeight = 'none';
+                // Optional: temporarily ignore localStorage for this page
+                // Or remove the close button if you don't want it closable here
+                const closeBtn = document.getElementById('close-header-btn');
+                if (closeBtn) closeBtn.style.display = 'none';
+            }
+        });
+    </script>
 
     <div class="py-12 relative min-h-screen overflow-auto">
         <x-background />

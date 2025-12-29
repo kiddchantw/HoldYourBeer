@@ -117,7 +117,7 @@ class TastingHistoryTest extends TestCase
             'tasted_at' => '2025-12-25 18:00:00',
         ]);
 
-        // Create a decrement (should NOT be counted)
+        // Create a decrement (should be subtracted from total)
         TastingLog::factory()->create([
             'user_beer_count_id' => $userBeerCount->id,
             'action' => 'decrement',
@@ -129,8 +129,8 @@ class TastingHistoryTest extends TestCase
         $component = Livewire::test(TastingHistory::class, ['beerId' => $beer->id]);
         $groupedLogs = $component->viewData('groupedLogs');
 
-        // Dec 26 in Asia/Taipei should have 3 total (1 initial + 2 increments, excluding decrement)
-        $this->assertEquals(3, $groupedLogs['2025-12-26']['total_daily']);
+        // Dec 26 in Asia/Taipei should have 2 total (1 initial + 2 increments - 1 decrement = 2)
+        $this->assertEquals(2, $groupedLogs['2025-12-26']['total_daily']);
     }
 
     #[Test]
