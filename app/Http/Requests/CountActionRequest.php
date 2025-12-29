@@ -22,7 +22,7 @@ class CountActionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'action' => ['required', 'string', 'in:increment,decrement'],
+            'action' => ['required', 'string', 'in:add,delete,increment,decrement'], // Support both new and legacy values
             'note' => ['nullable', 'string', 'max:1000'],
         ];
     }
@@ -36,7 +36,7 @@ class CountActionRequest extends FormRequest
     {
         return [
             'action.required' => 'The action is required.',
-            'action.in' => 'The action must be either increment or decrement.',
+            'action.in' => 'The action must be either add, delete, increment, or decrement.',
             'note.max' => 'The note must not exceed 1000 characters.',
         ];
     }

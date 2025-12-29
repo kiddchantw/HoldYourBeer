@@ -175,7 +175,7 @@
                             {{-- Minus Button --}}
                             <button 
                                 type="button"
-                                wire:click="decrementQuantity" 
+                                wire:click="decreaseQuantity" 
                                 class="w-12 h-12 rounded-full bg-white border border-gray-300 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                                 @disabled($quantity <= 1)
                             >
@@ -192,7 +192,7 @@
                             {{-- Plus Button --}}
                             <button 
                                 type="button"
-                                wire:click="incrementQuantity" 
+                                wire:click="increaseQuantity" 
                                 class="w-12 h-12 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 flex items-center justify-center text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-all shadow-md active:transform active:scale-95"
                             >
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

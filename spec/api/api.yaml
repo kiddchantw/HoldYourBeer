@@ -377,8 +377,8 @@ paths:
               properties:
                 action:
                   type: string
-                  enum: [increment, decrement]
-                  example: "increment"
+                  enum: [add, delete, increment, decrement]
+                  example: "add"
       responses:
         '200':
           description: Action was successful.
@@ -516,7 +516,7 @@ components:
           example: 101
         action:
           type: string
-          enum: [increment, decrement, create]
+          enum: [add, delete, increment, decrement, create, initial]
           description: The action that was performed.
           example: "increment"
         logged_at:

@@ -235,9 +235,11 @@ class BeerController extends Controller
         $note = $request->validated()['note'] ?? null;
 
         // Let exceptions bubble up to the global exception handler
+        // Support both new ('add'/'delete') and legacy ('increment'/'decrement') action values
         $userBeerCount = match($action) {
-            'increment' => $this->tastingService->incrementCount(Auth::id(), $id, $note),
-            'decrement' => $this->tastingService->decrementCount(Auth::id(), $id, $note),
+            'add', 'increment' => $this->tastingService->addCount(Auth::id(), $id, $note),
+            'delete', 'decrement' => $this->tastingService->deleteCount(Auth::id(), $id, $note),
+            default => throw new \InvalidArgumentException("Invalid action: {$action}"),
         };
 
         $beer = $userBeerCount->beer;

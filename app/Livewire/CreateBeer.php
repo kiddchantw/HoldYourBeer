@@ -105,12 +105,12 @@ class CreateBeer extends Component
         $this->shop_suggestions = [];
     }
 
-    public function incrementQuantity()
+    public function increaseQuantity()
     {
         $this->quantity++;
     }
 
-    public function decrementQuantity()
+    public function decreaseQuantity()
     {
         if ($this->quantity > 1) {
             $this->quantity--;
@@ -185,7 +185,7 @@ class CreateBeer extends Component
             // 5. 創建 Tasting Log
             TastingLog::create([
                 'user_beer_count_id' => $userBeerCount->id,
-                'action' => $isInitial ? 'initial' : 'increment',
+                'action' => $isInitial ? 'initial' : 'add',
                 'shop_id' => $shopId,
                 'note' => $this->note,
                 'tasted_at' => now(),

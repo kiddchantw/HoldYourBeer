@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class TastingService
 {
     /**
-     * Increment the tasting count for a beer.
+     * Add the tasting count for a beer.
      *
      * @param int $userId
      * @param int $beerId
@@ -21,7 +21,7 @@ class TastingService
      * @return UserBeerCount
      * @throws ModelNotFoundException
      */
-    public function incrementCount(int $userId, int $beerId, ?string $note = null): UserBeerCount
+    public function addCount(int $userId, int $beerId, ?string $note = null): UserBeerCount
     {
         return DB::transaction(function () use ($userId, $beerId, $note) {
             $userBeerCount = UserBeerCount::where('user_id', $userId)
@@ -35,7 +35,7 @@ class TastingService
 
             TastingLog::create([
                 'user_beer_count_id' => $userBeerCount->id,
-                'action' => 'increment',
+                'action' => 'add',
                 'tasted_at' => now(),
                 'note' => $note,
             ]);
@@ -45,7 +45,7 @@ class TastingService
     }
 
     /**
-     * Decrement the tasting count for a beer.
+     * Delete the tasting count for a beer.
      *
      * @param int $userId
      * @param int $beerId
@@ -54,7 +54,7 @@ class TastingService
      * @throws ModelNotFoundException
      * @throws BusinessLogicException
      */
-    public function decrementCount(int $userId, int $beerId, ?string $note = null): UserBeerCount
+    public function deleteCount(int $userId, int $beerId, ?string $note = null): UserBeerCount
     {
         return DB::transaction(function () use ($userId, $beerId, $note) {
             $userBeerCount = UserBeerCount::where('user_id', $userId)
@@ -64,7 +64,7 @@ class TastingService
 
             if ($userBeerCount->count <= 0) {
                 throw new BusinessLogicException(
-                    'Cannot decrement count below zero.',
+                    'Cannot delete count below zero.',
                     'BIZ_001',
                     400
                 );
@@ -76,7 +76,7 @@ class TastingService
 
             TastingLog::create([
                 'user_beer_count_id' => $userBeerCount->id,
-                'action' => 'decrement',
+                'action' => 'delete',
                 'tasted_at' => now(),
                 'note' => $note,
             ]);
@@ -147,7 +147,7 @@ class TastingService
                 // Create tasting log (increment action)
                 TastingLog::create([
                     'user_beer_count_id' => $userBeerCount->id,
-                    'action' => 'increment', // Treat as additional tasting
+                    'action' => 'add', // Treat as additional tasting
                     'tasted_at' => now(),
                     'shop_id' => $shop ? $shop->id : null,
                     'note' => $note,

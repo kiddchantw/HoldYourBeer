@@ -20,7 +20,7 @@ class TastingController extends Controller
 
             TastingLog::create([
                 'user_beer_count_id' => $userBeerCount->id,
-                'action' => 'increment',
+                'action' => 'add',
                 'tasted_at' => now(),
             ]);
         });
@@ -41,7 +41,7 @@ class TastingController extends Controller
 
             TastingLog::create([
                 'user_beer_count_id' => $userBeerCount->id,
-                'action' => 'decrement',
+                'action' => 'delete',
                 'tasted_at' => now(),
             ]);
         });
@@ -52,7 +52,7 @@ class TastingController extends Controller
     public function count(Request $request, $locale, $id)
     {
         $validatedData = $request->validate([
-            'action' => ['required', 'string', 'in:increment,decrement'],
+            'action' => ['required', 'string', 'in:add,delete,increment,decrement'],
             'note' => ['nullable', 'string', 'max:150'],
         ]);
 
@@ -62,9 +62,9 @@ class TastingController extends Controller
         DB::transaction(function () use ($id, $action, $note) {
             $userBeerCount = UserBeerCount::whereKey($id)->lockForUpdate()->firstOrFail();
 
-            if ($action === 'increment') {
+            if ($action === 'add' || $action === 'increment') {
                 $userBeerCount->increment('count');
-            } elseif ($action === 'decrement') {
+            } elseif ($action === 'delete' || $action === 'decrement') {
                 if ($userBeerCount->count <= 0) {
                     return;
                 }
