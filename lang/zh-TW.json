@@ -115,5 +115,19 @@
     "Saving beer...": "儲存中...",
     "Saving...": "儲存中...",
     "reports": "次回報",
-    "Beer Name": "啤酒名稱"
+    "Beer Name": "啤酒名稱",
+    "Tasting History": "飲用紀錄",
+    "Current Count": "目前數量",
+    "units": "單位",
+    "unit": "單位",
+    "Add Record": "新增紀錄",
+    "No tasting records yet": "尚無飲用紀錄",
+    "Add": "新增",
+    "Delete": "刪除",
+    "Record added successfully!": "紀錄已成功新增！",
+    "Added 1 unit!": "已增加 1 單位！",
+    "Removed 1 unit!": "已減少 1 單位！",
+    "Quantity": "數量",
+    "Save Record": "儲存紀錄",
+    "How did it taste? (e.g., fruity, slightly bitter...)": "味道如何？（例如：果香濃郁、尾韻微苦...）"
 }

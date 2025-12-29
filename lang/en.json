@@ -73,5 +73,21 @@
     "Brands": "Brands",
     "Bar": "Bar",
     "Pie": "Pie",
-    "Line": "Line"
+    "Line": "Line",
+    "Tasting History": "Tasting History",
+    "Current Count": "Current Count",
+    "units": "units",
+    "unit": "unit",
+    "Add Record": "Add Record",
+    "No tasting records yet": "No tasting records yet",
+    "Add": "Add",
+    "Delete": "Delete",
+    "Record added successfully!": "Record added successfully!",
+    "Added 1 unit!": "Added 1 unit!",
+    "Removed 1 unit!": "Removed 1 unit!",
+    "Quantity": "Quantity",
+    "Tasting Note (Optional)": "Tasting Note (Optional)",
+    "How did it taste? (e.g., fruity, slightly bitter...)": "How did it taste? (e.g., fruity, slightly bitter...)",
+    "Save Record": "Save Record",
+    "Saving...": "Saving..."
 }
