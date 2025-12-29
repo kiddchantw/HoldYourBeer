@@ -15,6 +15,13 @@
 
 ### ✅ 已上線（Production）
 
+#### Web History 頁面 UI 同步
+- **狀態**：✅ Production
+- **版本**：v1.1.0 (Estimate)
+- **功能描述**：網頁版 Tasting History 頁面改版，同步 Flutter 設計。支援日期分組顯示、每日總計，並新增頁面內「新增紀錄」Modal (含備註)。
+- **相關**：
+  - Session: [29-history_sync_app.md](sessions/2025-12/29-history_sync_app.md)
+
 #### [範例功能]
 - **狀態**：✅ Production
 - **版本**：v1.0.0
