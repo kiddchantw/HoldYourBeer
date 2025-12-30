@@ -51,9 +51,9 @@ class AddSecurityHeaders
         $csp = [
             "default-src 'self'",
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com",
-            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com",
+            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://fonts.bunny.net",
             "img-src 'self' data: https: blob:",
-            "font-src 'self' data: https://cdn.jsdelivr.net",
+            "font-src 'self' data: https://cdn.jsdelivr.net https://fonts.bunny.net",
             "connect-src 'self' " . env('API_URL', config('app.url')),
             "frame-ancestors 'none'",
             "base-uri 'self'",
