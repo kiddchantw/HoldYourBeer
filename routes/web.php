@@ -95,6 +95,9 @@ Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale'], 'where' => 
         Route::get('/beer-history/{beerId}', [\App\Http\Controllers\TastingController::class, 'history'])
             ->whereNumber('beerId')
             ->name('beers.history');
+
+        // Feedback submission route
+        Route::post('/feedback', [\App\Http\Controllers\FeedbackController::class, 'store'])->name('feedback.store');
     });
 
     Route::middleware(['auth', 'admin', 'setLocale'])->prefix('admin')->group(function () {
@@ -111,6 +114,10 @@ Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale'], 'where' => 
         // Brand soft delete routes
         Route::post('brands/{id}/restore', [\App\Http\Controllers\Admin\BrandController::class, 'restore'])->name('admin.brands.restore');
         Route::delete('brands/{id}/force-delete', [\App\Http\Controllers\Admin\BrandController::class, 'forceDelete'])->name('admin.brands.force-delete');
+
+        // Feedback CRUD routes
+        Route::resource('feedback', \App\Http\Controllers\Admin\FeedbackController::class)
+            ->names('admin.feedback');
     });
 
     Route::get('/auth/{provider}/redirect', [SocialLoginController::class, 'redirectToProvider'])->name('localized.social.redirect');

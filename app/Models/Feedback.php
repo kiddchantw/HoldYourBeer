@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Feedback extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -21,20 +22,17 @@ class Feedback extends Model
     protected $fillable = [
         'user_id',
         'type',
-        'title',
         'description',
         'priority',
         'status',
-        'email',
-        'name',
         'admin_notes',
         'resolved_at',
-        'url',
         'browser',
         'device',
         'os',
         'ip_address',
         'metadata',
+        'source',
     ];
 
     /**
@@ -259,19 +257,19 @@ class Feedback extends Model
     }
 
     /**
-     * Get display name (user name or provided name)
+     * Get display name (user name)
      */
     public function getDisplayNameAttribute(): string
     {
-        return $this->user?->name ?? $this->name ?? 'Anonymous';
+        return $this->user?->name ?? 'Anonymous';
     }
 
     /**
-     * Get display email (user email or provided email)
+     * Get display email (user email)
      */
     public function getDisplayEmailAttribute(): string
     {
-        return $this->user?->email ?? $this->email ?? 'N/A';
+        return $this->user?->email ?? 'N/A';
     }
 
     /**
