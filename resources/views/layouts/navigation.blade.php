@@ -19,7 +19,7 @@
                         {{ __('Charts') }}
                     </x-nav-link>
                     @if(Auth::user()->role === 'admin')
-                        <x-nav-link :href="route('admin.dashboard', ['locale' => app()->getLocale() ?: 'en'])" :active="request()->routeIs('admin.dashboard')">
+                        <x-nav-link :href="route('admin.dashboard', ['locale' => app()->getLocale() ?: 'en'])" :active="request()->routeIs('admin.*')">
                             {{ __('Admin') }}
                         </x-nav-link>
                     @endif
@@ -83,7 +83,7 @@
                 {{ __('Charts') }}
             </x-responsive-nav-link>
             @if(Auth::user()->role === 'admin')
-                <x-responsive-nav-link :href="route('admin.dashboard', ['locale' => app()->getLocale() ?: 'en'])" :active="request()->routeIs('admin.dashboard')">
+                <x-responsive-nav-link :href="route('admin.dashboard', ['locale' => app()->getLocale() ?: 'en'])" :active="request()->routeIs('admin.*')">
                     {{ __('Admin') }}
                 </x-responsive-nav-link>
             @endif

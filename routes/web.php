@@ -97,15 +97,15 @@ Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale'], 'where' => 
             ->name('beers.history');
     });
 
-    Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::middleware(['auth', 'admin', 'setLocale'])->prefix('admin')->group(function () {
         Route::get('/dashboard', function () {
-            return view('admin.dashboard');
+            return redirect()->route('admin.users.index', ['locale' => app()->getLocale()]);
         })->name('admin.dashboard');
-        Route::get('/users', [DashboardController::class, 'users'])->name('admin.users.index');
+
+        Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users.index');
 
         // Brand CRUD routes
         Route::resource('brands', \App\Http\Controllers\Admin\BrandController::class)
-            ->except(['show'])
             ->names('admin.brands');
 
         // Brand soft delete routes
