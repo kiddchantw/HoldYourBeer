@@ -16,6 +16,7 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @livewireStyles
     </head>
     <body class="font-sans antialiased bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-100">
         <div class="min-h-screen bg-white flex flex-col">
@@ -86,6 +87,7 @@
         <!-- Cookie Consent Banner -->
         <x-cookie-consent />
 
+        @livewireScripts
         @stack('scripts')
     </body>
 </html>

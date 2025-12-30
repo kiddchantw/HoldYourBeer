@@ -31,6 +31,14 @@
                         </svg>
                         Brands
                     </a>
+
+                    <a href="{{ route('admin.feedback.index', ['locale' => app()->getLocale()]) }}"
+                       class="flex items-center gap-2 px-1 py-4 text-sm font-medium border-b-2 whitespace-nowrap {{ request()->routeIs('admin.feedback.*') ? 'border-blue-600 text-blue-700' : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300' }}">
+                        <svg class="h-5 w-5 {{ request()->routeIs('admin.feedback.*') ? 'text-blue-600' : 'text-gray-400' }}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                        </svg>
+                        Feedback
+                    </a>
                 </nav>
             </div>
         </div>

@@ -44,7 +44,7 @@
 
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit', ['locale' => app()->getLocale() ?: 'en'])">
-                            {{ __('Profile') }}
+                            Profile
                         </x-dropdown-link>
 
                         <!-- Authentication -->
@@ -98,7 +98,7 @@
 
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('profile.edit', ['locale' => app()->getLocale() ?: 'en'])">
-                    {{ __('Profile') }}
+                    Profile
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->
