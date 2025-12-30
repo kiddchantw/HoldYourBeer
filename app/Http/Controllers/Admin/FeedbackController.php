@@ -56,13 +56,11 @@ class FeedbackController extends Controller
         return back()->with('success', __('feedback.messages.update_success'));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Request $request): RedirectResponse
     {
         $feedback = Feedback::findOrFail($request->route('feedback'));
         $feedback->delete();
-        return back()->with('success', __('feedback.messages.delete_success'));
+        return redirect()->route('admin.feedback.index', ['locale' => app()->getLocale()])
+            ->with('success', __('feedback.messages.delete_success'));
     }
 }
