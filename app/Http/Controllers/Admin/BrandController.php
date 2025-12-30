@@ -63,15 +63,42 @@ class BrandController extends Controller
     public function store(StoreBrandRequest $request)
     {
         try {
-            Brand::create($request->validated());
-            return redirect()->route('admin.dashboard', ['locale' => app()->getLocale(), 'tab' => 'brands'])
+            $brand = Brand::create($request->validated());
+            
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => __('brands.messages.created'),
+                    'brand' => $brand
+                ]);
+            }
+
+            return redirect()->route('admin.brands.index', ['locale' => app()->getLocale()])
                 ->with('success', __('brands.messages.created'));
         } catch (\Exception $e) {
             \Log::error('Brand creation failed: ' . $e->getMessage());
+            
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => '建立品牌時發生錯誤，請稍後再試',
+                    'errors' => ['name' => [$e->getMessage()]]
+                ], 500);
+            }
+
             return back()
                 ->withInput()
                 ->with('error', '建立品牌時發生錯誤，請稍後再試');
         }
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show($locale, Brand $brand)
+    {
+        $brand->load('beers'); // Load associated beers
+        return view('admin.brands.show', compact('brand'));
     }
 
     /**
@@ -99,7 +126,7 @@ class BrandController extends Controller
         }
 
         // 傳統表單提交，重導向回 Dashboard
-        return redirect()->route('admin.dashboard', ['locale' => app()->getLocale(), 'tab' => 'brands'])
+        return redirect()->route('admin.brands.index', ['locale' => app()->getLocale()])
             ->with('success', __('brands.messages.updated'));
     }
 
@@ -116,7 +143,7 @@ class BrandController extends Controller
 
         // 軟刪除（因為 Brand Model 使用了 SoftDeletes trait）
         $brand->delete();
-        return redirect()->route('admin.dashboard', ['locale' => app()->getLocale(), 'tab' => 'brands'])
+        return redirect()->route('admin.brands.index', ['locale' => app()->getLocale()])
             ->with('success', __('brands.messages.deleted'));
     }
 
@@ -128,7 +155,7 @@ class BrandController extends Controller
         $brand = Brand::withTrashed()->findOrFail($id);
         $brand->restore();
 
-        return redirect()->route('admin.dashboard', ['locale' => app()->getLocale(), 'tab' => 'brands'])
+        return redirect()->route('admin.brands.index', ['locale' => app()->getLocale()])
             ->with('success', __('brands.messages.restored'));
     }
 
@@ -146,7 +173,7 @@ class BrandController extends Controller
         }
 
         $brand->forceDelete();
-        return redirect()->route('admin.dashboard', ['locale' => app()->getLocale(), 'tab' => 'brands'])
+        return redirect()->route('admin.brands.index', ['locale' => app()->getLocale()])
             ->with('success', __('brands.messages.force_deleted'));
     }
 }

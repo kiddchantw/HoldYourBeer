@@ -86,7 +86,7 @@
                             </form>
                         @else
                             <!-- 編輯按鈕（開啟 Dialog）-->
-                            <button @click="$dispatch('open-edit-modal', { id: {{ $brand->id }}, name: '{{ $brand->name }}' })"
+                            <button @click="openEditModal({{ $brand->id }}, '{{ $brand->name }}')"
                                class="text-blue-600 hover:text-blue-900 mr-3 inline-block" title="{{ __('brands.buttons.edit') }}">
                                 <!-- Heroicons: pencil-square -->
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
