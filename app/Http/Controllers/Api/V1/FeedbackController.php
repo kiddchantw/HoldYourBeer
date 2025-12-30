@@ -20,20 +20,17 @@ class FeedbackController extends Controller
     /**
      * Submit new feedback
      *
-     * Submit feedback, bug report, or feature request. Anonymous submissions are allowed.
+     * Submit feedback, bug report, or feature request. Requires authentication.
      *
-     * @unauthenticated
+     * @authenticated
      *
      * @bodyParam type string required Type of feedback. Must be one of: feedback, bug_report, feature_request. Example: bug_report
-     * @bodyParam title string required Title of the feedback. Maximum 255 characters. Example: Login button not working on mobile
      * @bodyParam description string required Detailed description. Minimum 10 characters. Example: When I tap the login button on my iPhone, nothing happens. I've tried multiple times.
      * @bodyParam priority string optional Priority level. Must be one of: low, medium, high, critical. Defaults to medium. Example: high
-     * @bodyParam email string optional Email address (required for anonymous users). Example: user@example.com
-     * @bodyParam name string optional Name of the submitter. Example: John Doe
-     * @bodyParam url string optional URL where the issue occurred. Example: https://example.com/login
      * @bodyParam browser string optional Browser information. Example: Safari 17.1
      * @bodyParam device string optional Device information. Example: iPhone 15 Pro
      * @bodyParam os string optional Operating system. Example: iOS 17.1
+     * @bodyParam source string optional Source of the feedback (e.g. app_ios, app_android, web_mobile). Example: app_ios
      * @bodyParam metadata object optional Additional metadata as key-value pairs.
      *
      * @response 201 {
@@ -41,7 +38,6 @@ class FeedbackController extends Controller
      *     "id": 1,
      *     "type": "bug_report",
      *     "type_label": "錯誤回報",
-     *     "title": "Login button not working on mobile",
      *     "description": "When I tap the login button on my iPhone, nothing happens.",
      *     "priority": "high",
      *     "priority_label": "高",
@@ -50,16 +46,10 @@ class FeedbackController extends Controller
      *     "display_name": "John Doe",
      *     "status_badge_color": "blue",
      *     "priority_badge_color": "orange",
-     *     "contact": {
-     *       "email": "user@example.com",
-     *       "name": "John Doe"
-     *     },
      *     "metadata": {
-     *       "url": "https://example.com/login",
      *       "browser": "Safari 17.1",
      *       "device": "iPhone 15 Pro",
-     *       "os": "iOS 17.1",
-     *       "custom": null
+     *       "os": "iOS 17.1"
      *     },
      *     "created_at": "2025-11-05T10:00:00+00:00",
      *     "updated_at": "2025-11-05T10:00:00+00:00",
@@ -71,7 +61,6 @@ class FeedbackController extends Controller
      * @response 422 {
      *   "message": "The given data was invalid.",
      *   "errors": {
-     *     "title": ["請輸入標題"],
      *     "description": ["描述至少需要 10 個字元"]
      *   }
      * }
@@ -83,6 +72,43 @@ class FeedbackController extends Controller
         // Add user_id if authenticated
         if ($request->user()) {
             $validated['user_id'] = $request->user()->id;
+        }
+
+        // --- Handle Technical Info ---
+        $validated['ip_address'] = $request->ip();
+
+        // Use Jenssegers\Agent to parse/enrich data if needed
+        $agent = new \Jenssegers\Agent\Agent();
+        $userAgent = $request->input('browser') ?? $request->userAgent();
+        $agent->setUserAgent($userAgent);
+
+        // Browser: Use provided or current UserAgent, limited to 100 chars
+        $validated['browser'] = \Illuminate\Support\Str::limit($userAgent, 97, '...');
+
+        // OS/Device: Use provided or detect
+        if (!isset($validated['os'])) {
+            $validated['os'] = $agent->platform() ?: null;
+        }
+        if (!isset($validated['device'])) {
+            $validated['device'] = $agent->device() ?: null;
+        }
+
+        // Source: Use provided or determine based on context/agent
+        if (!isset($validated['source'])) {
+            // Check provided browser string for clues (e.g. "App v1.0")
+            if (\Illuminate\Support\Str::contains($userAgent, 'App')) {
+                 // Try to guess OS from browser string or agent
+                 if (\Illuminate\Support\Str::contains($userAgent, 'iOS') || $agent->is('iOS')) {
+                     $validated['source'] = 'app_ios';
+                 } elseif (\Illuminate\Support\Str::contains($userAgent, 'Android') || $agent->is('Android')) {
+                     $validated['source'] = 'app_android';
+                 } else {
+                     $validated['source'] = 'app';
+                 }
+            } else {
+                // Fallback for generic API calls
+                $validated['source'] = 'api';
+            }
         }
 
         // Create feedback

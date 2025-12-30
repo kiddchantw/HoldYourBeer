@@ -263,7 +263,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: December 28, 2025</li>
+        <li>Last updated: December 30, 2025</li>
     </ul>
 </div>
 
@@ -3489,7 +3489,7 @@ with tasting counts and last tasted dates.</p>
     --data "{
     \"per_page\": 1,
     \"page\": 22,
-    \"sort\": \"-beer_name\",
+    \"sort\": \"beer_name\",
     \"brand_id\": 16
 }"
 </code></pre></div>
@@ -3518,7 +3518,7 @@ const headers = {
 let body = {
     "per_page": 1,
     "page": 22,
-    "sort": "-beer_name",
+    "sort": "beer_name",
     "brand_id": 16
 };
 
@@ -3731,10 +3731,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="sort"                data-endpoint="GETapi-v2-beers"
-               value="-beer_name"
+               value="beer_name"
                data-component="body">
     <br>
-<p>Example: <code>-beer_name</code></p>
+<p>Example: <code>beer_name</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>beer_name</code></li> <li><code>-beer_name</code></li></ul>
         </div>
@@ -4423,7 +4423,7 @@ with tasting counts and last tasted dates.</p>
     --data "{
     \"per_page\": 1,
     \"page\": 22,
-    \"sort\": \"-tasted_at\",
+    \"sort\": \"tasted_at\",
     \"brand_id\": 16
 }"
 </code></pre></div>
@@ -4452,7 +4452,7 @@ const headers = {
 let body = {
     "per_page": 1,
     "page": 22,
-    "sort": "-tasted_at",
+    "sort": "tasted_at",
     "brand_id": 16
 };
 
@@ -4665,10 +4665,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="sort"                data-endpoint="GETapi-beers"
-               value="-tasted_at"
+               value="tasted_at"
                data-component="body">
     <br>
-<p>Example: <code>-tasted_at</code></p>
+<p>Example: <code>tasted_at</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>beer_name</code></li> <li><code>-beer_name</code></li></ul>
         </div>
@@ -6259,12 +6259,12 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_6950ae03466c59.77274198
+x-request-id: req_6953a088b1e1a7.79996584
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
 referrer-policy: strict-origin-when-cross-origin
-content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; https://cdn.jsdelivr.net https://unpkg.com; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://cdn.jsdelivr.net https://unpkg.com; img-src &#039;self&#039; data: https: blob:; font-src &#039;self&#039; data: https://cdn.jsdelivr.net; connect-src &#039;self&#039; http://local.holdyourbeers.com; frame-ancestors &#039;none&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
+content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; https://cdn.jsdelivr.net https://unpkg.com; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://cdn.jsdelivr.net https://unpkg.com https://fonts.bunny.net; img-src &#039;self&#039; data: https: blob:; font-src &#039;self&#039; data: https://cdn.jsdelivr.net https://fonts.bunny.net; connect-src &#039;self&#039; http://local.holdyourbeers.com; frame-ancestors &#039;none&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
 access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS
 access-control-allow-headers: Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN
 access-control-expose-headers: X-API-Version, X-RateLimit-Limit, X-RateLimit-Remaining
@@ -6436,12 +6436,12 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_6950ae0353ed86.29282172
+x-request-id: req_6953a088c42e29.77616457
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
 referrer-policy: strict-origin-when-cross-origin
-content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; https://cdn.jsdelivr.net https://unpkg.com; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://cdn.jsdelivr.net https://unpkg.com; img-src &#039;self&#039; data: https: blob:; font-src &#039;self&#039; data: https://cdn.jsdelivr.net; connect-src &#039;self&#039; http://local.holdyourbeers.com; frame-ancestors &#039;none&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
+content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; https://cdn.jsdelivr.net https://unpkg.com; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://cdn.jsdelivr.net https://unpkg.com https://fonts.bunny.net; img-src &#039;self&#039; data: https: blob:; font-src &#039;self&#039; data: https://cdn.jsdelivr.net https://fonts.bunny.net; connect-src &#039;self&#039; http://local.holdyourbeers.com; frame-ancestors &#039;none&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
 access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS
 access-control-allow-headers: Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN
 access-control-expose-headers: X-API-Version, X-RateLimit-Limit, X-RateLimit-Remaining
@@ -6719,12 +6719,12 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_6950ae035e16c1.36516841
+x-request-id: req_6953a088cd79e6.87688447
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
 referrer-policy: strict-origin-when-cross-origin
-content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; https://cdn.jsdelivr.net https://unpkg.com; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://cdn.jsdelivr.net https://unpkg.com; img-src &#039;self&#039; data: https: blob:; font-src &#039;self&#039; data: https://cdn.jsdelivr.net; connect-src &#039;self&#039; http://local.holdyourbeers.com; frame-ancestors &#039;none&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
+content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; https://cdn.jsdelivr.net https://unpkg.com; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://cdn.jsdelivr.net https://unpkg.com https://fonts.bunny.net; img-src &#039;self&#039; data: https: blob:; font-src &#039;self&#039; data: https://cdn.jsdelivr.net https://fonts.bunny.net; connect-src &#039;self&#039; http://local.holdyourbeers.com; frame-ancestors &#039;none&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
 access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS
 access-control-allow-headers: Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN
 access-control-expose-headers: X-API-Version, X-RateLimit-Limit, X-RateLimit-Remaining
@@ -6884,12 +6884,12 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_6950ae036345f8.81868700
+x-request-id: req_6953a088d4ed69.06386957
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
 referrer-policy: strict-origin-when-cross-origin
-content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; https://cdn.jsdelivr.net https://unpkg.com; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://cdn.jsdelivr.net https://unpkg.com; img-src &#039;self&#039; data: https: blob:; font-src &#039;self&#039; data: https://cdn.jsdelivr.net; connect-src &#039;self&#039; http://local.holdyourbeers.com; frame-ancestors &#039;none&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
+content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; https://cdn.jsdelivr.net https://unpkg.com; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://cdn.jsdelivr.net https://unpkg.com https://fonts.bunny.net; img-src &#039;self&#039; data: https: blob:; font-src &#039;self&#039; data: https://cdn.jsdelivr.net https://fonts.bunny.net; connect-src &#039;self&#039; http://local.holdyourbeers.com; frame-ancestors &#039;none&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
 access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS
 access-control-allow-headers: Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN
 access-control-expose-headers: X-API-Version, X-RateLimit-Limit, X-RateLimit-Remaining
@@ -7042,12 +7042,12 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_6950ae0367e161.89490233
+x-request-id: req_6953a088db0078.98252286
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
 referrer-policy: strict-origin-when-cross-origin
-content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; https://cdn.jsdelivr.net https://unpkg.com; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://cdn.jsdelivr.net https://unpkg.com; img-src &#039;self&#039; data: https: blob:; font-src &#039;self&#039; data: https://cdn.jsdelivr.net; connect-src &#039;self&#039; http://local.holdyourbeers.com; frame-ancestors &#039;none&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
+content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; https://cdn.jsdelivr.net https://unpkg.com; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://cdn.jsdelivr.net https://unpkg.com https://fonts.bunny.net; img-src &#039;self&#039; data: https: blob:; font-src &#039;self&#039; data: https://cdn.jsdelivr.net https://fonts.bunny.net; connect-src &#039;self&#039; http://local.holdyourbeers.com; frame-ancestors &#039;none&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
 access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS
 access-control-allow-headers: Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN
 access-control-expose-headers: X-API-Version, X-RateLimit-Limit, X-RateLimit-Remaining
@@ -7213,12 +7213,12 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_6950ae036dabe3.09466921
+x-request-id: req_6953a088e13e56.26662137
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
 referrer-policy: strict-origin-when-cross-origin
-content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; https://cdn.jsdelivr.net https://unpkg.com; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://cdn.jsdelivr.net https://unpkg.com; img-src &#039;self&#039; data: https: blob:; font-src &#039;self&#039; data: https://cdn.jsdelivr.net; connect-src &#039;self&#039; http://local.holdyourbeers.com; frame-ancestors &#039;none&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
+content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; https://cdn.jsdelivr.net https://unpkg.com; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://cdn.jsdelivr.net https://unpkg.com https://fonts.bunny.net; img-src &#039;self&#039; data: https: blob:; font-src &#039;self&#039; data: https://cdn.jsdelivr.net https://fonts.bunny.net; connect-src &#039;self&#039; http://local.holdyourbeers.com; frame-ancestors &#039;none&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
 access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS
 access-control-allow-headers: Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN
 access-control-expose-headers: X-API-Version, X-RateLimit-Limit, X-RateLimit-Remaining
@@ -7337,9 +7337,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
                                 <h2 id="v1-feedback-POSTapi-v1-feedback">Submit new feedback</h2>
 
 <p>
+<small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Submit feedback, bug report, or feature request. Anonymous submissions are allowed.</p>
+<p>Submit feedback, bug report, or feature request. Requires authentication.</p>
 
 <span id="example-requests-POSTapi-v1-feedback">
 <blockquote>Example request:</blockquote>
@@ -7348,21 +7349,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
     "http://local.holdyourbeers.com/api/v1/feedback" \
+    --header "Authorization: Bearer {YOUR_TOKEN_HERE}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
     \"type\": \"bug_report\",
-    \"title\": \"Login button not working on mobile\",
     \"description\": \"When I tap the login button on my iPhone, nothing happens. I\'ve tried multiple times.\",
     \"priority\": \"high\",
-    \"email\": \"user@example.com\",
-    \"name\": \"John Doe\",
-    \"url\": \"https:\\/\\/example.com\\/login\",
     \"browser\": \"Safari 17.1\",
     \"device\": \"iPhone 15 Pro\",
     \"os\": \"iOS 17.1\",
     \"ip_address\": \"1.102.226.211\",
-    \"metadata\": []
+    \"metadata\": [],
+    \"source\": \"app_ios\"
 }"
 </code></pre></div>
 
@@ -7373,23 +7372,21 @@ You can check the Dev Tools console for debugging information.</code></pre>
 );
 
 const headers = {
+    "Authorization": "Bearer {YOUR_TOKEN_HERE}",
     "Content-Type": "application/json",
     "Accept": "application/json",
 };
 
 let body = {
     "type": "bug_report",
-    "title": "Login button not working on mobile",
     "description": "When I tap the login button on my iPhone, nothing happens. I've tried multiple times.",
     "priority": "high",
-    "email": "user@example.com",
-    "name": "John Doe",
-    "url": "https:\/\/example.com\/login",
     "browser": "Safari 17.1",
     "device": "iPhone 15 Pro",
     "os": "iOS 17.1",
     "ip_address": "1.102.226.211",
-    "metadata": []
+    "metadata": [],
+    "source": "app_ios"
 };
 
 fetch(url, {
@@ -7411,7 +7408,6 @@ fetch(url, {
         &quot;id&quot;: 1,
         &quot;type&quot;: &quot;bug_report&quot;,
         &quot;type_label&quot;: &quot;錯誤回報&quot;,
-        &quot;title&quot;: &quot;Login button not working on mobile&quot;,
         &quot;description&quot;: &quot;When I tap the login button on my iPhone, nothing happens.&quot;,
         &quot;priority&quot;: &quot;high&quot;,
         &quot;priority_label&quot;: &quot;高&quot;,
@@ -7420,16 +7416,10 @@ fetch(url, {
         &quot;display_name&quot;: &quot;John Doe&quot;,
         &quot;status_badge_color&quot;: &quot;blue&quot;,
         &quot;priority_badge_color&quot;: &quot;orange&quot;,
-        &quot;contact&quot;: {
-            &quot;email&quot;: &quot;user@example.com&quot;,
-            &quot;name&quot;: &quot;John Doe&quot;
-        },
         &quot;metadata&quot;: {
-            &quot;url&quot;: &quot;https://example.com/login&quot;,
             &quot;browser&quot;: &quot;Safari 17.1&quot;,
             &quot;device&quot;: &quot;iPhone 15 Pro&quot;,
-            &quot;os&quot;: &quot;iOS 17.1&quot;,
-            &quot;custom&quot;: null
+            &quot;os&quot;: &quot;iOS 17.1&quot;
         },
         &quot;created_at&quot;: &quot;2025-11-05T10:00:00+00:00&quot;,
         &quot;updated_at&quot;: &quot;2025-11-05T10:00:00+00:00&quot;,
@@ -7446,9 +7436,6 @@ fetch(url, {
 <code class="language-json" style="max-height: 300px;">{
     &quot;message&quot;: &quot;The given data was invalid.&quot;,
     &quot;errors&quot;: {
-        &quot;title&quot;: [
-            &quot;請輸入標題&quot;
-        ],
         &quot;description&quot;: [
             &quot;描述至少需要 10 個字元&quot;
         ]
@@ -7473,7 +7460,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-feedback" data-method="POST"
       data-path="api/v1/feedback"
-      data-authed="0"
+      data-authed="1"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
@@ -7503,6 +7490,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <b><code>api/v1/feedback</code></b>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-feedback"
+               value="Bearer {YOUR_TOKEN_HERE}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_TOKEN_HERE}</code></p>
+            </div>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
@@ -7541,18 +7540,6 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>Type of feedback. Must be one of: feedback, bug_report, feature_request. Example: <code>bug_report</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>title</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="title"                data-endpoint="POSTapi-v1-feedback"
-               value="Login button not working on mobile"
-               data-component="body">
-    <br>
-<p>Title of the feedback. Maximum 255 characters. Example: <code>Login button not working on mobile</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
@@ -7575,42 +7562,6 @@ You can check the Dev Tools console for debugging information.</code></pre>
                data-component="body">
     <br>
 <p>optional Priority level. Must be one of: low, medium, high, critical. Defaults to medium. Example: <code>high</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="email"                data-endpoint="POSTapi-v1-feedback"
-               value="user@example.com"
-               data-component="body">
-    <br>
-<p>optional Email address (required for anonymous users). Example: <code>user@example.com</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="name"                data-endpoint="POSTapi-v1-feedback"
-               value="John Doe"
-               data-component="body">
-    <br>
-<p>optional Name of the submitter. Example: <code>John Doe</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>url</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="url"                data-endpoint="POSTapi-v1-feedback"
-               value="https://example.com/login"
-               data-component="body">
-    <br>
-<p>optional URL where the issue occurred. Example: <code>https://example.com/login</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>browser</code></b>&nbsp;&nbsp;
@@ -7671,6 +7622,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
                data-component="body">
     <br>
 <p>optional Additional metadata as key-value pairs.</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>source</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="source"                data-endpoint="POSTapi-v1-feedback"
+               value="app_ios"
+               data-component="body">
+    <br>
+<p>optional Source of the feedback (e.g. app_ios, app_android, web_mobile). Example: <code>app_ios</code></p>
         </div>
         </form>
 

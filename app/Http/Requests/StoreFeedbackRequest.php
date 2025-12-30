@@ -35,6 +35,7 @@ class StoreFeedbackRequest extends FormRequest
             'os' => ['nullable', 'string', 'max:100'],
             'ip_address' => ['nullable', 'ip'],
             'metadata' => ['nullable', 'array'],
+            'source' => ['nullable', 'string', 'max:50'],
         ];
     }
 

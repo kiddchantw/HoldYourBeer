@@ -39,9 +39,6 @@ Route::prefix('v1')->name('v1.')->group(function () {
         ->middleware('throttle:6,1')
         ->name('password.store');
 
-    // Public feedback endpoint (allows anonymous submissions)
-    Route::post('/feedback', [V1FeedbackController::class, 'store'])->name('feedback.store');
-
     // Email Verification (public route)
     // Note: signed middleware only works for HTTP URLs, not custom schemes
     // For custom scheme URLs, signature is verified manually in the controller
@@ -85,6 +82,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::get('/charts/brand-analytics', [ChartsController::class, 'brandAnalytics'])->name('charts.brand_analytics');
 
         // Feedback endpoints (authenticated users)
+        Route::post('/feedback', [V1FeedbackController::class, 'store'])->name('feedback.store');
         Route::get('/feedback', [V1FeedbackController::class, 'index'])->name('feedback.index');
         Route::get('/feedback/{feedback}', [V1FeedbackController::class, 'show'])->name('feedback.show');
         Route::patch('/feedback/{feedback}', [V1FeedbackController::class, 'update'])->name('feedback.update');
