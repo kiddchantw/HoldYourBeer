@@ -216,11 +216,316 @@ routes/
 
 ---
 
+---
+
+## 🎨 RWD Optimization (Continuation Session)
+
+**Date**: 2025-12-30 (Afternoon)
+**Status**: ✅ Completed
+**Duration**: 1.5 hours
+**Related to**: Sidebar Layout Refactor (same day, earlier session)
+
+### Goal
+Further optimize the Admin Dashboard for Responsive Web Design (RWD) by:
+1. Removing all card-based mobile layouts in favor of unified table layouts
+2. Implementing responsive button displays (icon+text on desktop, icon only on mobile)
+3. Replacing sidebar navigation with top tab navigation
+4. Moving delete functionality from list pages to detail pages
+5. Simplifying table columns for better readability
+6. Fixing Content Security Policy (CSP) errors
+
+### User Requirements
+The user provided iterative feedback throughout the session with specific URLs and requirements:
+
+1. **Brands Page** (`/admin/brands`):
+   - Remove card layout for mobile
+   - Use table format for all screen sizes
+   - Desktop buttons: icon + text
+   - Mobile buttons: icon only
+
+2. **Admin Layout** (`/admin`):
+   - Remove sidebar menu completely
+   - Replace with top tab navigation (unified for all screen sizes)
+
+3. **Users Page** (`/admin/users`):
+   - Convert from card layout to table format
+   - Remove "Registration Method" column
+   - Ensure all columns visible on desktop (1418px+)
+
+4. **Security**:
+   - Fix CSP error blocking fonts from `fonts.bunny.net`
+
+### Implementation Details
+
+#### Phase 1: Table Layout Conversion [✅ Completed]
+
+**File**: `resources/views/livewire/admin/brand-manager.blade.php`
+
+**Changes**:
+- Removed mobile card view (`@if($isMobile)` logic)
+- Created unified responsive table with `overflow-x-auto` for horizontal scrolling
+- Implemented responsive buttons using Tailwind's `hidden sm:inline` pattern:
+  ```blade
+  <a href="..." class="inline-flex items-center gap-2 ...">
+      <svg class="w-5 h-5">...</svg>
+      <span class="hidden sm:inline">Info</span>
+  </a>
+  ```
+- Ensured touch-friendly UI with `min-h-[44px]` for all interactive elements
+
+**File**: `resources/views/admin/users/index.blade.php`
+
+**Changes**:
+- Converted from card-based mobile view to unified table
+- Removed "Registration Method" column per user request
+- Removed all responsive breakpoints (sm:, md:, lg:, xl:) to ensure all 5 columns visible at all times:
+  - Name
+  - Email
+  - Email Verified At
+  - Provider
+  - Created At
+- Used `overflow-x-auto` for horizontal scrolling on smaller screens
+
+#### Phase 2: Navigation Refactor [✅ Completed]
+
+**File**: `resources/views/layouts/admin.blade.php`
+
+**Before**:
+- Desktop: Sidebar with icons and labels
+- Mobile: Top tabs with icons and labels
+- Two separate navigation implementations
+
+**After**:
+- Removed sidebar (`<aside>`) completely
+- Created single top tab navigation for all screen sizes
+- Used `flex space-x-8 overflow-x-auto scrollbar-hide` for horizontal scrolling
+- Active state: `border-blue-600 text-blue-700` with bottom border
+- Inactive state: `border-transparent text-gray-600 hover:text-gray-900`
+
+**Key Features**:
+- Icon + text for all screen sizes (consistent UX)
+- Horizontal scroll on smaller screens (with hidden scrollbar)
+- Visual indicator for active tab (blue bottom border)
+
+**File**: `resources/css/app.css`
+
+**Added**:
+```css
+@layer utilities {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .scrollbar-hide {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+}
+```
+
+#### Phase 3: Delete Functionality Relocation [✅ Completed]
+
+**Created**: `app/Livewire/Admin/BrandDelete.php`
+- New Livewire component for handling brand deletion
+- Validates that brand has no associated beers before deletion
+- Shows confirmation modal with responsive design
+- Redirects to brands index after successful deletion
+
+**Created**: `resources/views/livewire/admin/brand-delete.blade.php`
+- Responsive confirmation modal
+- Desktop and mobile optimized button layouts
+- Warning icon and danger messaging
+- Loading states during deletion
+
+**Modified**: `resources/views/admin/brands/show.blade.php`
+- Added "Danger Zone" section with brand deletion
+- Included BrandDelete Livewire component
+- Red-themed alert box to indicate dangerous action
+
+**Modified**: `resources/views/livewire/admin/brand-manager.blade.php`
+- Removed delete button from list view
+- Kept only "Info" and "Edit" buttons in Actions column
+
+#### Phase 4: CSP Configuration Fix [✅ Completed]
+
+**File**: `app/Http/Middleware/AddSecurityHeaders.php`
+
+**Issue**: Browser console showed CSP error:
+```
+Refused to load the stylesheet 'https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap'
+because it violates the following Content Security Policy directive: "style-src 'self' 'unsafe-inline'
+https://cdn.jsdelivr.net https://unpkg.com"
+```
+
+**Solution**:
+Updated CSP configuration to allow fonts.bunny.net:
+
+```php
+$csp = [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com",
+    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://fonts.bunny.net",
+    "img-src 'self' data: https: blob:",
+    "font-src 'self' data: https://cdn.jsdelivr.net https://fonts.bunny.net",
+    "connect-src 'self' " . env('API_URL', config('app.url')),
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+];
+```
+
+**Changes**:
+- Line 54: Added `https://fonts.bunny.net` to `style-src`
+- Line 56: Added `https://fonts.bunny.net` to `font-src`
+
+### Files Modified Summary
+
+```
+app/Http/Middleware/
+├── AddSecurityHeaders.php (CSP update)
+
+app/Livewire/Admin/
+├── BrandDelete.php (new - deletion logic)
+
+resources/views/
+├── layouts/
+│   └── admin.blade.php (top tab navigation)
+├── livewire/admin/
+│   ├── brand-manager.blade.php (table layout, responsive buttons)
+│   └── brand-delete.blade.php (new - deletion modal)
+├── admin/
+│   ├── users/
+│   │   └── index.blade.php (table layout, removed column)
+│   └── brands/
+│       └── show.blade.php (danger zone added)
+├── css/
+│   └── app.css (scrollbar-hide utility)
+```
+
+### Technical Highlights
+
+#### Responsive Button Pattern
+Used Tailwind's responsive utilities to show/hide text labels:
+- Desktop (≥640px): Icon + Text
+- Mobile (<640px): Icon only
+
+Implementation:
+```blade
+<button class="inline-flex items-center gap-2">
+    <svg>...</svg>
+    <span class="hidden sm:inline">Edit</span>
+</button>
+```
+
+#### Table Horizontal Scroll
+For tables with many columns, used container with horizontal scroll:
+```blade
+<div class="overflow-x-auto">
+    <table class="min-w-full">
+        <!-- All columns always visible -->
+    </table>
+</div>
+```
+
+#### Touch-Friendly Design
+Ensured all interactive elements meet minimum touch target size:
+```blade
+class="... touch-manipulation min-h-[44px]"
+```
+
+### Key Decisions
+
+#### D7: Remove Responsive Breakpoints from Tables
+**Chosen**: Show all columns at all times with horizontal scroll
+**Rejected**: Progressive disclosure (hiding columns on smaller screens)
+**Reason**: User specifically noted that desktop view (1418px) should show all columns. Using breakpoints (xl:1280px) was hiding columns on screens between 1280-1536px.
+
+#### D8: Top Tab Navigation for All Sizes
+**Chosen**: Unified top tab navigation (icon + text) for all screen sizes
+**Rejected**: Different navigation patterns for desktop/mobile
+**Reason**: Simpler codebase, consistent UX, and user explicitly requested removal of sidebar.
+
+#### D9: CSP Whitelist Addition
+**Chosen**: Add fonts.bunny.net to CSP whitelist
+**Rejected**: Self-host fonts or use different CDN
+**Reason**: Quick fix that maintains current font loading strategy while resolving security policy violation.
+
+### Testing Performed
+
+1. **Desktop Testing (1418px)**:
+   - ✅ All table columns visible
+   - ✅ Buttons show icon + text
+   - ✅ Top tabs visible and functional
+   - ✅ Fonts load without CSP error
+
+2. **Mobile Testing**:
+   - ✅ Tables scroll horizontally
+   - ✅ Buttons show icon only
+   - ✅ Top tabs scroll horizontally
+   - ✅ Touch targets adequate (44px minimum)
+
+3. **Functional Testing**:
+   - ✅ Brand creation works (modal)
+   - ✅ Brand editing works (modal)
+   - ✅ Brand deletion works (from detail page)
+   - ✅ Deleted brands show with indicators
+   - ✅ Navigation highlights active tab
+
+### Lessons Learned
+
+#### 1. Progressive Disclosure vs. Horizontal Scroll
+**Learning**: For admin interfaces with many data columns, horizontal scroll is often preferable to hiding columns based on breakpoints. Users expect to see all data on desktop screens, and breakpoint thresholds (like xl:1280px) can hide content on screens just above that size.
+
+**Best Practice**:
+- Consumer apps: Progressive disclosure
+- Admin/data-heavy apps: Horizontal scroll
+
+#### 2. Responsive Button Text Pattern
+**Learning**: The `<span class="hidden sm:inline">` pattern is effective for responsive button labels, but requires careful attention to:
+- Icon size consistency (w-5 h-5)
+- Gap spacing (gap-2)
+- Flex alignment (inline-flex items-center)
+- Touch target minimum (min-h-[44px])
+
+#### 3. CSP Configuration Location
+**Learning**: Laravel's CSP configuration is typically in middleware rather than in meta tags or config files. This allows for environment-based and route-based customization.
+
+**Best Practice**: Always check `app/Http/Middleware/` for security header configuration.
+
+#### 4. Unified vs. Conditional Navigation
+**Learning**: Maintaining separate navigation implementations for different screen sizes doubles the code and increases the risk of inconsistency. When possible, create a single responsive navigation that adapts through CSS rather than conditionally rendering different components.
+
+**Trade-offs**:
+- Single navigation: Simpler codebase, consistent behavior
+- Separate navigations: More control over UX per screen size
+
+### Blockers & Solutions
+
+#### Blocker 9: Table Columns Hidden on Desktop [✅ RESOLVED]
+- **Issue**: User reported that desktop view (1418px) wasn't showing all promised columns
+- **Cause**: Used `xl:table-cell` breakpoint (1280px) which hid columns between 1280-1536px
+- **Impact**: Important data not visible on common desktop screen sizes
+- **Solution**: Removed all responsive breakpoints, made all columns always visible with horizontal scroll
+- **Resolved**: 2025-12-30
+
+#### Blocker 10: CSP Blocking External Fonts [✅ RESOLVED]
+- **Issue**: Browser console error blocking fonts from fonts.bunny.net
+- **Cause**: CSP `style-src` and `font-src` directives didn't include fonts.bunny.net domain
+- **Impact**: Fonts not loading, console errors affecting development experience
+- **Solution**: Added `https://fonts.bunny.net` to both `style-src` and `font-src` in AddSecurityHeaders.php
+- **Resolved**: 2025-12-30
+
+---
+
 ## ✅ Completion
 
-**Status**: ✅ Completed
+**Status**: ✅ Completed (Including RWD Optimization)
 **Completed Date**: 2025-12-30
-**Session Duration**: 2.5 hours
+**Total Session Duration**: 4.0 hours (2.5 hours initial + 1.5 hours RWD)
 
 > ℹ️ **Next Steps**:
-> 1. Archive session.
+> 1. Monitor for any CSP issues with other external resources
+> 2. Consider implementing similar RWD patterns for other admin pages
+> 3. Archive session.
