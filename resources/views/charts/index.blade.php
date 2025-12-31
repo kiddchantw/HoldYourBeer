@@ -1,16 +1,16 @@
-<x-app-layout>
+<x-app-layout :with-footer-padding="false">
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Chart Statistics') }}
         </h2>
     </x-slot>
 
-    <div class="py-12 relative overflow-hidden">
+    <div class="pt-12 pb-20 relative overflow-hidden flex-1">
         <x-background />
 
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Filter Section -->
-            <div class="mb-6">
+            <div class="mb-6" id="time-filter">
                 <form method="GET" action="" class="flex flex-wrap items-center gap-4 bg-white bg-opacity-50 backdrop-blur-sm p-4 rounded-lg shadow-sm">
                     <label for="month" class="font-medium text-gray-700 flex items-center">
                         <span class="mr-2">📅</span> {{ __('Filter by Month') }}:
@@ -81,7 +81,7 @@
                             <h3 class="text-xl font-bold text-gray-800">{{ __('Brand Distribution Chart') }}</h3>
                             
                             <!-- Chart Type Switcher -->
-                            <div class="flex space-x-2 mt-4 sm:mt-0">
+                            <div class="flex space-x-2 mt-4 sm:mt-0" id="chart-type-selector">
                                 <button id="btn-bar" class="px-3 py-1 text-sm rounded-md bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors active-chart-type">
                                     📊 {{ __('Bar') }}
                                 </button>
@@ -95,7 +95,7 @@
                         </div>
 
                         @if(count($labels) > 0)
-                            <div class="relative h-80">
+                            <div class="relative h-80" id="chart-container">
                                 <canvas id="brandChart"></canvas>
                             </div>
                         @else

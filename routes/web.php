@@ -4,6 +4,7 @@ use App\Http\Controllers\BeerController;
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\CookieConsentController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SocialLoginController;
 use Illuminate\Support\Facades\Route;
@@ -75,6 +76,10 @@ Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale'], 'where' => 
         Route::post('email/verification-notification', [\App\Http\Controllers\Auth\EmailVerificationNotificationController::class, 'store'])
             ->middleware('throttle:6,1')
             ->name('localized.verification.send');
+        
+        // Onboarding routes
+        Route::post('/onboarding/complete', [OnboardingController::class, 'complete'])->name('onboarding.complete');
+        Route::get('/onboarding/restart', [OnboardingController::class, 'restart'])->name('onboarding.restart');
     });
 
     Route::middleware(['auth.locale', 'auth'])->group(function () {

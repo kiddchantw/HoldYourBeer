@@ -18,6 +18,19 @@
                     <x-nav-link :href="route('charts', ['locale' => app()->getLocale() ?: 'en'])" :active="request()->routeIs('charts')">
                         {{ __('Charts') }}
                     </x-nav-link>
+                    
+                    {{-- 重新看教學按鈕：只在信箱驗證後 30 天內顯示 --}}
+                    @if(Auth::user()->email_verified_at && Auth::user()->email_verified_at->addDays(30)->isFuture())
+                        <x-nav-link :href="route('onboarding.restart', ['locale' => app()->getLocale() ?: 'en'])">
+                            <span class="inline-flex items-center">
+                                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                {{ __('重新看教學') }}
+                            </span>
+                        </x-nav-link>
+                    @endif
+                    
                     @if(Auth::user()->role === 'admin')
                         <x-nav-link :href="route('admin.dashboard', ['locale' => app()->getLocale() ?: 'en'])" :active="request()->routeIs('admin.*')">
                             {{ __('Admin') }}
@@ -97,20 +110,23 @@
             </div>
 
             <div class="mt-3 space-y-1">
+                {{-- 重新看教學按鈕：只在信箱驗證後 30 天內顯示 --}}
+                @if(Auth::user()->email_verified_at && Auth::user()->email_verified_at->addDays(30)->isFuture())
+                    <x-responsive-nav-link :href="route('onboarding.restart', ['locale' => app()->getLocale() ?: 'en'])">
+                        <span class="inline-flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            {{ __('重新看教學') }}
+                        </span>
+                    </x-responsive-nav-link>
+                @endif
+                
                 <x-responsive-nav-link :href="route('profile.edit', ['locale' => app()->getLocale() ?: 'en'])">
                     Profile
                 </x-responsive-nav-link>
 
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('localized.logout', ['locale' => app()->getLocale() ?: 'en']) }}">
-                    @csrf
 
-                    <x-responsive-nav-link :href="route('localized.logout', ['locale' => app()->getLocale() ?: 'en'])"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
 
                 <div class="mt-3 space-y-1">
                     <x-language-switcher />

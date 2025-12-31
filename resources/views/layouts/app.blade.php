@@ -15,6 +15,49 @@
         <x-google-analytics />
 
         <!-- Scripts -->
+        <script>
+            window.onboardingTranslations = {
+                steps: {
+                    beer_list: {
+                        title: "{{ __('啤酒收藏列表') }}",
+                        description: "{!! __('這是你的啤酒收藏，會顯示你追蹤的所有啤酒') !!}"
+                    },
+                    add_beer: {
+                        title: "{{ __('新增啤酒') }}",
+                        description: "{!! __('點這裡可以新增一款啤酒到你的收藏') !!}",
+                        description_empty: "{!! __('點這裡開始你的第一支啤酒追蹤！') !!}"
+                    },
+                    counter: {
+                        title: "{{ __('計數器') }}",
+                        description: "{!! __('用 +/- 按鈕記錄你喝了幾杯') !!}"
+                    },
+                    charts: {
+                        title: "{{ __('圖表區域') }}",
+                        description: "{!! __('這裡可以查看你的飲酒統計') !!}",
+                        footer: "{!! __('即使現在沒有數據，未來這裡會充滿你的品飲紀錄！') !!}"
+                    },
+                    type_selector: {
+                        title: "{{ __('圖表類型切換') }}",
+                        description: "{!! __('切換不同的統計圖表') !!}:<br>• 📊 {{ __('長條圖') }}<br>• 🥧 {{ __('圓餅圖') }}<br>• 📈 {{ __('折線圖') }}"
+                    },
+                    time_filter: {
+                        title: "{{ __('時間篩選器') }}",
+                        description: "{!! __('選擇要查看的時間範圍') !!}。<br><br>📅 <strong>{{ __('按月份篩選數據') }}</strong>"
+                    }
+                },
+                buttons: {
+                    next: "{{ __('下一步') }}",
+                    prev: "{{ __('上一步') }}",
+                    done: "{{ __('完成') }}",
+                }
+            };
+
+            window.appRoutes = {
+                onboarding_complete: "{{ route('onboarding.complete', ['locale' => app()->getLocale()]) }}",
+                dashboard: "{{ route('dashboard', ['locale' => app()->getLocale()]) }}",
+                charts: "{{ route('charts', ['locale' => app()->getLocale()]) }}"
+            };
+        </script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
     </head>
@@ -79,7 +122,7 @@
             @endisset
 
             <!-- Page Content -->
-            <main class="flex-1 flex flex-col pb-14">
+            <main class="flex-1 flex flex-col {{ $withFooterPadding ? 'pb-14' : '' }}">
                 {{ $slot }}
             </main>
         </div>

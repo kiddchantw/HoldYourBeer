@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :with-footer-padding="false">
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <div>
@@ -14,13 +14,13 @@
         </div>
     </x-slot>
 
-    <div class="pt-12 pb-6 relative overflow-hidden flex-1">
+    <div class="pt-12 pb-20 relative overflow-hidden flex-1">
         <x-background />
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10 mt-6">
 
             <!-- Beer Collection Section -->
             <!-- <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg"> -->
-            <div class="bg-white/60 backdrop-blur-sm overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white/60 backdrop-blur-sm overflow-hidden shadow-sm sm:rounded-lg" id="beer-list">
 
                 <div class="p-6">
                     @if($trackedBeers->isEmpty())
@@ -35,6 +35,7 @@
                                 <h3 class="text-lg font-medium text-gray-900 mb-2">{{ __('Start Your Beer Collection') }}</h3>
                                 <p class="text-sm text-gray-500 mb-6">{{ __('Begin tracking your favorite beers and discover new ones!') }}</p>
                                 <a href="{{ route('beers.create', ['locale' => app()->getLocale() ?: 'en']) }}"
+                                   id="add-beer-button"
                                    class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition duration-200">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -50,6 +51,7 @@
                                 <h3 class="text-lg font-medium text-gray-900">{{ __('My Beer Collection') }}</h3>
                                 <!-- Add Button (moved here) -->
                                 <a href="{{ route('beers.create', ['locale' => app()->getLocale() ?: 'en']) }}"
+                                   id="add-beer-button"
                                    class="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-sm font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition duration-200">
                                     <svg class="w-4 h-4 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -63,7 +65,7 @@
                         <!-- Beer Cards - Mobile First -->
                         <div class="space-y-4 md:grid md:grid-cols-1 lg:grid-cols-2 md:gap-6 md:space-y-0">
                             @foreach($trackedBeers as $beerCount)
-                                <div class="bg-gray-50 rounded-lg overflow-hidden hover:bg-gray-100 transition duration-150 ease-in-out flex justify-between items-center min-h-[110px]">
+                                <div class="bg-gray-50 rounded-lg overflow-hidden hover:bg-gray-100 transition duration-150 ease-in-out flex justify-between items-center min-h-[110px] beer-counter">
                                     <!-- 左側：啤酒資訊 -->
                                     <div class="p-4 flex-1 min-w-0 flex items-center">
                                         <a href="{{ route('beers.history', ['beerId' => $beerCount->beer->id, 'locale' => app()->getLocale() ?: 'en']) }}" class="block w-full">
@@ -115,4 +117,7 @@
             </div>
         </div>
     </div>
+
+    <!-- Onboarding Modal -->
+    @livewire('onboarding-modal')
 </x-app-layout>
