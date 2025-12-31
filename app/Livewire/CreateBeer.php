@@ -31,26 +31,22 @@ class CreateBeer extends Component
     public $beer_suggestions = [];
     public $shop_suggestions = [];
 
-    // 搜尋品牌建議
+    // 搜尋品牌建議（不區分大小寫）
     public function updatedBrandName($value)
     {
-        \Log::info('DEBUG: updatedBrandName triggered', ['value' => $value, 'length' => strlen($value)]);
-
         if (strlen($value) < 1) {
             $this->brand_suggestions = [];
             return;
         }
 
-        $this->brand_suggestions = Brand::where('name', 'like', '%' . $value . '%')
+        $this->brand_suggestions = Brand::whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($value) . '%'])
             ->orderBy('name')
             ->limit(5)
             ->get()
             ->toArray();
-            
-        \Log::info('DEBUG: Suggestions found', ['count' => count($this->brand_suggestions)]);
     }
 
-    // 搜尋啤酒建議
+    // 搜尋啤酒建議（不區分大小寫）
     public function updatedName($value)
     {
         if (strlen($this->brand_name) == 0 || strlen($value) < 1) {
@@ -58,10 +54,11 @@ class CreateBeer extends Component
             return;
         }
 
-        $brand = Brand::where('name', $this->brand_name)->first();
+        // 品牌名稱也使用不區分大小寫的搜尋
+        $brand = Brand::whereRaw('LOWER(name) = ?', [strtolower($this->brand_name)])->first();
         if ($brand) {
             $this->beer_suggestions = Beer::where('brand_id', $brand->id)
-                ->where('name', 'like', '%' . $value . '%')
+                ->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($value) . '%'])
                 ->orderBy('name')
                 ->limit(5)
                 ->get()
@@ -69,7 +66,7 @@ class CreateBeer extends Component
         }
     }
 
-    // 搜尋店家建議
+    // 搜尋店家建議（不區分大小寫）
     public function updatedShopName($value)
     {
         if (strlen($value) < 1) {
@@ -78,7 +75,7 @@ class CreateBeer extends Component
         }
 
         // 搜尋店家，並關聯計算被選擇的次數（熱門度）
-        $this->shop_suggestions = Shop::where('name', 'like', '%' . $value . '%')
+        $this->shop_suggestions = Shop::whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($value) . '%'])
             ->withCount(['tastingLogs as total_reports'])
             ->orderByDesc('total_reports')
             ->orderBy('name')
