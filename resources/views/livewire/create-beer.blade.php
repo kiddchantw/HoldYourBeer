@@ -26,24 +26,21 @@
                     </div>
 
                     {{-- 品牌欄位 --}}
-                    <div class="relative">
+                    <div class="relative" @click.away="$wire.set('brand_suggestions', [])">
                         <x-input-label for="brand_name" :value="__('Brand')" />
-                        <input 
-                            wire:key="brand_input"
-                            id="brand_name" 
-                            type="text" 
-                            class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" 
-                            wire:model.live.debounce.300ms="brand_name" 
-                            placeholder="{{ __('Enter brand name...') }}" 
+                        <input
+                            id="brand_name"
+                            type="text"
+                            class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                            wire:model.live.debounce.300ms="brand_name"
+                            placeholder="{{ __('Enter brand name...') }}"
                             autofocus
                             autocomplete="off"
                         />
-                        
                         @if(count($brand_suggestions) > 0)
-                            <ul class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto"
-                                wire:click.outside="$set('brand_suggestions', [])">
+                            <ul class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
                                 @foreach($brand_suggestions as $index => $suggestion)
-                                    <li 
+                                    <li
                                         wire:key="brand-sugg-{{ $index }}"
                                         wire:click="selectBrand('{{ $suggestion['name'] }}')"
                                         class="px-3 py-2 hover:bg-amber-50 cursor-pointer text-sm text-gray-700 border-b border-gray-100 last:border-b-0"
@@ -57,22 +54,20 @@
                     </div>
 
                     {{-- 啤酒名稱欄位 --}}
-                    <div class="relative">
+                    <div class="relative" @click.away="$wire.set('beer_suggestions', [])">
                         <x-input-label for="name" :value="__('Beer Name')" />
-                        <input 
-                            wire:key="name_input"
-                            id="name" 
-                            type="text" 
-                            class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" 
-                            wire:model.live.debounce.300ms="name" 
-                            placeholder="{{ __('Enter beer name...') }}" 
+                        <input
+                            id="name"
+                            type="text"
+                            class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                            wire:model.live.debounce.300ms="name"
+                            placeholder="{{ __('Enter beer name...') }}"
                             autocomplete="off"
                         />
                         @if(count($beer_suggestions) > 0)
-                            <ul class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto"
-                                wire:click.outside="$set('beer_suggestions', [])">
+                            <ul class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
                                 @foreach($beer_suggestions as $index => $suggestion)
-                                    <li 
+                                    <li
                                         wire:key="beer-sugg-{{ $index }}"
                                         wire:click="selectBeer('{{ $suggestion['name'] }}')"
                                         class="px-3 py-2 hover:bg-amber-50 cursor-pointer text-sm text-gray-700 border-b border-gray-100 last:border-b-0"
@@ -115,24 +110,22 @@
                     </div>
 
                     {{-- 購買店家欄位 --}}
-                    <div class="relative">
+                    <div class="relative" @click.away="$wire.set('shop_suggestions', [])">
                         <x-input-label for="shop_name" :value="__('Purchase Shop (Optional)')" />
-                        <input 
-                            wire:key="shop_input"
-                            id="shop_name" 
-                            type="text" 
-                            class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" 
-                            wire:model.live.debounce.300ms="shop_name" 
-                            placeholder="{{ __('Enter shop name...') }}" 
-                            wire:loading.attr="disabled" 
-                            wire:target="save" 
+                        <input
+                            id="shop_name"
+                            type="text"
+                            class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                            wire:model.live.debounce.300ms="shop_name"
+                            placeholder="{{ __('Enter shop name...') }}"
+                            wire:loading.attr="disabled"
+                            wire:target="save"
                             autocomplete="off"
                         />
                         @if(count($shop_suggestions) > 0)
-                            <ul class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto"
-                                wire:click.outside="$set('shop_suggestions', [])">
+                            <ul class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
                                 @foreach($shop_suggestions as $index => $suggestion)
-                                    <li 
+                                    <li
                                         wire:key="shop-sugg-{{ $index }}"
                                         wire:click="selectShop('{{ $suggestion['name'] }}')"
                                         class="px-3 py-2 hover:bg-amber-50 cursor-pointer text-sm text-gray-700 border-b border-gray-100 last:border-b-0"
