@@ -10,6 +10,19 @@ class AppLayout extends Component
     /**
      * Get the view / contents that represents the component.
      */
+    public $withFooterPadding;
+
+    /**
+     * Create a new component instance.
+     */
+    public function __construct($withFooterPadding = true)
+    {
+        $this->withFooterPadding = $withFooterPadding;
+    }
+
+    /**
+     * Get the view / contents that represents the component.
+     */
     public function render(): View
     {
         return view('layouts.app');

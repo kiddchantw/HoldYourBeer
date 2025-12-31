@@ -1,11 +1,11 @@
-<x-app-layout>
+<x-app-layout :with-footer-padding="false">
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Add a New Beer') }}
         </h2>
     </x-slot>
 
-    <div class="py-12 relative overflow-hidden">
+    <div class="pt-12 pb-20 relative overflow-hidden flex-1">
         <x-background />
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10 space-y-6">
             <div class="p-4 sm:p-8 bg-white/60 backdrop-blur-sm shadow sm:rounded-lg">
