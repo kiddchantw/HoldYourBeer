@@ -8,24 +8,36 @@ use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
+/**
+ * OAuth Password Set/Update Test
+ *
+ * 測試密碼更新邏輯的安全性：
+ * - OAuth 用戶首次設定密碼（password = null）：不需要舊密碼
+ * - OAuth 用戶更新密碼（password != null）：需要舊密碼
+ * - 本地用戶更新密碼：需要舊密碼
+ * - Legacy 用戶（provider = null）：需要舊密碼
+ */
 class OAuthPasswordSetTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * OAuth 用戶首次設定密碼（password = null）不需要提供舊密碼
+     */
     #[Test]
-    public function oauth_user_can_set_password_without_current_password()
+    public function oauth_user_without_password_can_set_password_without_current_password()
     {
-        // Create OAuth user (Google registration)
+        // OAuth 用戶首次登入，尚未設定密碼
         $user = User::factory()->create([
             'email' => 'oauth@example.com',
-            'password' => Hash::make(random_bytes(16)), // Random password
+            'password' => null, // OAuth 用戶無密碼
             'provider' => 'google',
             'provider_id' => 'google_123',
         ]);
 
         $this->actingAs($user);
 
-        // OAuth user can set password without providing current_password
+        // OAuth 用戶首次設定密碼不需要 current_password
         $response = $this->put(route('password.update'), [
             'password' => 'NewPassword123!',
             'password_confirmation' => 'NewPassword123!',
@@ -34,24 +46,29 @@ class OAuthPasswordSetTest extends TestCase
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();
 
-        // Verify password was changed
+        // 驗證密碼已設定
         $user->refresh();
         $this->assertTrue(Hash::check('NewPassword123!', $user->password));
     }
 
+    /**
+     * OAuth 用戶已設定過密碼時，必須提供舊密碼才能更新
+     * 這是關鍵的安全測試案例
+     */
     #[Test]
-    public function local_user_must_provide_current_password()
+    public function oauth_user_with_existing_password_must_provide_current_password()
     {
-        // Create local user (email/password registration)
+        // OAuth 用戶已設定過密碼
         $user = User::factory()->create([
-            'email' => 'local@example.com',
-            'password' => Hash::make('OldPassword123!'),
-            'provider' => 'local',
+            'email' => 'oauth-with-pass@example.com',
+            'password' => Hash::make('ExistingPassword123!'),
+            'provider' => 'google',
+            'provider_id' => 'google_456',
         ]);
 
         $this->actingAs($user);
 
-        // Local user must provide current_password
+        // 不提供舊密碼 → 應該失敗
         $response = $this->put(route('password.update'), [
             'password' => 'NewPassword123!',
             'password_confirmation' => 'NewPassword123!',
@@ -60,10 +77,64 @@ class OAuthPasswordSetTest extends TestCase
         $response->assertSessionHasErrorsIn('updatePassword', 'current_password');
     }
 
+    /**
+     * OAuth 用戶已設定過密碼，提供正確舊密碼後可以更新
+     */
     #[Test]
-    public function local_user_can_change_password_with_correct_current_password()
+    public function oauth_user_with_existing_password_can_update_with_correct_current_password()
     {
-        // Create local user
+        // OAuth 用戶已設定過密碼
+        $user = User::factory()->create([
+            'email' => 'oauth-update@example.com',
+            'password' => Hash::make('ExistingPassword123!'),
+            'provider' => 'google',
+            'provider_id' => 'google_789',
+        ]);
+
+        $this->actingAs($user);
+
+        // 提供正確舊密碼 → 應該成功
+        $response = $this->put(route('password.update'), [
+            'current_password' => 'ExistingPassword123!',
+            'password' => 'NewPassword123!',
+            'password_confirmation' => 'NewPassword123!',
+        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect();
+
+        $user->refresh();
+        $this->assertTrue(Hash::check('NewPassword123!', $user->password));
+    }
+
+    /**
+     * 本地用戶必須提供舊密碼
+     */
+    #[Test]
+    public function local_user_must_provide_current_password()
+    {
+        $user = User::factory()->create([
+            'email' => 'local@example.com',
+            'password' => Hash::make('OldPassword123!'),
+            'provider' => 'local',
+        ]);
+
+        $this->actingAs($user);
+
+        $response = $this->put(route('password.update'), [
+            'password' => 'NewPassword123!',
+            'password_confirmation' => 'NewPassword123!',
+        ]);
+
+        $response->assertSessionHasErrorsIn('updatePassword', 'current_password');
+    }
+
+    /**
+     * 本地用戶提供正確舊密碼後可以更新
+     */
+    #[Test]
+    public function local_user_can_update_password_with_correct_current_password()
+    {
         $user = User::factory()->create([
             'email' => 'local2@example.com',
             'password' => Hash::make('OldPassword123!'),
@@ -72,7 +143,6 @@ class OAuthPasswordSetTest extends TestCase
 
         $this->actingAs($user);
 
-        // Provide correct current password
         $response = $this->put(route('password.update'), [
             'current_password' => 'OldPassword123!',
             'password' => 'NewPassword123!',
@@ -82,25 +152,27 @@ class OAuthPasswordSetTest extends TestCase
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();
 
-        // Verify password was changed
         $user->refresh();
         $this->assertTrue(Hash::check('NewPassword123!', $user->password));
     }
 
+    /**
+     * OAuth 用戶設定密碼後可以同時使用 OAuth 和 email/password 登入
+     */
     #[Test]
     public function oauth_user_can_login_with_both_methods_after_setting_password()
     {
-        // Create OAuth user
+        // OAuth 用戶首次登入，尚未設定密碼
         $user = User::factory()->create([
             'email' => 'dual@example.com',
-            'password' => Hash::make(random_bytes(16)),
+            'password' => null, // OAuth 用戶無密碼
             'provider' => 'google',
-            'provider_id' => 'google_456',
+            'provider_id' => 'google_dual',
         ]);
 
         $this->actingAs($user);
 
-        // Set a password
+        // 設定密碼
         $response = $this->put(route('password.update'), [
             'password' => 'DualLogin123!',
             'password_confirmation' => 'DualLogin123!',
@@ -108,10 +180,10 @@ class OAuthPasswordSetTest extends TestCase
 
         $response->assertSessionHasNoErrors();
 
-        // Logout
+        // 登出
         $this->post(route('logout'));
 
-        // Now user can login with email + password
+        // 現在可以使用 email + password 登入
         $loginResponse = $this->post(route('login'), [
             'email' => 'dual@example.com',
             'password' => 'DualLogin123!',
@@ -121,33 +193,54 @@ class OAuthPasswordSetTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
+    /**
+     * Legacy 用戶（provider = null）必須提供舊密碼
+     */
     #[Test]
-    public function legacy_user_without_provider_acts_like_local_user()
+    public function legacy_user_without_provider_must_provide_current_password()
     {
-        // Create legacy user (provider = null, from before migration)
+        // Legacy 用戶（provider = null）
         $user = User::factory()->create([
             'email' => 'legacy@example.com',
             'password' => Hash::make('LegacyPassword123!'),
-            'provider' => null, // Legacy user
+            'provider' => null,
         ]);
 
         $this->actingAs($user);
 
-        // Legacy user must provide current_password (acts like local user)
+        // 不提供舊密碼 → 應該失敗
         $response = $this->put(route('password.update'), [
             'password' => 'NewPassword123!',
             'password_confirmation' => 'NewPassword123!',
         ]);
 
         $response->assertSessionHasErrorsIn('updatePassword', 'current_password');
+    }
 
-        // With correct current password
-        $response2 = $this->put(route('password.update'), [
+    /**
+     * Legacy 用戶提供正確舊密碼後可以更新
+     */
+    #[Test]
+    public function legacy_user_can_update_password_with_correct_current_password()
+    {
+        $user = User::factory()->create([
+            'email' => 'legacy2@example.com',
+            'password' => Hash::make('LegacyPassword123!'),
+            'provider' => null,
+        ]);
+
+        $this->actingAs($user);
+
+        $response = $this->put(route('password.update'), [
             'current_password' => 'LegacyPassword123!',
             'password' => 'NewPassword123!',
             'password_confirmation' => 'NewPassword123!',
         ]);
 
-        $response2->assertSessionHasNoErrors();
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect();
+
+        $user->refresh();
+        $this->assertTrue(Hash::check('NewPassword123!', $user->password));
     }
 }

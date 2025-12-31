@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\EmailVerificationController;
 use App\Http\Controllers\Api\Auth\PasswordResetController;
+use App\Http\Controllers\Api\PasswordController;
 use App\Http\Controllers\Api\V1\AuthController as V1AuthController;
 use App\Http\Controllers\Api\V1\BeerController as V1BeerController;
 use App\Http\Controllers\Api\V1\BrandController as V1BrandController;
@@ -61,6 +62,11 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])
             ->middleware('throttle:6,1')
             ->name('verification.send');
+
+        // Password Update (authenticated users)
+        Route::put('/password', [PasswordController::class, 'update'])
+            ->middleware('throttle:6,1')
+            ->name('password.update');
 
         // Beer endpoints
         Route::get('/beers', [V1BeerController::class, 'index'])->name('beers.index');

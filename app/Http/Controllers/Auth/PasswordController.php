@@ -13,23 +13,22 @@ class PasswordController extends Controller
     /**
      * Update the user's password.
      *
-     * OAuth users (Google, Apple, etc.) can set a password without current_password
-     * Local users must provide their current password to change it
+     * Password validation rules:
+     * - OAuth users WITHOUT password (first time): no current_password required
+     * - OAuth users WITH password (update): current_password required
+     * - Local/Legacy users: current_password required
      */
     public function update(Request $request): RedirectResponse
     {
         $user = $request->user();
 
-        // OAuth users setting password for the first time don't need current_password
-        if ($user->isOAuthUser()) {
+        // Only OAuth users who haven't set a password yet can skip current_password
+        if ($user->canSetPasswordWithoutCurrent()) {
             $validated = $request->validateWithBag('updatePassword', [
                 'password' => ['required', Password::defaults(), 'confirmed'],
             ]);
-
-            // After setting password, user can login with both OAuth and email/password
-            // Note: We keep provider field to track original registration method
         } else {
-            // Local users or legacy users must provide current password
+            // All users with existing password must provide current_password
             $validated = $request->validateWithBag('updatePassword', [
                 'current_password' => ['required', 'current_password'],
                 'password' => ['required', Password::defaults(), 'confirmed'],

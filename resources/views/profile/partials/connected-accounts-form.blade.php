@@ -10,7 +10,8 @@
     </header>
 
     <div class="mt-6 space-y-6">
-        @foreach(['google', 'apple', 'facebook'] as $provider)
+        {{-- TODO: 未來支援 'apple', 'facebook' 時加回來 --}}
+        @foreach(['google'] as $provider)
             <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                 <div class="flex items-center space-x-3">
                     <!-- Icon for provider (Optional: Add SVGs) -->

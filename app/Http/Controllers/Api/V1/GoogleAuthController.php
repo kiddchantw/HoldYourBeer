@@ -86,11 +86,14 @@ class GoogleAuthController extends Controller
                 }
             } else {
                 // Create new user
+                // OAuth users don't have a password initially - they can set one later if desired
                 $user = User::create([
                     'name' => $name,
                     'email' => $email,
                     'email_verified_at' => $emailVerified ? now() : null,
-                    'password' => Hash::make(Str::random(32)), // Random password for OAuth users
+                    'password' => null, // OAuth users can set password later via profile page
+                    'provider' => 'google',
+                    'provider_id' => $googleId,
                 ]);
             }
 

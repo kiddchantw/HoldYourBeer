@@ -129,7 +129,7 @@ class ProfileTest extends TestCase
         // We can check for the default English string 'Connected Accounts'
         $response->assertSee('Connected Accounts');
         $response->assertSee('Google');
-        $response->assertSee('Apple');
+        // Note: Apple and Facebook are hidden in Phase 1.5
     }
 
     public function test_profile_page_shows_connected_status(): void
@@ -150,4 +150,71 @@ class ProfileTest extends TestCase
         $response->assertOk();
         $response->assertSee('Connected');
     }
+
+    public function test_oauth_user_without_password_sees_set_password_ui(): void
+    {
+        // OAuth user who hasn't set a password yet
+        $user = User::factory()->create([
+            'email' => 'oauth@example.com',
+            'password' => null,
+            'provider' => 'google',
+            'provider_id' => 'google_123',
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->get('/profile');
+
+        $response->assertOk();
+        // Should see "Set Password" title
+        $response->assertSee('Set Password');
+        // Should see the description for first-time password setting
+        $response->assertSee('Set a password to enable email/password login');
+        // Should NOT see "Current Password" field
+        $response->assertDontSee('Current Password');
+    }
+
+    public function test_oauth_user_with_password_sees_update_password_ui(): void
+    {
+        // OAuth user who has already set a password
+        $user = User::factory()->create([
+            'email' => 'oauth-with-pass@example.com',
+            'password' => bcrypt('ExistingPassword123!'),
+            'provider' => 'google',
+            'provider_id' => 'google_456',
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->get('/profile');
+
+        $response->assertOk();
+        // Should see "Update Password" title
+        $response->assertSee('Update Password');
+        // Should see the standard password update description
+        $response->assertSee('Ensure your account is using a long, random password');
+        // Should see "Current Password" field
+        $response->assertSee('Current Password');
+    }
+
+    public function test_local_user_sees_update_password_ui(): void
+    {
+        // Local user (registered with email/password)
+        $user = User::factory()->create([
+            'email' => 'local@example.com',
+            'password' => bcrypt('Password123!'),
+            'provider' => 'local',
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->get('/profile');
+
+        $response->assertOk();
+        // Should see "Update Password" title
+        $response->assertSee('Update Password');
+        // Should see "Current Password" field
+        $response->assertSee('Current Password');
+    }
 }
+

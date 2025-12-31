@@ -92,6 +92,24 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->provider === 'local' || $this->provider === null;
     }
+
+    /**
+     * Check if user has a password set
+     * OAuth users initially have null password
+     */
+    public function hasPassword(): bool
+    {
+        return !is_null($this->password);
+    }
+
+    /**
+     * Check if user can set password without providing current password
+     * Only OAuth users who haven't set a password yet can do this
+     */
+    public function canSetPasswordWithoutCurrent(): bool
+    {
+        return $this->isOAuthUser() && !$this->hasPassword();
+    }
     /**
      * Check if user is an admin.
      */
