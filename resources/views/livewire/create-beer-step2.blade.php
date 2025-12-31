@@ -12,23 +12,23 @@
     </div>
 
     {{-- 購買店家欄位 --}}
-    <div class="relative">
+    <div class="relative" @click.away="$wire.set('shop_suggestions', [])">
         <x-input-label for="shop_name" :value="__('Purchase Shop (Optional)')" />
-        <input 
-            id="shop_name" 
-            type="text" 
-            class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" 
-            wire:model.live.debounce.300ms="shop_name" 
-            placeholder="{{ __('Enter shop name...') }}" 
-            wire:loading.attr="disabled" 
-            wire:target="save" 
+        <input
+            id="shop_name"
+            type="text"
+            class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+            wire:model.live.debounce.300ms="shop_name"
+            placeholder="{{ __('Enter shop name...') }}"
+            wire:loading.attr="disabled"
+            wire:target="save"
             autocomplete="off"
         />
+        {{-- 建議列表：點擊項目時觸發 selectShop --}}
         @if(count($shop_suggestions) > 0)
-            <ul class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto"
-                wire:click.outside="$set('shop_suggestions', [])">
+            <ul class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
                 @foreach($shop_suggestions as $index => $suggestion)
-                    <li 
+                    <li
                         wire:key="shop-{{ $index }}"
                         wire:click="selectShop('{{ $suggestion['name'] }}')"
                         class="px-3 py-2 hover:bg-amber-50 cursor-pointer text-sm text-gray-700 border-b border-gray-100 last:border-b-0"
