@@ -19,7 +19,7 @@
         @livewireStyles
     </head>
     <body class="font-sans antialiased bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-100">
-        <div class="min-h-screen bg-white flex flex-col">
+        <div class="min-h-screen flex flex-col">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
@@ -79,10 +79,13 @@
             @endisset
 
             <!-- Page Content -->
-            <main class="flex-1 flex flex-col">
+            <main class="flex-1 flex flex-col pb-14">
                 {{ $slot }}
             </main>
         </div>
+
+        <!-- Fixed Footer -->
+        <x-footer />
 
         <!-- Cookie Consent Banner -->
         <x-cookie-consent />

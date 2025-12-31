@@ -64,7 +64,7 @@
                             <div class="bg-gradient-to-r from-blue-100 to-blue-200 rounded-lg p-2 lg:p-4 border border-blue-300 flex flex-col justify-center min-w-0 flex-1">
                                 <div class="flex flex-col lg:flex-row items-center lg:justify-between text-center lg:text-left">
                                     <div class="w-full">
-                                        <div class="text-[10px] sm:text-xs text-blue-700 lg:text-sm leading-tight mb-1 lg:mb-0 truncate">{{ __('New') }}<span class="hidden lg:inline"> {{ __('Brands') }}</span></div>
+                                        <div class="text-[10px] sm:text-xs text-blue-700 lg:text-sm leading-tight mb-1 lg:mb-0 truncate">{{ __('New Brands Tried') }}</div>
                                         <div class="text-lg sm:text-xl lg:text-3xl font-bold text-blue-800 leading-none">{{ $stats['newTried'] ?? 0 }}</div>
                                     </div>
                                     <div class="text-xl sm:text-2xl lg:text-4xl opacity-30 mt-1 lg:mt-0">⭐</div>

@@ -35,7 +35,11 @@
                 </div>
                 {{ $slot }}
             </div>
+
         </div>
+
+        <!-- Fixed Footer -->
+        <x-footer />
 
         <!-- Cookie Consent Banner -->
         <x-cookie-consent />
