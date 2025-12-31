@@ -109,6 +109,38 @@
                         </div>
                     </div>
 
+                    {{-- 已存在啤酒提示 --}}
+                    @if($existingBeerInfo)
+                        <div class="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-amber-800">
+                                        {{ __('You already have this beer!') }}
+                                    </h3>
+                                    <div class="mt-2 text-sm text-amber-700">
+                                        <p>
+                                            <strong>{{ $existingBeerInfo['brand_name'] }} - {{ $existingBeerInfo['beer_name'] }}</strong>
+                                        </p>
+                                        <p class="mt-1">
+                                            {{ __('Current count') }}: <span class="font-semibold">{{ $existingBeerInfo['count'] }}</span>
+                                            @if($existingBeerInfo['last_tasted_at'])
+                                                <span class="text-amber-600 ml-2">({{ __('Last tasted') }}: {{ $existingBeerInfo['last_tasted_at'] }})</span>
+                                            @endif
+                                        </p>
+                                        <p class="mt-2 text-xs text-amber-600">
+                                            {{ __('Saving will add to your existing count.') }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     {{-- 購買店家欄位 --}}
                     <div class="relative" @click.away="$wire.set('shop_suggestions', [])">
                         <x-input-label for="shop_name" :value="__('Purchase Shop (Optional)')" />

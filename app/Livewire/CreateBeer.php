@@ -31,6 +31,9 @@ class CreateBeer extends Component
     public $beer_suggestions = [];
     public $shop_suggestions = [];
 
+    // 現有啤酒提示
+    public $existingBeerInfo = null;
+
     // 搜尋品牌建議（不區分大小寫）
     public function updatedBrandName($value)
     {
@@ -88,18 +91,62 @@ class CreateBeer extends Component
     {
         $this->brand_name = $name;
         $this->brand_suggestions = [];
+        // 品牌變更時，清除啤酒名稱和現有提示
+        $this->name = '';
+        $this->existingBeerInfo = null;
     }
 
     public function selectBeer($name)
     {
         $this->name = $name;
         $this->beer_suggestions = [];
+        // 選擇啤酒後，檢查是否已存在
+        $this->checkExistingBeer();
     }
 
     public function selectShop($name)
     {
         $this->shop_name = $name;
         $this->shop_suggestions = [];
+    }
+
+    // 檢查用戶是否已擁有此啤酒
+    protected function checkExistingBeer()
+    {
+        $this->existingBeerInfo = null;
+
+        if (empty($this->brand_name) || empty($this->name)) {
+            return;
+        }
+
+        // 找到品牌
+        $brand = Brand::whereRaw('LOWER(name) = ?', [strtolower($this->brand_name)])->first();
+        if (!$brand) {
+            return;
+        }
+
+        // 找到啤酒
+        $beer = Beer::where('brand_id', $brand->id)
+            ->whereRaw('LOWER(name) = ?', [strtolower($this->name)])
+            ->first();
+        if (!$beer) {
+            return;
+        }
+
+        // 檢查用戶是否已有此啤酒
+        $userBeerCount = UserBeerCount::where('user_id', Auth::id())
+            ->where('beer_id', $beer->id)
+            ->where('count', '>', 0)
+            ->first();
+
+        if ($userBeerCount) {
+            $this->existingBeerInfo = [
+                'beer_name' => $beer->name,
+                'brand_name' => $brand->name,
+                'count' => $userBeerCount->count,
+                'last_tasted_at' => $userBeerCount->last_tasted_at?->format('Y-m-d'),
+            ];
+        }
     }
 
     public function increaseQuantity()
@@ -120,6 +167,9 @@ class CreateBeer extends Component
             'brand_name' => ['required', 'string', 'min:1', 'max:255'],
             'name' => ['required', 'string', 'min:1', 'max:255'],
         ]);
+
+        // 檢查是否已有此啤酒（手動輸入時）
+        $this->checkExistingBeer();
 
         $this->currentStep = 2;
     }
