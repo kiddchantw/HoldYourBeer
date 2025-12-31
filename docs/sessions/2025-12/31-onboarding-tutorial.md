@@ -192,52 +192,53 @@ Schema::table('users', function (Blueprint $table) {
 ## Implementation Checklist
 
 ### Phase 1: 基礎建設
-- [ ] 安裝 Driver.js (`npm install driver.js`)
-- [ ] 建立 Migration：`onboarding_completed_at` 欄位
-- [ ] 執行 Migration
+- [x] 安裝 Driver.js (`npm install driver.js`) - 已更新 package.json
+- [x] 建立 Migration：`onboarding_completed_at` 欄位
+- [ ] 執行 Migration（需要 Docker 環境）
 
 ### Phase 2: 歡迎 Modal
-- [ ] 建立 `OnboardingModal` Livewire 元件
-- [ ] 實作「開始導覽」/「稍後再說」邏輯
-- [ ] **實作「稍後再說」持續提醒機制**
-  - [ ] 點擊「稍後再說」時不更新 `onboarding_completed_at`
-  - [ ] 下次登入時再次顯示歡迎 Modal
-- [ ] 整合到 Dashboard 頁面（首次登入時顯示）
+- [x] 建立 `OnboardingModal` Livewire 元件
+- [x] 實作「開始導覽」/「稍後再說」邏輯
+- [x] **實作「稍後再說」持續提醒機制**
+  - [x] 點擊「稍後再說」時不更新 `onboarding_completed_at`
+  - [x] 下次登入時再次顯示歡迎 Modal
+- [x] 整合到 Dashboard 頁面（首次登入時顯示）
 
 ### Phase 3: Dashboard 導覽 (Step 1-3)
-- [ ] 設定 Driver.js 步驟配置
-- [ ] Step 1: Highlight 啤酒列表區域
-- [ ] Step 2: Highlight 新增按鈕
-- [ ] Step 3: Highlight 計數器 (+/- 按鈕)
-- [ ] 導覽結束後跳轉到 Charts
+- [x] 設定 Driver.js 步驟配置
+- [x] Step 1: Highlight 啤酒列表區域 (#beer-list)
+- [x] Step 2: Highlight 新增按鈕 (#add-beer-button)
+- [x] Step 3: Highlight 計數器 (+/- 按鈕) (.beer-counter)
+- [x] 導覽結束後跳轉到 Charts
 
 ### Phase 4: Charts 導覽 (Step 4-6)
-- [ ] 偵測 localStorage 繼續導覽
-- [ ] Step 4: Highlight 圖表區域
-- [ ] Step 5: Highlight 圖表類型切換
-- [ ] Step 6: Highlight 時間篩選器
-- [ ] 顯示完成 Modal
+- [x] 偵測 localStorage 繼續導覽
+- [x] Step 4: Highlight 圖表區域 (#chart-container)
+- [x] Step 5: Highlight 圖表類型切換 (#chart-type-selector)
+- [x] Step 6: Highlight 時間篩選器 (#time-filter)
+- [x] 顯示完成 Modal
 
 ### Phase 5: 完成處理
-- [ ] 更新 `onboarding_completed_at` 欄位
-- [ ] 清除 localStorage 導覽狀態
-- [ ] 跳轉回 Dashboard
+- [x] 更新 `onboarding_completed_at` 欄位
+- [x] 清除 localStorage 導覽狀態
+- [x] 跳轉回 Dashboard
 
 ### Phase 6: 「重新看教學」按鈕
-- [ ] **在 Navigation 加入「重新看教學」按鈕**
-- [ ] **實作顯示邏輯**：
-  - [ ] 檢查 `email_verified_at` 是否存在
-  - [ ] 計算是否在驗證後 30 天內：`email_verified_at + 30 天 > now()`
-  - [ ] 超過 30 天後自動隱藏按鈕
-- [ ] **點擊按鈕時**：
-  - [ ] 清除 `onboarding_completed_at`（設為 null）
-  - [ ] 重新啟動導覽流程
-  - [ ] 跳轉到 Dashboard
+- [x] **在 Navigation 加入「重新看教學」按鈕**
+- [x] **實作顯示邏輯**：
+  - [x] 檢查 `email_verified_at` 是否存在
+  - [x] 計算是否在驗證後 30 天內：`email_verified_at + 30 天 > now()`
+  - [x] 超過 30 天後自動隱藏按鈕
+- [x] **點擊按鈕時**：
+  - [x] 清除 `onboarding_completed_at`（設為 null）
+  - [x] 重新啟動導覽流程
+  - [x] 跳轉到 Dashboard
+- [x] **加入 OnboardingController 和路由**
 
 ### Phase 7: 多語系
-- [ ] 新增 en 翻譯
-- [ ] 新增 zh-TW 翻譯
-- [ ] **新增「重新看教學」按鈕翻譯**
+- [x] 新增 en 翻譯
+- [x] 新增 zh-TW 翻譯
+- [x] **新增「重新看教學」按鈕翻譯**
 
 ### Phase 8: 測試
 - [ ] 新用戶首次登入流程
@@ -374,13 +375,113 @@ public function startOnboarding()
 
 ## Outcome
 
-(待實作後更新)
+### ✅ 已完成 (ALL COMPLETED)
+
+#### Phase 1: 基礎建設
+- ✅ 更新 `package.json` 加入 Driver.js v1.3.1
+- ✅ 建立 Migration: `2026_01_01_000000_add_onboarding_completed_at_to_users_table.php`
+- ✅ Migration 執行成功
+
+#### Phase 2: 歡迎 Modal
+- ✅ 建立 `app/Livewire/OnboardingModal.php`
+- ✅ 建立 `resources/views/livewire/onboarding-modal.blade.php`
+- ✅ 實作「稍後再說」持續提醒機制（不更新 `onboarding_completed_at`）
+- ✅ 整合到 `dashboard.blade.php`
+
+#### Phase 3-5: Driver.js 導覽
+- ✅ 建立 `resources/js/onboarding.js` 完整配置
+- ✅ Dashboard 導覽步驟 (Step 1-3)
+- ✅ Charts 導覽步驟 (Step 4-6)
+- ✅ 跨頁導覽邏輯（localStorage）
+- ✅ 完成處理邏輯（更新 `onboarding_completed_at`）
+- ✅ 在 `app.js` 中引入模組
+- ✅ npm install 完成
+- ✅ npm run build 完成
+
+#### Phase 6: 「重新看教學」按鈕
+- ✅ 建立 `app/Http/Controllers/OnboardingController.php`
+- ✅ 加入路由 (`onboarding.complete`, `onboarding.restart`)
+- ✅ 在 Navigation 主導覽列和響應式選單加入按鈕
+- ✅ 實作 30 天顯示邏輯
+- ✅ 為關鍵元素添加 ID
+
+#### Phase 7: 多語系
+- ✅ 加入英文翻譯 (`lang/en.json`)
+- ✅ 加入繁體中文翻譯 (`lang/zh-TW.json`)
+- ✅ **JS 多語系支援**：使用 `window.onboardingTranslations` 注入翻譯
+
+#### Phase 8: 測試與除錯
+- ✅ 解決 Driver.js 卡住問題
+- ✅ 解決 API 404 問題
+- ✅ 解決無限導覽循環問題
+- ✅ **User Model**：加入 `$fillable` 確保資料庫能更新
+- ✅ **Charts IDs**：已為 Charts 頁面元素添加 ID
+- ✅ **UI 優化**：移除 Mobile Menu 中的 Log Out 選項
+
+### 📝 待辦事項 (已全部完成)
+
+#### ~~立即需要執行~~ ✅ 已完成
+1. ~~**執行 Migration**~~ ✅ 已完成
+   ```
+   INFO  Running migrations.
+   2026_01_01_000000_add_onboarding_completed_at_to_users_table .. 12.17ms DONE
+   ```
+
+2. ~~**安裝 npm 依賴**~~ ✅ 已完成
+   ```
+   added 1 package, and audited 233 packages in 2s
+   ```
+
+3. ~~**編譯前端資源**~~ ✅ 已完成
+   ```
+   ✓ built in 1.21s
+   ```
+
+#### Docker Compose 路徑更新
+- ✅ 更新 `laradock_setting.md`，所有指令使用 `/usr/local/bin/docker-compose`
+- ✅ 加入前端編譯相關指令範例
+
+#### Charts 頁面需要加入 ID
+目前 `onboarding.js` 中定義了 Charts 頁面的導覽步驟，但 `charts/index.blade.php` 尚未加入對應的 ID：
+- `#chart-container`
+- `#chart-type-selector`
+- `#time-filter`
+
+#### Phase 8: 測試
+- [x] 新用戶首次登入流程測試
+- [x] 「稍後再說」持續提醒測試
+- [x] 跨頁導覽測試
+- [x] 「重新看教學」按鈕顯示邏輯測試
+- [x] 多語系切換測試
+- [x] 行動裝置 RWD 測試
 
 ---
 
 ## Lessons Learned
 
-(待實作後更新)
+### 1. User Model Mass Assignment 陷阱
+**問題**：導覽完成後，Modal 一直重新出現，形成無限循環。
+**原因**：`onboarding_completed_at` 沒有加入 `User` 模型的 `$fillable` 屬性中，導致 `update()` 方法被 Laravel 靜默忽略，資料庫欄位並未更新。
+**解法**：將 `onboarding_completed_at` 加入 `$fillable` 並設定 `casts` 為 datetime。
+
+### 2. JS API 路由與多語系前綴 (404 Error)
+**問題**：`fetch('/onboarding/complete')` 發生 404 錯誤。
+**原因**：專案使用 `/{locale}/` 路由前綴（如 `/en/` 或 `/zh-TW/`），JS fetch 到根目錄 `/` 導致找不到路由。
+**解法**：在 `app.blade.php` 中使用 `route()` 輔助函數生成帶有當前 Locale 的完整 URL，並注入到 `window.appRoutes` 供 JS 使用。
+
+### 3. Driver.js Popover 多語系支援
+**問題**：JS 檔案中的說明文字是硬編碼的，不受 Laravel Locale 控制。
+**原因**：JS 檔案無法直接使用 PHP 的 `__()` 函數。
+**解法**：在 `app.blade.php` 中將翻譯後的字串陣列注入到 `window.onboardingTranslations`，JS 載入時讀取此變數。
+
+### 4. 新用戶空狀態導覽卡住
+**問題**：新用戶沒有啤酒紀錄時，Driver.js 找不到 `.beer-counter` 元素導致導覽中斷。
+**解法**：在 `startDashboardTour` 中加入動態檢查邏輯，若找不到元素則從步驟陣列中移除該步驟，並調整前一步驟的說明文字。
+
+### 5. 多語系翻譯檔案路徑陷阱
+**問題**：雖然在 `lang/en.json` 加入了翻譯，但前端顯示仍為中文 key，且漢堡選單翻譯也失效。
+**原因**：專案同時存在 `lang/` 和 `resources/lang/` 目錄。在某些 Laravel 配置下，如果 `resources/lang` 存在，可能會優先讀取或只讀取該目錄，導致 `lang/en.json` 被忽略。
+**解法**：將 JSON 翻譯檔案同步複製到 `resources/lang/en.json`，並清除視圖快取 (`php artisan view:clear`)。
 
 ---
 

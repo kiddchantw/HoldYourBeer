@@ -1,6 +1,6 @@
 # Session: Footer RWD 響應式設計
 
-**Date**: 2025-12-31
+**Date**: 2025-12-31 ~ 2026-01-01
 **Status**: ✅ Completed
 **Issue**: N/A
 **Contributors**: KiddC, Claude AI
@@ -16,11 +16,14 @@
 ### Goal
 1. 建立網頁 Fixed Footer（固定在視窗底部）
 2. 調整 Dashboard 頁面的 RWD 設計
+3. 修正 Dashboard 等頁面的背景斷層問題 (2026-01-01)
 
 ### Related Documents
 - **主要 Layout**: `resources/views/layouts/app.blade.php`
 - **Guest Layout**: `resources/views/layouts/guest.blade.php`
 - **Dashboard**: `resources/views/dashboard.blade.php`
+- **Charts**: `resources/views/charts/index.blade.php`
+- **Beers Create**: `resources/views/beers/create.blade.php`
 
 ### Commits
 - (待 commit)
@@ -93,7 +96,14 @@
 - [x] 按鈕文字 RWD：手機版 "Add" / 桌面版 "Add another beer"
 - [x] 統計文字移到底部置中
 
-### Phase 4: 測試 ⏳ Pending
+### Phase 4: Background Gap Fix (2026-01-01) ✅ Completed
+- [x] Update `App\View\Components\AppLayout` to accept `$withFooterPadding` (default `true`).
+- [x] Update `resources/views/layouts/app.blade.php` to use this property.
+- [x] Update `resources/views/dashboard.blade.php` to pass `false` and add local padding.
+- [x] Update `resources/views/beers/create.blade.php` to pass `with-footer-padding="false"` and add local padding.
+- [x] Update `resources/views/charts/index.blade.php` to pass `with-footer-padding="false"` and add local padding.
+
+### Phase 5: 測試 ⏳ Pending
 - [ ] Mobile 測試 (< 640px)
 - [ ] Desktop 測試 (≥ 640px)
 - [ ] 跨瀏覽器測試
@@ -114,7 +124,13 @@ resources/views/
 ├── layouts/
 │   ├── app.blade.php
 │   └── guest.blade.php
-└── dashboard.blade.php
+├── dashboard.blade.php
+├── charts/
+│   └── index.blade.php
+└── beers/
+    └── create.blade.php
+app/View/Components/
+└── AppLayout.php
 ```
 
 ### Footer 元件程式碼
@@ -157,6 +173,15 @@ resources/views/
 <span class="hidden sm:inline">完整文字</span>
 <span class="sm:hidden">簡短</span>
 ```
+
+### 3. Full Height Background with Fixed Footer
+**Problem**:
+Layout 預設的 `pb-14` (為了閃避 Footer) 會限制 `<main>` 內部元素的延伸，導致 Dashboard 等使用全版背景元件的頁面，背景在距離底部 56px 處就切斷，露出底層顏色。
+
+**Solution**:
+- 在 Layout 增加開關 `$withFooterPadding`。
+- 需要全版背景的頁面 (Dashboard, Charts) 關閉 Layout padding。
+- 改在頁面內部容器加上 `pb-20`，讓背景能延伸到最底 (Footer 後方)，同時內容保有安全距離。
 
 ---
 
