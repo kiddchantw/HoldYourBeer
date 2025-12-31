@@ -69,8 +69,6 @@
     "Consumption": "Consumption",
     "Brand": "Brand",
     "Count": "Count",
-    "New": "New",
-    "Brands": "Brands",
     "Bar": "Bar",
     "Pie": "Pie",
     "Line": "Line",
@@ -89,5 +87,10 @@
     "Tasting Note (Optional)": "Tasting Note (Optional)",
     "How did it taste? (e.g., fruity, slightly bitter...)": "How did it taste? (e.g., fruity, slightly bitter...)",
     "Save Record": "Save Record",
-    "Saving...": "Saving..."
+    "Saving...": "Saving...",
+    "You already have this beer!": "You already have this beer!",
+    "Current count": "Current count",
+    "Saving will add to your existing count.": "Saving will add to your existing count.",
+    "Set Password": "Set Password",
+    "Set a password to enable email/password login in addition to your social account.": "Set a password to enable email/password login in addition to your social account."
 }

@@ -90,8 +90,6 @@
     "Consumption": "消費量",
     "Brand": "品牌",
     "Count": "數量",
-    "New": "新",
-    "Brands": "品牌",
     "Bar": "長條圖",
     "Pie": "圓餅圖",
     "Line": "折線圖",
@@ -129,5 +127,10 @@
     "Removed 1 unit!": "已減少 1 單位！",
     "Quantity": "數量",
     "Save Record": "儲存紀錄",
-    "How did it taste? (e.g., fruity, slightly bitter...)": "味道如何？（例如：果香濃郁、尾韻微苦...）"
+    "How did it taste? (e.g., fruity, slightly bitter...)": "味道如何？（例如：果香濃郁、尾韻微苦...）",
+    "You already have this beer!": "您已經擁有這款啤酒！",
+    "Current count": "目前數量",
+    "Saving will add to your existing count.": "儲存後將增加您現有的數量。",
+    "Set Password": "設定密碼",
+    "Set a password to enable email/password login in addition to your social account.": "設定密碼後,除了社群帳號外,您也可以使用電子郵件和密碼登入。"
 }
