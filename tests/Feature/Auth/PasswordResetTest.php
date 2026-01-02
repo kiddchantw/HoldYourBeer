@@ -189,4 +189,109 @@ class PasswordResetTest extends TestCase
         // 7th request should be throttled
         $response->assertStatus(429);
     }
+
+    // ===== OAuth 忘記密碼流程優化測試 =====
+
+    public function test_oauth_user_without_password_receives_oauth_hint(): void
+    {
+        Notification::fake();
+
+        // 建立 Google OAuth 用戶（無密碼）
+        $user = User::factory()->create([
+            'email' => 'oauth@example.com',
+            'provider' => 'google',
+            'provider_id' => 'google-123',
+            'password' => null,
+        ]);
+
+        $response = $this->postJson(route('v1.password.email'), [
+            'email' => $user->email,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'may_require_oauth' => true,
+        ]);
+        $response->assertJsonFragment([
+            'message' => __('passwords.oauth_hint'),
+        ]);
+
+        // 確認不會發送郵件給任何用戶
+        Notification::assertNothingSentTo($user);
+    }
+
+    public function test_oauth_user_with_password_receives_reset_link(): void
+    {
+        Notification::fake();
+
+        // 建立 Google OAuth 用戶（已設定密碼）
+        $user = User::factory()->create([
+            'email' => 'oauth-with-pw@example.com',
+            'provider' => 'google',
+            'provider_id' => 'google-456',
+            'password' => Hash::make('password123'),
+        ]);
+
+        $response = $this->postJson(route('v1.password.email'), [
+            'email' => $user->email,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'may_require_oauth' => false,
+        ]);
+
+        // 確認會發送重設郵件
+        Notification::assertSentTo(
+            $user,
+            \App\Notifications\ResetPasswordNotification::class
+        );
+    }
+
+    public function test_local_user_receives_password_reset_link(): void
+    {
+        Notification::fake();
+
+        // 建立本地用戶
+        $user = User::factory()->create([
+            'email' => 'local@example.com',
+            'provider' => 'local',
+            'password' => Hash::make('password123'),
+        ]);
+
+        $response = $this->postJson(route('v1.password.email'), [
+            'email' => $user->email,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'may_require_oauth' => false,
+        ]);
+
+        // 確認會發送重設郵件
+        Notification::assertSentTo(
+            $user,
+            \App\Notifications\ResetPasswordNotification::class
+        );
+    }
+
+    public function test_non_existent_email_receives_generic_message(): void
+    {
+        Notification::fake();
+
+        $response = $this->postJson(route('v1.password.email'), [
+            'email' => 'nonexistent@example.com',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'may_require_oauth' => false,
+        ]);
+        $response->assertJsonFragment([
+            'message' => __('passwords.sent'),
+        ]);
+
+        // 確認沒有發送任何通知（因為用戶不存在）
+        Notification::assertNothingSent();
+    }
 }

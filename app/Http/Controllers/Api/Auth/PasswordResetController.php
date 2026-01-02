@@ -16,6 +16,10 @@ class PasswordResetController extends Controller
 {
     /**
      * Handle an incoming password reset link request.
+     *
+     * For OAuth users without a password, returns a hint to use OAuth login.
+     * For other users (local or OAuth with password), sends a reset link.
+     * For non-existent emails, returns a generic message to prevent email enumeration.
      */
     public function forgotPassword(Request $request): JsonResponse
     {
@@ -23,19 +27,37 @@ class PasswordResetController extends Controller
             'email' => ['required', 'email'],
         ]);
 
-        // Send the password reset link
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+        $email = strtolower($request->email);
+        $user = \App\Models\User::where('email', $email)->first();
 
-        if ($status != Password::RESET_LINK_SENT) {
-            throw ValidationException::withMessages([
-                'email' => [__($status)],
+        // OAuth users without password should use OAuth login
+        if ($user && $user->canSetPasswordWithoutCurrent()) {
+            return response()->json([
+                'message' => __('passwords.oauth_hint'),
+                'may_require_oauth' => true,
             ]);
         }
 
+        // Send reset link for users with password (local or OAuth)
+        if ($user) {
+            $status = Password::sendResetLink(['email' => $email]);
+
+            if ($status != Password::RESET_LINK_SENT) {
+                throw ValidationException::withMessages([
+                    'email' => [__($status)],
+                ]);
+            }
+
+            return response()->json([
+                'message' => __($status),
+                'may_require_oauth' => false,
+            ]);
+        }
+
+        // Non-existent email: return generic message to prevent enumeration
         return response()->json([
-            'message' => __($status),
+            'message' => __('passwords.sent'),
+            'may_require_oauth' => false,
         ]);
     }
 

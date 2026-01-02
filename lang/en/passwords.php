@@ -23,4 +23,7 @@ return [
     'mail_error' => 'Unable to send password reset email. Please try again later or contact support.',
     'reset_error' => 'Unable to reset password. Please try again or request a new reset link.',
 
+    // OAuth user hint
+    'oauth_hint' => 'If this email is registered, you will receive a password reset email. If you signed up using a third-party login (such as Google), please use that method to sign in directly.',
+
 ];

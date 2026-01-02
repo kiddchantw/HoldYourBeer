@@ -125,9 +125,161 @@ authentication_test_cases:
             errors:
               password: ["The password field is required."]
 
+  forgot_password:
+    endpoint: POST /api/v1/forgot-password
+    description: "請求密碼重設連結"
+
+    success_cases:
+      - name: "本地用戶請求密碼重設"
+        precondition: "資料庫中存在本地用戶 local@example.com (provider='local', password不為null)"
+        request:
+          body:
+            email: "local@example.com"
+        expected_response:
+          status: 200
+          body:
+            message: "We have emailed your password reset link."
+            may_require_oauth: false
+        side_effects:
+          - "發送密碼重設郵件給用戶"
+
+      - name: "OAuth 用戶已設定密碼請求重設"
+        precondition: "資料庫中存在 OAuth 用戶 oauth@example.com (provider='google', password不為null)"
+        request:
+          body:
+            email: "oauth@example.com"
+        expected_response:
+          status: 200
+          body:
+            message: "We have emailed your password reset link."
+            may_require_oauth: false
+        side_effects:
+          - "發送密碼重設郵件給用戶"
+
+      - name: "OAuth 用戶無密碼收到 OAuth 提示"
+        precondition: "資料庫中存在 OAuth 用戶 oauth-no-pw@example.com (provider='google', password為null)"
+        request:
+          body:
+            email: "oauth-no-pw@example.com"
+        expected_response:
+          status: 200
+          body:
+            message: "If this email is registered, you will receive a password reset email. If you signed up using a third-party login (such as Google), please use that method to sign in directly."
+            may_require_oauth: true
+        side_effects:
+          - "不發送郵件"
+
+      - name: "不存在的 email 收到通用訊息（防止探測）"
+        request:
+          body:
+            email: "nonexistent@example.com"
+        expected_response:
+          status: 200
+          body:
+            message: "We have emailed your password reset link."
+            may_require_oauth: false
+        side_effects:
+          - "不發送郵件"
+
+    failure_cases:
+      - name: "缺少 email 欄位"
+        request:
+          body: {}
+        expected_response:
+          status: 422
+          body:
+            message: "The given data was invalid."
+            errors:
+              email: ["The email field is required."]
+
+      - name: "無效的 email 格式"
+        request:
+          body:
+            email: "invalid-email"
+        expected_response:
+          status: 422
+          body:
+            message: "The given data was invalid."
+            errors:
+              email: ["The email field must be a valid email address."]
+
+      - name: "速率限制（每分鐘超過 6 次）"
+        precondition: "同一 IP 在 1 分鐘內已請求 6 次"
+        request:
+          body:
+            email: "test@example.com"
+        expected_response:
+          status: 429
+          body:
+            message: "Too Many Attempts."
+
+  reset_password:
+    endpoint: POST /api/v1/reset-password
+    description: "使用 token 重設密碼"
+
+    success_cases:
+      - name: "使用有效 token 重設密碼"
+        precondition: "用戶已請求密碼重設並收到有效 token"
+        request:
+          body:
+            token: "valid_reset_token"
+            email: "test@example.com"
+            password: "newpassword123"
+            password_confirmation: "newpassword123"
+        expected_response:
+          status: 200
+          body:
+            message: "Your password has been reset."
+        side_effects:
+          - "用戶密碼已更新"
+          - "密碼重設 token 已失效"
+
+    failure_cases:
+      - name: "無效或過期的 token"
+        request:
+          body:
+            token: "invalid_or_expired_token"
+            email: "test@example.com"
+            password: "newpassword123"
+            password_confirmation: "newpassword123"
+        expected_response:
+          status: 422
+          body:
+            message: "The given data was invalid."
+            errors:
+              email: ["This password reset token is invalid or has expired."]
+
+      - name: "密碼確認不符"
+        request:
+          body:
+            token: "valid_reset_token"
+            email: "test@example.com"
+            password: "newpassword123"
+            password_confirmation: "differentpassword"
+        expected_response:
+          status: 422
+          body:
+            message: "The given data was invalid."
+            errors:
+              password: ["The password confirmation does not match."]
+
+      - name: "密碼不符合規則（少於 8 字元）"
+        request:
+          body:
+            token: "valid_reset_token"
+            email: "test@example.com"
+            password: "short"
+            password_confirmation: "short"
+        expected_response:
+          status: 422
+          body:
+            message: "The given data was invalid."
+            errors:
+              password: ["The password field must be at least 8 characters."]
+
   protected_endpoint_access:
     description: "測試需要認證的端點存取"
-    
+
     success_cases:
       - name: "有效令牌存取受保護端點"
         precondition: "用戶已登入並持有有效 Bearer token"
@@ -138,7 +290,7 @@ authentication_test_cases:
         expected_response:
           status: 200
           body: "@array"
-    
+
     failure_cases:
       - name: "無令牌存取受保護端點"
         request:
@@ -147,7 +299,7 @@ authentication_test_cases:
           status: 401
           body:
             message: "Unauthenticated."
-      
+
       - name: "無效令牌存取受保護端點"
         request:
           headers:
@@ -157,7 +309,7 @@ authentication_test_cases:
           status: 401
           body:
             message: "Unauthenticated."
-      
+
       - name: "過期令牌存取受保護端點"
         request:
           headers:
