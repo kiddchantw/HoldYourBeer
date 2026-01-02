@@ -294,4 +294,30 @@ class PasswordResetTest extends TestCase
         // 確認沒有發送任何通知（因為用戶不存在）
         Notification::assertNothingSent();
     }
+
+    public function test_web_oauth_user_without_password_receives_oauth_hint(): void
+    {
+        Notification::fake();
+
+        // 建立 Google OAuth 用戶（無密碼）
+        $user = User::factory()->create([
+            'email' => 'oauth_web@example.com',
+            'provider' => 'google',
+            'provider_id' => 'google-web-123',
+            'password' => null,
+        ]);
+
+        $response = $this->post(route('password.email'), [
+            'email' => $user->email,
+        ]);
+
+        // 預期重導回原本頁面
+        $response->assertStatus(302);
+
+        // 驗證 session 中有 status 且訊息正確
+        $response->assertSessionHas('status', __('passwords.oauth_hint'));
+
+        // 確認不會發送郵件
+        Notification::assertNothingSentTo($user);
+    }
 }

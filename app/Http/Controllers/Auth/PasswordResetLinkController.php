@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -34,6 +35,13 @@ class PasswordResetLinkController extends Controller
         // Normalize email to lowercase for consistency
         // This handles special characters and ensures case-insensitive matching
         $email = strtolower(trim($request->input('email', '')));
+
+        // Check if user is an OAuth user without a password
+        // In this case, we don't send an email but guide them to use OAuth login
+        $user = User::where('email', $email)->first();
+        if ($user && $user->canSetPasswordWithoutCurrent()) {
+            return back()->with('status', __('passwords.oauth_hint'));
+        }
 
         $request->merge(['email' => $email]);
 

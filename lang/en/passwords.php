@@ -25,5 +25,4 @@ return [
 
     // OAuth user hint
     'oauth_hint' => 'If this email is registered, you will receive a password reset email. If you signed up using a third-party login (such as Google), please use that method to sign in directly.',
-
 ];

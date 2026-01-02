@@ -215,6 +215,18 @@ if ($user && $user->isOAuthUser() && !$user->hasPassword()) {
 
 ---
 
+### Phase 5: 🌐 Web Interface Integration [✅ Completed]
+
+#### 5.1 extends to Web Controller
+- [x] 擴展功能至 `app/Http/Controllers/Auth/PasswordResetLinkController.php`
+- [x] 確保網頁版忘記密碼頁面也能正確處理 OAuth 用戶
+- [x] 重用 `passwords.oauth_hint` 訊息
+
+#### 5.2 Web Controller 測試
+- [x] 新增 Web 介面的測試案例
+- [x] 驗證 OAuth 用戶在網頁提交後收到正確的 Session 提示訊息
+
+
 ## 🚧 Blockers & Solutions
 
 （目前無阻塞項目）
@@ -232,18 +244,51 @@ if ($user && $user->isOAuthUser() && !$user->hasPassword()) {
    - 新增 `may_require_oauth` 回應欄位
    - 實作安全的防探測機制（不洩露用戶存在與認證方式）
 
-2. **測試覆蓋**
-   - 新增 4 個完整的測試案例
+3. **Web 前端整合 (Browser)**
+   - 擴展邏輯至 `PasswordResetLinkController`，確保網頁版與 App 行為一致
+   - 解決了 OAuth 用戶在網頁版重設密碼時的體驗斷層
+
+4. **測試覆蓋**
+   - 新增 5 個完整的測試案例 (API + Web)
    - 涵蓋 OAuth 無密碼、OAuth 有密碼、本地用戶、不存在 email 四種情境
    - 所有測試通過，無回歸問題
 
-3. **多語言支援**
+5. **多語言支援**
    - 新增英文和繁體中文翻譯
    - 建立 `lang/zh_TW/passwords.php` 檔案
 
-4. **API 文件**
+6. **API 文件**
    - 完整記錄 API 規格到 `spec/api/test-cases/authentication.yaml`
    - 包含成功/失敗案例和預期回應
+
+## 7. Refactoring & Issues Encountered
+
+ During the implementation of the Web Interface (Phase 5), we encountered issues with translation loading and language switching. These were identified as structural issues with the project's i18n setup.
+
+ > **Moved to New Session**: The resolution for these issues, including the consolidation of `resources/lang` to `lang/` and the refactoring of the Language Switcher, is documented in **[Session 04: I18n Refactoring](04-i18n-refactoring.md)**.
+
+## 8. Conclusion
+
+ The OAuth Forgot Password flow is now complete for both API and Web.
+ - **API**: Returns `may_require_oauth: true` and hint message.
+ - **Web**: Redirects with hint message.
+ - **I18n**: Fixed in Session 04.
+
+Status: **COMPLETED**
+
+## 💬 Discussion Log
+
+### 1. Web vs API 不一致問題
+- **Issue**: 初始實作僅針對 API (Mobile App)，導致網頁版測試時仍顯示舊行為。
+- **Fix**: 在 Phase 5 將 OAuth 判斷邏輯移植至 `PasswordResetLinkController`。
+
+### 2. Email 大小寫敏感度
+- **Question**: "找不到用戶，會因為信箱名稱大小寫的關係嗎？"
+- **Answer**: 不會。系統在兩個層面確保了不區分大小寫：
+  - **Input**: Controller 接收輸入時使用 `strtolower(trim($email))` 強制轉小寫。
+  - **Storage**: User Model 使用 Mutator `setEmailAttribute` 確保寫入資料庫時為小寫。
+- **Conclusion**: 若顯示 "User not found"，代表該 Email 確實未註冊，而非格式問題。
+
 
 ### Files Created/Modified
 
