@@ -32,18 +32,27 @@ class SetLocale
         ]);
 
         // Validate locale and set default
-        if ($locale && in_array($locale, ['en', 'zh-TW'])) {
-            App::setLocale($locale);
-            Session::put('locale', $locale);
-            \Log::info('Locale set to: ' . $locale);
+        $supportedLocales = ['en', 'zh-TW', 'zh_TW'];
+        
+        if ($locale && in_array($locale, $supportedLocales)) {
+            // Normalize internal locale (e.g., zh-TW -> zh_TW)
+            $appLocale = str_replace('-', '_', $locale);
+            
+            App::setLocale($appLocale);
+            Session::put('locale', $appLocale);
+            \Log::info('Locale set to: ' . $appLocale . ' (from URL: ' . $locale . ')');
         } else {
             // Try to get locale from URL segments
             $segments = $request->segments();
-            if (!empty($segments) && in_array($segments[0], ['en', 'zh-TW'])) {
-                $locale = $segments[0];
-                App::setLocale($locale);
-                Session::put('locale', $locale);
-                \Log::info('Locale set from segments to: ' . $locale);
+            if (!empty($segments) && in_array($segments[0], $supportedLocales)) {
+                $localeParam = $segments[0];
+                
+                // Normalize internal locale
+                $appLocale = str_replace('-', '_', $localeParam);
+                
+                App::setLocale($appLocale);
+                Session::put('locale', $appLocale);
+                \Log::info('Locale set from segments to: ' . $appLocale);
             } else {
                 // Set default locale if none specified
                 App::setLocale('en');

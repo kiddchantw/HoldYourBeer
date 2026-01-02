@@ -27,7 +27,7 @@ Route::get('/privacy-policy', function () {
 })->name('privacy-policy');
 
 // Routes with locale prefix
-Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale'], 'where' => ['locale' => 'en|zh-TW']], function() {
+Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale'], 'where' => ['locale' => 'en|zh-TW|zh_TW']], function() {
     Route::get('/', function () {
         // If user is not authenticated, redirect to login
         if (!\Illuminate\Support\Facades\Auth::check()) {
@@ -158,11 +158,22 @@ if (app()->environment('local')) {
 }
 
 // ------------------------------------------------------------------
-// Fallback non-localized routes (default English) for tests/BC
-// ------------------------------------------------------------------
+// Fallback non-localized routes (default English) for tests/BC or direct access
+Route::middleware(['web'])->group(function () {
+    // Redirect /forgot-password to /en/forgot-password if needed, or just serve English
+    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
+        ->name('password.request');
+    
+    Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
+        ->middleware('throttle:password-reset')
+        ->name('password.email');
+});
 
-// Dashboard
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+// Authenticated area fallback
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+});
 
 // Auth (login/register/forgot/reset/verify/confirm) - classic routes
 require __DIR__.'/auth.php';
