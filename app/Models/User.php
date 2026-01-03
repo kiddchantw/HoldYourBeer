@@ -29,6 +29,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'provider',
         'provider_id',
         'onboarding_completed_at',
+        'firebase_uid',
+        'fcm_token',
     ];
 
     /**
