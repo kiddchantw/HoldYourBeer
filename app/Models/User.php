@@ -26,8 +26,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'role',
         'email_verified_at',
-        'provider',
-        'provider_id',
         'onboarding_completed_at',
         'firebase_uid',
         'fcm_token',
@@ -83,18 +81,20 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Check if user is an OAuth user (Google, Apple, Facebook, etc.)
+     * An OAuth user is one who has at least one linked OAuth provider
      */
     public function isOAuthUser(): bool
     {
-        return in_array($this->provider, ['google', 'apple', 'facebook']);
+        return $this->oauthProviders()->exists();
     }
 
     /**
      * Check if user is a local (email/password) user
+     * A local user is one who has no linked OAuth providers
      */
     public function isLocalUser(): bool
     {
-        return $this->provider === 'local' || $this->provider === null;
+        return !$this->oauthProviders()->exists();
     }
 
     /**

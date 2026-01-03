@@ -90,7 +90,7 @@ class SocialLoginController extends Controller
             $user = User::create([
                 'name' => $socialUser->getName() ?? $socialUser->getNickname() ?? $socialUser->getEmail(),
                 'email' => $socialUser->getEmail(),
-                'password' => Hash::make(Str::random(16)), // Random password for OAuth users
+                'password' => null, // OAuth users can set password later via profile page
                 'email_verified_at' => now(), // OAuth users are already verified
             ]);
 

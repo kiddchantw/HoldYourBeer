@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GoogleAuthRequest;
 use App\Models\User;
+use App\Models\UserOAuthProvider;
 use App\Services\GoogleAuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
@@ -84,6 +85,19 @@ class GoogleAuthController extends Controller
                 if ($emailVerified && !$user->email_verified_at) {
                     $user->update(['email_verified_at' => now()]);
                 }
+
+                // Update or create OAuth provider link
+                $user->oauthProviders()->updateOrCreate(
+                    [
+                        'provider' => 'google',
+                        'provider_id' => $googleId,
+                    ],
+                    [
+                        'provider_email' => $email,
+                        'last_used_at' => now(),
+                        'linked_at' => now(),
+                    ]
+                );
             } else {
                 // Create new user
                 // OAuth users don't have a password initially - they can set one later if desired
@@ -92,8 +106,16 @@ class GoogleAuthController extends Controller
                     'email' => $email,
                     'email_verified_at' => $emailVerified ? now() : null,
                     'password' => null, // OAuth users can set password later via profile page
+                ]);
+
+                // Create OAuth provider link
+                UserOAuthProvider::create([
+                    'user_id' => $user->id,
                     'provider' => 'google',
                     'provider_id' => $googleId,
+                    'provider_email' => $email,
+                    'linked_at' => now(),
+                    'last_used_at' => now(),
                 ]);
             }
 
@@ -107,7 +129,6 @@ class GoogleAuthController extends Controller
                     'name' => $user->name,
                     'email' => $user->email,
                     'email_verified_at' => $user->email_verified_at,
-                    'provider' => $user->provider,
                     'created_at' => $user->created_at,
                     'updated_at' => $user->updated_at,
                 ],
