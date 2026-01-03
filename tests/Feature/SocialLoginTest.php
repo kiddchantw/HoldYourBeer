@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\User as SocialiteUser;
+use Tests\Helpers\CreatesOAuthUsers;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -32,7 +33,7 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class SocialLoginTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, CreatesOAuthUsers;
 
     protected function mockSocialiteUser($provider, $id, $name, $email)
     {
@@ -123,15 +124,14 @@ class SocialLoginTest extends TestCase
     public function unverified_local_user_cannot_login_with_oauth()
     {
         // 🔒 R1 Security Test: 建立未驗證的本地使用者（模擬 Email 註冊但未驗證信箱）
-        $user = User::factory()->create([
+        $user = $this->createLocalUser([
             'email' => 'unverified@example.com',
             'password' => Hash::make('password123'),
             'email_verified_at' => null, // 未驗證
-            'provider' => 'local', // Email 註冊
         ]);
 
         $this->assertNull($user->fresh()->email_verified_at);
-        $this->assertEquals('local', $user->provider);
+        $this->assertTrue($user->isLocalUser());
 
         // 嘗試用 Google 登入（同一信箱）
         $this->mockSocialiteUser('google', 'google_id_789', 'Unverified User', 'unverified@example.com');
@@ -152,7 +152,7 @@ class SocialLoginTest extends TestCase
         // 確認用戶資料未被修改
         $user->refresh();
         $this->assertNull($user->email_verified_at);
-        $this->assertEquals('local', $user->provider);
+        $this->assertTrue($user->isLocalUser());
     }
 
     #[Test]
@@ -160,11 +160,10 @@ class SocialLoginTest extends TestCase
     {
         // ✅ R1 Security Test: 建立已驗證的本地使用者
         $originalVerifiedAt = now()->subDays(7);
-        $user = User::factory()->create([
+        $user = $this->createLocalUser([
             'email' => 'verified@example.com',
             'password' => Hash::make('password123'),
             'email_verified_at' => $originalVerifiedAt,
-            'provider' => 'local',
         ]);
 
         // 用 Google 登入（同一信箱）- 應該成功
@@ -188,11 +187,10 @@ class SocialLoginTest extends TestCase
     public function oauth_user_can_login_with_different_oauth_provider()
     {
         // ✅ R1 Security Test: 建立 OAuth 使用者（Google）
-        $user = User::factory()->create([
+        $user = $this->createOAuthUser('google', [
             'email' => 'oauth@example.com',
-            'password' => Hash::make('random'),
             'email_verified_at' => now()->subDays(3),
-            'provider' => 'google',
+        ], [
             'provider_id' => 'google_123',
         ]);
 

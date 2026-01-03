@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\Sanctum;
+use Tests\Helpers\CreatesOAuthUsers;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -19,7 +20,7 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class PasswordUpdateApiTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, CreatesOAuthUsers;
 
     /**
      * OAuth user without password can set password without current_password
@@ -27,10 +28,10 @@ class PasswordUpdateApiTest extends TestCase
     #[Test]
     public function oauth_user_without_password_can_set_password_via_api()
     {
-        $user = User::factory()->create([
+        $user = $this->createOAuthUser('google', [
             'email' => 'oauth-api@example.com',
             'password' => null,
-            'provider' => 'google',
+        ], [
             'provider_id' => 'google_api_123',
         ]);
 
@@ -54,10 +55,10 @@ class PasswordUpdateApiTest extends TestCase
     #[Test]
     public function oauth_user_with_password_must_provide_current_password_via_api()
     {
-        $user = User::factory()->create([
+        $user = $this->createOAuthUser('google', [
             'email' => 'oauth-api-pass@example.com',
             'password' => Hash::make('ExistingPassword123!'),
-            'provider' => 'google',
+        ], [
             'provider_id' => 'google_api_456',
         ]);
 
@@ -79,10 +80,10 @@ class PasswordUpdateApiTest extends TestCase
     #[Test]
     public function oauth_user_with_password_can_update_with_correct_current_password_via_api()
     {
-        $user = User::factory()->create([
+        $user = $this->createOAuthUser('google', [
             'email' => 'oauth-api-update@example.com',
             'password' => Hash::make('ExistingPassword123!'),
-            'provider' => 'google',
+        ], [
             'provider_id' => 'google_api_789',
         ]);
 
@@ -107,10 +108,9 @@ class PasswordUpdateApiTest extends TestCase
     #[Test]
     public function local_user_must_provide_current_password_via_api()
     {
-        $user = User::factory()->create([
+        $user = $this->createLocalUser([
             'email' => 'local-api@example.com',
             'password' => Hash::make('OldPassword123!'),
-            'provider' => 'local',
         ]);
 
         Sanctum::actingAs($user);
@@ -130,10 +130,9 @@ class PasswordUpdateApiTest extends TestCase
     #[Test]
     public function local_user_can_update_password_via_api()
     {
-        $user = User::factory()->create([
+        $user = $this->createLocalUser([
             'email' => 'local-api-update@example.com',
             'password' => Hash::make('OldPassword123!'),
-            'provider' => 'local',
         ]);
 
         Sanctum::actingAs($user);
@@ -172,10 +171,10 @@ class PasswordUpdateApiTest extends TestCase
     #[Test]
     public function password_validation_rules_are_enforced()
     {
-        $user = User::factory()->create([
+        $user = $this->createOAuthUser('google', [
             'email' => 'validation-test@example.com',
             'password' => null,
-            'provider' => 'google',
+        ], [
             'provider_id' => 'google_validation',
         ]);
 
@@ -206,10 +205,9 @@ class PasswordUpdateApiTest extends TestCase
     #[Test]
     public function wrong_current_password_is_rejected()
     {
-        $user = User::factory()->create([
+        $user = $this->createLocalUser([
             'email' => 'wrong-pass@example.com',
             'password' => Hash::make('CorrectPassword123!'),
-            'provider' => 'local',
         ]);
 
         Sanctum::actingAs($user);

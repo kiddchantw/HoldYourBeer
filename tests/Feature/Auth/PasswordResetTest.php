@@ -9,11 +9,12 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
+use Tests\Helpers\CreatesOAuthUsers;
 use Tests\TestCase;
 
 class PasswordResetTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, CreatesOAuthUsers;
 
     public function test_reset_password_link_screen_can_be_rendered(): void
     {
@@ -197,11 +198,11 @@ class PasswordResetTest extends TestCase
         Notification::fake();
 
         // 建立 Google OAuth 用戶（無密碼）
-        $user = User::factory()->create([
+        $user = $this->createOAuthUser('google', [
             'email' => 'oauth@example.com',
-            'provider' => 'google',
-            'provider_id' => 'google-123',
             'password' => null,
+        ], [
+            'provider_id' => 'google-123',
         ]);
 
         $response = $this->postJson(route('v1.password.email'), [
@@ -225,11 +226,11 @@ class PasswordResetTest extends TestCase
         Notification::fake();
 
         // 建立 Google OAuth 用戶（已設定密碼）
-        $user = User::factory()->create([
+        $user = $this->createOAuthUser('google', [
             'email' => 'oauth-with-pw@example.com',
-            'provider' => 'google',
-            'provider_id' => 'google-456',
             'password' => Hash::make('password123'),
+        ], [
+            'provider_id' => 'google-456',
         ]);
 
         $response = $this->postJson(route('v1.password.email'), [
@@ -253,9 +254,8 @@ class PasswordResetTest extends TestCase
         Notification::fake();
 
         // 建立本地用戶
-        $user = User::factory()->create([
+        $user = $this->createLocalUser([
             'email' => 'local@example.com',
-            'provider' => 'local',
             'password' => Hash::make('password123'),
         ]);
 
@@ -300,11 +300,11 @@ class PasswordResetTest extends TestCase
         Notification::fake();
 
         // 建立 Google OAuth 用戶（無密碼）
-        $user = User::factory()->create([
+        $user = $this->createOAuthUser('google', [
             'email' => 'oauth_web@example.com',
-            'provider' => 'google',
-            'provider_id' => 'google-web-123',
             'password' => null,
+        ], [
+            'provider_id' => 'google-web-123',
         ]);
 
         $response = $this->post(route('password.email'), [

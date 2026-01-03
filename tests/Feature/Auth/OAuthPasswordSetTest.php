@@ -5,6 +5,7 @@ namespace Tests\Feature\Auth;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Tests\Helpers\CreatesOAuthUsers;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -19,7 +20,7 @@ use PHPUnit\Framework\Attributes\Test;
  */
 class OAuthPasswordSetTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, CreatesOAuthUsers;
 
     /**
      * OAuth 用戶首次設定密碼（password = null）不需要提供舊密碼
@@ -28,10 +29,10 @@ class OAuthPasswordSetTest extends TestCase
     public function oauth_user_without_password_can_set_password_without_current_password()
     {
         // OAuth 用戶首次登入，尚未設定密碼
-        $user = User::factory()->create([
+        $user = $this->createOAuthUser('google', [
             'email' => 'oauth@example.com',
             'password' => null, // OAuth 用戶無密碼
-            'provider' => 'google',
+        ], [
             'provider_id' => 'google_123',
         ]);
 
@@ -59,10 +60,10 @@ class OAuthPasswordSetTest extends TestCase
     public function oauth_user_with_existing_password_must_provide_current_password()
     {
         // OAuth 用戶已設定過密碼
-        $user = User::factory()->create([
+        $user = $this->createOAuthUser('google', [
             'email' => 'oauth-with-pass@example.com',
             'password' => Hash::make('ExistingPassword123!'),
-            'provider' => 'google',
+        ], [
             'provider_id' => 'google_456',
         ]);
 
@@ -84,10 +85,10 @@ class OAuthPasswordSetTest extends TestCase
     public function oauth_user_with_existing_password_can_update_with_correct_current_password()
     {
         // OAuth 用戶已設定過密碼
-        $user = User::factory()->create([
+        $user = $this->createOAuthUser('google', [
             'email' => 'oauth-update@example.com',
             'password' => Hash::make('ExistingPassword123!'),
-            'provider' => 'google',
+        ], [
             'provider_id' => 'google_789',
         ]);
 
@@ -113,10 +114,9 @@ class OAuthPasswordSetTest extends TestCase
     #[Test]
     public function local_user_must_provide_current_password()
     {
-        $user = User::factory()->create([
+        $user = $this->createLocalUser([
             'email' => 'local@example.com',
             'password' => Hash::make('OldPassword123!'),
-            'provider' => 'local',
         ]);
 
         $this->actingAs($user);
@@ -135,10 +135,9 @@ class OAuthPasswordSetTest extends TestCase
     #[Test]
     public function local_user_can_update_password_with_correct_current_password()
     {
-        $user = User::factory()->create([
+        $user = $this->createLocalUser([
             'email' => 'local2@example.com',
             'password' => Hash::make('OldPassword123!'),
-            'provider' => 'local',
         ]);
 
         $this->actingAs($user);
@@ -163,10 +162,10 @@ class OAuthPasswordSetTest extends TestCase
     public function oauth_user_can_login_with_both_methods_after_setting_password()
     {
         // OAuth 用戶首次登入，尚未設定密碼
-        $user = User::factory()->create([
+        $user = $this->createOAuthUser('google', [
             'email' => 'dual@example.com',
             'password' => null, // OAuth 用戶無密碼
-            'provider' => 'google',
+        ], [
             'provider_id' => 'google_dual',
         ]);
 
@@ -199,11 +198,10 @@ class OAuthPasswordSetTest extends TestCase
     #[Test]
     public function legacy_user_without_provider_must_provide_current_password()
     {
-        // Legacy 用戶（provider = null）
-        $user = User::factory()->create([
+        // Legacy 用戶（沒有 OAuth provider）
+        $user = $this->createLocalUser([
             'email' => 'legacy@example.com',
             'password' => Hash::make('LegacyPassword123!'),
-            'provider' => null,
         ]);
 
         $this->actingAs($user);
@@ -223,10 +221,9 @@ class OAuthPasswordSetTest extends TestCase
     #[Test]
     public function legacy_user_can_update_password_with_correct_current_password()
     {
-        $user = User::factory()->create([
+        $user = $this->createLocalUser([
             'email' => 'legacy2@example.com',
             'password' => Hash::make('LegacyPassword123!'),
-            'provider' => null,
         ]);
 
         $this->actingAs($user);
