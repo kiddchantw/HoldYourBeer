@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GoogleAuthRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\UserOAuthProvider;
 use App\Services\GoogleAuthService;
@@ -124,14 +125,7 @@ class GoogleAuthController extends Controller
 
             return response()->json([
                 'token' => $token,
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'email_verified_at' => $user->email_verified_at,
-                    'created_at' => $user->created_at,
-                    'updated_at' => $user->updated_at,
-                ],
+                'user' => (new UserResource($user->load('oauthProviders')))->resolve(),
             ], 200);
 
         } catch (\Exception $e) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\UserResource;
 use App\Models\RefreshToken;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -85,21 +86,11 @@ class AuthController extends Controller
         $expiresIn = config('sanctum.expiration', 180) * 60;
 
         return response()->json([
-            'data' => [
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'email_verified_at' => $user->email_verified_at,
-                    'provider' => $user->provider,
-                    'created_at' => $user->created_at,
-                    'updated_at' => $user->updated_at,
-                ],
-                'token' => $token,
-                'refresh_token' => $refreshTokenData['plain_token'],
-                'token_type' => 'Bearer',
-                'expires_in' => $expiresIn,
-            ]
+            'user' => (new UserResource($user->load('oauthProviders')))->resolve(),
+            'token' => $token,
+            'refresh_token' => $refreshTokenData['plain_token'],
+            'token_type' => 'Bearer',
+            'expires_in' => $expiresIn,
         ], 201);
     }
 
@@ -180,21 +171,11 @@ class AuthController extends Controller
         $expiresIn = config('sanctum.expiration', 180) * 60;
 
         return response()->json([
-            'data' => [
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'email_verified_at' => $user->email_verified_at,
-                    'provider' => $user->provider,
-                    'created_at' => $user->created_at,
-                    'updated_at' => $user->updated_at,
-                ],
-                'token' => $token,
-                'refresh_token' => $refreshTokenData['plain_token'],
-                'token_type' => 'Bearer',
-                'expires_in' => $expiresIn,
-            ]
+            'user' => (new UserResource($user->load('oauthProviders')))->resolve(),
+            'token' => $token,
+            'refresh_token' => $refreshTokenData['plain_token'],
+            'token_type' => 'Bearer',
+            'expires_in' => $expiresIn,
         ]);
     }
 

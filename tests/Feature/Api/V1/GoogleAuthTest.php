@@ -262,4 +262,45 @@ class GoogleAuthTest extends TestCase
         $user = User::where('email', 'unverified@example.com')->first();
         $this->assertNull($user->email_verified_at);
     }
+
+    /**
+     * Test google auth endpoint returns oauth status fields
+     */
+    public function test_google_auth_endpoint_returns_oauth_status_fields(): void
+    {
+        // Mock Google Auth Service
+        $this->mockGoogleAuthService([
+            'sub' => 'google_user_333',
+            'email' => 'oauthtest@example.com',
+            'name' => 'OAuth Test User',
+            'email_verified' => true,
+        ]);
+
+        // Make the request
+        $response = $this->postJson('/api/v1/auth/google', [
+            'id_token' => 'valid_id_token',
+        ]);
+
+        // Assert response includes oauth status fields
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'token',
+                'user' => [
+                    'id',
+                    'name',
+                    'email',
+                    'is_oauth_user',
+                    'can_set_password_without_current',
+                    'email_verified_at',
+                    'created_at',
+                    'updated_at',
+                ],
+            ])
+            ->assertJson([
+                'user' => [
+                    'is_oauth_user' => true,
+                    'can_set_password_without_current' => true,
+                ],
+            ]);
+    }
 }

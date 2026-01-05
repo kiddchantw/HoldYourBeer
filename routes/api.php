@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\V1\GoogleAuthController as V1GoogleAuthController;
 use App\Http\Controllers\Api\V1\ShopController as V1ShopController;
 use App\Http\Controllers\Api\V2\BrandController as V2BrandController;
 use App\Http\Controllers\Api\ChartsController;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -53,7 +54,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
     // Authenticated routes
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/user', function (Request $request) {
-            return $request->user();
+            return new UserResource($request->user()->load('oauthProviders'));
         })->name('user');
 
         Route::post('/logout', [V1AuthController::class, 'logout'])->name('logout');

@@ -140,4 +140,70 @@ class AuthControllerTest extends TestCase
 
         $response->assertStatus(401);
     }
+
+    #[Test]
+    public function register_endpoint_returns_oauth_status_fields()
+    {
+        $data = [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+        ];
+
+        $response = $this->postJson('/api/v1/register', $data);
+
+        $response->assertStatus(201)
+            ->assertJsonStructure([
+                'user' => [
+                    'id',
+                    'name',
+                    'email',
+                    'is_oauth_user',
+                    'can_set_password_without_current',
+                    'created_at',
+                    'updated_at',
+                ],
+                'token',
+            ])
+            ->assertJson([
+                'user' => [
+                    'is_oauth_user' => false,
+                    'can_set_password_without_current' => false,
+                ],
+            ]);
+    }
+
+    #[Test]
+    public function login_endpoint_returns_oauth_status_fields()
+    {
+        $user = User::factory()->create([
+            'password' => Hash::make('password123'),
+        ]);
+
+        $data = [
+            'email' => $user->email,
+            'password' => 'password123',
+        ];
+
+        $response = $this->postJson('/api/v1/login', $data);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'user' => [
+                    'id',
+                    'name',
+                    'email',
+                    'is_oauth_user',
+                    'can_set_password_without_current',
+                ],
+                'token',
+            ])
+            ->assertJson([
+                'user' => [
+                    'is_oauth_user' => false,
+                    'can_set_password_without_current' => false,
+                ],
+            ]);
+    }
 }
