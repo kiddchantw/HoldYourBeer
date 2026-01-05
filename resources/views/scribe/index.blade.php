@@ -195,6 +195,9 @@
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-POSTapi-v1-email-verification-notification">
                                 <a href="#endpoints-POSTapi-v1-email-verification-notification">Resend the email verification notification.</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-PUTapi-v1-password">
+                                <a href="#endpoints-PUTapi-v1-password">Update the user's password (API JSON response).</a>
+                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-GETapi-v1-charts-brand-analytics">
                                 <a href="#endpoints-GETapi-v1-charts-brand-analytics">Get brand analytics data for charts</a>
                             </li>
@@ -263,7 +266,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: December 30, 2025</li>
+        <li>Last updated: January 5, 2026</li>
     </ul>
 </div>
 
@@ -2555,7 +2558,7 @@ with tasting counts and last tasted dates.</p>
     --data "{
     \"per_page\": 1,
     \"page\": 22,
-    \"sort\": \"-tasted_at\",
+    \"sort\": \"-beer_name\",
     \"brand_id\": 16
 }"
 </code></pre></div>
@@ -2584,7 +2587,7 @@ const headers = {
 let body = {
     "per_page": 1,
     "page": 22,
-    "sort": "-tasted_at",
+    "sort": "-beer_name",
     "brand_id": 16
 };
 
@@ -2797,10 +2800,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="sort"                data-endpoint="GETapi-v1-beers"
-               value="-tasted_at"
+               value="-beer_name"
                data-component="body">
     <br>
-<p>Example: <code>-tasted_at</code></p>
+<p>Example: <code>-beer_name</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>beer_name</code></li> <li><code>-beer_name</code></li></ul>
         </div>
@@ -3489,7 +3492,7 @@ with tasting counts and last tasted dates.</p>
     --data "{
     \"per_page\": 1,
     \"page\": 22,
-    \"sort\": \"beer_name\",
+    \"sort\": \"-beer_name\",
     \"brand_id\": 16
 }"
 </code></pre></div>
@@ -3518,7 +3521,7 @@ const headers = {
 let body = {
     "per_page": 1,
     "page": 22,
-    "sort": "beer_name",
+    "sort": "-beer_name",
     "brand_id": 16
 };
 
@@ -3731,10 +3734,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="sort"                data-endpoint="GETapi-v2-beers"
-               value="beer_name"
+               value="-beer_name"
                data-component="body">
     <br>
-<p>Example: <code>beer_name</code></p>
+<p>Example: <code>-beer_name</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>beer_name</code></li> <li><code>-beer_name</code></li></ul>
         </div>
@@ -5893,7 +5896,9 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>For OAuth users without a password, returns a hint to use OAuth login.
+For other users (local or OAuth with password), sends a reset link.
+For non-existent emails, returns a generic message to prevent email enumeration.</p>
 
 <span id="example-requests-POSTapi-v1-forgot-password">
 <blockquote>Example request:</blockquote>
@@ -6259,7 +6264,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_6953a088b1e1a7.79996584
+x-request-id: req_695b275288e7a6.10278160
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6436,7 +6441,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_6953a088c42e29.77616457
+x-request-id: req_695b2752adfa15.57338149
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6665,6 +6670,136 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                         </form>
 
+                    <h2 id="endpoints-PUTapi-v1-password">Update the user&#039;s password (API JSON response).</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Password validation rules:</p>
+<ul>
+<li>OAuth users WITHOUT password (first time): no current_password required</li>
+<li>OAuth users WITH password (update): current_password required</li>
+<li>Local/Legacy users: current_password required</li>
+</ul>
+
+<span id="example-requests-PUTapi-v1-password">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request PUT \
+    "http://local.holdyourbeers.com/api/v1/password" \
+    --header "Authorization: Bearer {YOUR_TOKEN_HERE}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://local.holdyourbeers.com/api/v1/password"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_TOKEN_HERE}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "PUT",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-PUTapi-v1-password">
+</span>
+<span id="execution-results-PUTapi-v1-password" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PUTapi-v1-password"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PUTapi-v1-password"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-PUTapi-v1-password" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PUTapi-v1-password">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-PUTapi-v1-password" data-method="PUT"
+      data-path="api/v1/password"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PUTapi-v1-password', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PUTapi-v1-password"
+                    onclick="tryItOut('PUTapi-v1-password');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PUTapi-v1-password"
+                    onclick="cancelTryOut('PUTapi-v1-password');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PUTapi-v1-password"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-darkblue">PUT</small>
+            <b><code>api/v1/password</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="PUTapi-v1-password"
+               value="Bearer {YOUR_TOKEN_HERE}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_TOKEN_HERE}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="PUTapi-v1-password"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="PUTapi-v1-password"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
                     <h2 id="endpoints-GETapi-v1-charts-brand-analytics">Get brand analytics data for charts</h2>
 
 <p>
@@ -6719,7 +6854,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_6953a088cd79e6.87688447
+x-request-id: req_695b2752e87896.67806610
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6884,7 +7019,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_6953a088d4ed69.06386957
+x-request-id: req_695b27531961d9.60400461
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -7042,7 +7177,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_6953a088db0078.98252286
+x-request-id: req_695b27532f6441.07524792
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -7213,7 +7348,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_6953a088e13e56.26662137
+x-request-id: req_695b27538b0b06.18640432
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
