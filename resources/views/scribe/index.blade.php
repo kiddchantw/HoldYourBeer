@@ -2558,7 +2558,7 @@ with tasting counts and last tasted dates.</p>
     --data "{
     \"per_page\": 1,
     \"page\": 22,
-    \"sort\": \"-beer_name\",
+    \"sort\": \"tasted_at\",
     \"brand_id\": 16
 }"
 </code></pre></div>
@@ -2587,7 +2587,7 @@ const headers = {
 let body = {
     "per_page": 1,
     "page": 22,
-    "sort": "-beer_name",
+    "sort": "tasted_at",
     "brand_id": 16
 };
 
@@ -2800,10 +2800,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="sort"                data-endpoint="GETapi-v1-beers"
-               value="-beer_name"
+               value="tasted_at"
                data-component="body">
     <br>
-<p>Example: <code>-beer_name</code></p>
+<p>Example: <code>tasted_at</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>beer_name</code></li> <li><code>-beer_name</code></li></ul>
         </div>
@@ -3492,7 +3492,7 @@ with tasting counts and last tasted dates.</p>
     --data "{
     \"per_page\": 1,
     \"page\": 22,
-    \"sort\": \"-beer_name\",
+    \"sort\": \"beer_name\",
     \"brand_id\": 16
 }"
 </code></pre></div>
@@ -3521,7 +3521,7 @@ const headers = {
 let body = {
     "per_page": 1,
     "page": 22,
-    "sort": "-beer_name",
+    "sort": "beer_name",
     "brand_id": 16
 };
 
@@ -3734,10 +3734,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="sort"                data-endpoint="GETapi-v2-beers"
-               value="-beer_name"
+               value="beer_name"
                data-component="body">
     <br>
-<p>Example: <code>-beer_name</code></p>
+<p>Example: <code>beer_name</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>beer_name</code></li> <li><code>-beer_name</code></li></ul>
         </div>
@@ -4426,7 +4426,7 @@ with tasting counts and last tasted dates.</p>
     --data "{
     \"per_page\": 1,
     \"page\": 22,
-    \"sort\": \"tasted_at\",
+    \"sort\": \"beer_name\",
     \"brand_id\": 16
 }"
 </code></pre></div>
@@ -4455,7 +4455,7 @@ const headers = {
 let body = {
     "per_page": 1,
     "page": 22,
-    "sort": "tasted_at",
+    "sort": "beer_name",
     "brand_id": 16
 };
 
@@ -4668,10 +4668,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="sort"                data-endpoint="GETapi-beers"
-               value="tasted_at"
+               value="beer_name"
                data-component="body">
     <br>
-<p>Example: <code>tasted_at</code></p>
+<p>Example: <code>beer_name</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>-tasted_at</code></li> <li><code>tasted_at</code></li> <li><code>beer_name</code></li> <li><code>-beer_name</code></li></ul>
         </div>
@@ -6264,7 +6264,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_695b275288e7a6.10278160
+x-request-id: req_695b6ff7b167a8.28193647
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6441,7 +6441,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_695b2752adfa15.57338149
+x-request-id: req_695b6ff7c00dd7.98133708
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -6854,7 +6854,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_695b2752e87896.67806610
+x-request-id: req_695b6ff7c92707.78379645
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -7019,7 +7019,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_695b27531961d9.60400461
+x-request-id: req_695b6ff7d04085.65055393
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -7177,7 +7177,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_695b27532f6441.07524792
+x-request-id: req_695b6ff7d3c223.24618999
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
@@ -7348,7 +7348,7 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-x-request-id: req_695b27538b0b06.18640432
+x-request-id: req_695b6ff7d866d3.81077662
 x-content-type-options: nosniff
 x-frame-options: DENY
 x-xss-protection: 1; mode=block
