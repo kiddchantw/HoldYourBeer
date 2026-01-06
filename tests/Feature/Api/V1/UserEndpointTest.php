@@ -101,7 +101,8 @@ class UserEndpointTest extends TestCase
             ])
             ->assertJson([
                 'is_oauth_user' => true,
-                'can_set_password_without_current' => false,
+                // NEW: OAuth users can always set password without current
+                'can_set_password_without_current' => true,
             ]);
     }
 }

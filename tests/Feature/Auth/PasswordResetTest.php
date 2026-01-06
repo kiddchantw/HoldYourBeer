@@ -221,7 +221,7 @@ class PasswordResetTest extends TestCase
         Notification::assertNothingSentTo($user);
     }
 
-    public function test_oauth_user_with_password_receives_reset_link(): void
+    public function test_oauth_user_with_password_receives_oauth_hint_not_reset_link(): void
     {
         Notification::fake();
 
@@ -238,15 +238,16 @@ class PasswordResetTest extends TestCase
         ]);
 
         $response->assertStatus(200);
+        // NEW: OAuth users with password should also receive OAuth hint
         $response->assertJson([
-            'may_require_oauth' => false,
+            'may_require_oauth' => true,
+        ]);
+        $response->assertJsonFragment([
+            'message' => __('passwords.oauth_hint'),
         ]);
 
-        // 確認會發送重設郵件
-        Notification::assertSentTo(
-            $user,
-            \App\Notifications\ResetPasswordNotification::class
-        );
+        // NEW: Should NOT send reset email
+        Notification::assertNothingSentTo($user);
     }
 
     public function test_local_user_receives_password_reset_link(): void

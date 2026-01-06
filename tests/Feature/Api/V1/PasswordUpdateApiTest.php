@@ -50,10 +50,10 @@ class PasswordUpdateApiTest extends TestCase
     }
 
     /**
-     * OAuth user with existing password must provide current_password
+     * OAuth user with existing password can update WITHOUT current_password (NEW LOGIC)
      */
     #[Test]
-    public function oauth_user_with_password_must_provide_current_password_via_api()
+    public function oauth_user_with_password_can_update_without_current_password_via_api()
     {
         $user = $this->createOAuthUser('google', [
             'email' => 'oauth-api-pass@example.com',
@@ -64,14 +64,17 @@ class PasswordUpdateApiTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        // Without current_password - should fail
+        // NEW: OAuth users can update password without current_password
         $response = $this->putJson('/api/v1/password', [
             'password' => 'NewPassword123!',
             'password_confirmation' => 'NewPassword123!',
         ]);
 
-        $response->assertUnprocessable()
-            ->assertJsonValidationErrors(['current_password']);
+        $response->assertOk()
+            ->assertJson(['status' => 'password-updated']);
+
+        $user->refresh();
+        $this->assertTrue(Hash::check('NewPassword123!', $user->password));
     }
 
     /**

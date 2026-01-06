@@ -53,11 +53,11 @@ class OAuthPasswordSetTest extends TestCase
     }
 
     /**
-     * OAuth 用戶已設定過密碼時，必須提供舊密碼才能更新
-     * 這是關鍵的安全測試案例
+     * OAuth 用戶已設定過密碼時，可以不提供舊密碼更新 (NEW LOGIC)
+     * 因為 OAuth 登入本身就是強驗證
      */
     #[Test]
-    public function oauth_user_with_existing_password_must_provide_current_password()
+    public function oauth_user_with_existing_password_can_update_without_current_password()
     {
         // OAuth 用戶已設定過密碼
         $user = $this->createOAuthUser('google', [
@@ -69,13 +69,15 @@ class OAuthPasswordSetTest extends TestCase
 
         $this->actingAs($user);
 
-        // 不提供舊密碼 → 應該失敗
+        // NEW: 不提供舊密碼也可以成功
         $response = $this->put(route('password.update'), [
             'password' => 'NewPassword123!',
             'password_confirmation' => 'NewPassword123!',
         ]);
 
-        $response->assertSessionHasErrorsIn('updatePassword', 'current_password');
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect();
+        $this->assertTrue(Hash::check('NewPassword123!', $user->fresh()->password));
     }
 
     /**

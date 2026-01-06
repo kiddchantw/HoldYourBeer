@@ -121,7 +121,7 @@ Route::prefix('v2')->name('v2.')->group(function () {
     // Authenticated routes
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/user', function (Request $request) {
-            return $request->user();
+            return new UserResource($request->user()->load('oauthProviders'));
         })->name('user');
 
         Route::post('/logout', [V1AuthController::class, 'logout'])->name('logout');
