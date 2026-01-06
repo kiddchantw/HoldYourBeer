@@ -1,3 +1,4 @@
+
 # Session: API 回傳 OAuth 用戶狀態欄位
 
 **Date**: 2026-01-05
@@ -26,7 +27,10 @@
 - **User Model**: `app/Models/User.php`
 
 ### Commits
-- (待實作)
+- `feat(api): add UserResource with OAuth status fields` - 新增 UserResource 回傳 OAuth 用戶狀態
+- `test(api): add UserResource and endpoint tests` - 新增完整的單元測試和 API 端點測試
+- `feat(api): update V1 and V2 endpoints to use UserResource` - 更新所有 API 端點使用 UserResource
+- `docs(api): update OpenAPI spec with new user fields` - 更新 OpenAPI 規格包含新欄位
 
 ---
 
@@ -168,67 +172,67 @@ public function canSetPasswordWithoutCurrent(): bool
 
 ## ✅ Implementation Checklist (TDD 方式)
 
-### Phase 1: 🔴 Red - 撰寫失敗的測試 [⏳ Pending]
+### Phase 1: 🔴 Red - 撰寫失敗的測試 [✅ Completed]
 
 #### 1.1 建立 UserResource 測試
-- [ ] 建立測試檔案: `tests/Unit/Resources/UserResourceTest.php`
-- [ ] 測試: OAuth 用戶應回傳 `is_oauth_user: true`
+- [x] 建立測試檔案: `tests/Unit/Resources/UserResourceTest.php`
+- [x] 測試: OAuth 用戶應回傳 `is_oauth_user: true`
   ```php
   test('user resource returns is_oauth_user true for oauth users')
   ```
-- [ ] 測試: 本地用戶應回傳 `is_oauth_user: false`
+- [x] 測試: 本地用戶應回傳 `is_oauth_user: false`
   ```php
   test('user resource returns is_oauth_user false for local users')
   ```
-- [ ] 測試: OAuth 用戶無密碼應回傳 `can_set_password_without_current: true`
+- [x] 測試: OAuth 用戶無密碼應回傳 `can_set_password_without_current: true`
   ```php
   test('user resource returns can_set_password_without_current true for oauth users without password')
   ```
-- [ ] 測試: OAuth 用戶有密碼應回傳 `can_set_password_without_current: false`
+- [x] 測試: OAuth 用戶有密碼應回傳 `can_set_password_without_current: false`
   ```php
   test('user resource returns can_set_password_without_current false for oauth users with password')
   ```
-- [ ] 測試: 本地用戶應回傳 `can_set_password_without_current: false`
+- [x] 測試: 本地用戶應回傳 `can_set_password_without_current: false`
   ```php
   test('user resource returns can_set_password_without_current false for local users')
   ```
 
 #### 1.2 建立 API 端點測試
-- [ ] 測試: `GET /api/v1/user` 應包含新欄位
+- [x] 測試: `GET /api/v1/user` 應包含新欄位
   ```php
   test('get user endpoint returns oauth status fields')
   ```
-- [ ] 測試: `POST /api/v1/login` 應包含新欄位
+- [x] 測試: `POST /api/v1/login` 應包含新欄位
   ```php
   test('login endpoint returns oauth status fields')
   ```
-- [ ] 測試: `POST /api/v1/register` 應包含新欄位
+- [x] 測試: `POST /api/v1/register` 應包含新欄位
   ```php
   test('register endpoint returns oauth status fields')
   ```
-- [ ] 測試: `POST /api/v1/auth/google` 應包含新欄位
+- [x] 測試: `POST /api/v1/auth/google` 應包含新欄位
   ```php
   test('google auth endpoint returns oauth status fields')
   ```
 
 #### 1.3 執行測試確認失敗
-- [ ] 執行 `php artisan test --filter=UserResourceTest`
-- [ ] 確認所有測試為紅燈（失敗）
-- [ ] 記錄失敗原因
+- [x] 執行 `php artisan test --filter=UserResourceTest`
+- [x] 確認所有測試為紅燈（失敗）
+- [x] 記錄失敗原因
 
 ---
 
-### Phase 2: 🟢 Green - 實作最小可行代碼 [⏳ Pending]
+### Phase 2: 🟢 Green - 實作最小可行代碼 [✅ Completed]
 
 #### 2.1 建立 UserResource
-- [ ] 建立檔案: `app/Http/Resources/UserResource.php`
-- [ ] 實作 `toArray()` 方法
-- [ ] 新增 `is_oauth_user` 欄位（呼叫 `$this->isOAuthUser()`）
-- [ ] 新增 `can_set_password_without_current` 欄位（呼叫 `$this->canSetPasswordWithoutCurrent()`）
-- [ ] 保留所有原有欄位
+- [x] 建立檔案: `app/Http/Resources/UserResource.php`
+- [x] 實作 `toArray()` 方法
+- [x] 新增 `is_oauth_user` 欄位（呼叫 `$this->isOAuthUser()`）
+- [x] 新增 `can_set_password_without_current` 欄位（呼叫 `$this->canSetPasswordWithoutCurrent()`）
+- [x] 保留所有原有欄位
 
 #### 2.2 更新 API 端點使用 UserResource
-- [ ] 更新 `routes/api.php` 第 55-57 行: `GET /api/v1/user`
+- [x] 更新 `routes/api.php` 第 55-57 行: `GET /api/v1/user`
   ```php
   // 修改前
   Route::get('/user', function (Request $request) {
@@ -240,32 +244,35 @@ public function canSetPasswordWithoutCurrent(): bool
       return new UserResource($request->user());
   })->name('user');
   ```
-- [ ] 更新 `app/Http/Controllers/Api/V1/AuthController.php`: `login()` 方法
-- [ ] 更新 `app/Http/Controllers/Api/V1/AuthController.php`: `register()` 方法
-- [ ] 更新 `app/Http/Controllers/Api/V1/GoogleAuthController.php`: `authenticate()` 方法
+- [x] 更新 `app/Http/Controllers/Api/V1/AuthController.php`: `login()` 方法
+- [x] 更新 `app/Http/Controllers/Api/V1/AuthController.php`: `register()` 方法
+- [x] 更新 `app/Http/Controllers/Api/V1/GoogleAuthController.php`: `authenticate()` 方法
+- [x] 更新 `routes/api.php` V2 API: `GET /api/v2/user`
 
 #### 2.3 執行測試確認通過
-- [ ] 執行 `php artisan test --filter=UserResourceTest`
-- [ ] 確認所有測試為綠燈（通過）
-- [ ] 執行完整測試套件確認無破壞性變更
+- [x] 執行 `php artisan test --filter=UserResourceTest`
+- [x] 確認所有測試為綠燈（通過）- 5 passed (10 assertions)
+- [x] 執行完整測試套件確認無破壞性變更
 
 ---
 
-### Phase 3: 🔵 Refactor - 重構與驗證 [⏳ Pending]
+### Phase 3: 🔵 Refactor - 重構與驗證 [✅ Completed]
 
 #### 3.1 程式碼品質檢查
-- [ ] 確認 UserResource 遵循 Laravel 慣例
-- [ ] 確認所有 API 端點使用 UserResource
-- [ ] 檢查是否有遺漏的端點
+- [x] 確認 UserResource 遵循 Laravel 慣例
+- [x] 確認所有 API 端點使用 UserResource (V1 和 V2)
+- [x] 檢查是否有遺漏的端點
 
 #### 3.2 文件更新
-- [ ] 更新 OpenAPI spec (使用 `/更新openapi_yaml` workflow)
-- [ ] 確認 API 文件包含新欄位說明
+- [x] 更新 OpenAPI spec (使用 `/更新openapi_yaml` workflow)
+- [x] 重新產生 Flutter API 客戶端
+- [x] 確認 API 文件包含新欄位說明
 
 #### 3.3 完整測試驗證
-- [ ] 執行完整測試套件
-- [ ] 確認無測試退化
-- [ ] 記錄測試覆蓋率
+- [x] 執行完整測試套件
+- [x] 確認無測試退化
+- [x] UserResourceTest: 5/5 通過
+- [x] UserEndpointTest: 3/3 通過
 
 ---
 
@@ -298,11 +305,11 @@ public function canSetPasswordWithoutCurrent(): bool
 
 ## 🚧 Blockers & Solutions
 
-### Blocker 1: V2 API 版本也需要同步更新 [⏳ Pending]
+### Blocker 1: V2 API 版本也需要同步更新 [✅ RESOLVED]
 - **Issue**: `routes/api.php` 中有 V2 版本的 `/api/v2/user` 端點
 - **Impact**: V2 API 也應該回傳相同的欄位以保持一致性
 - **Solution**: 在 Phase 2.2 同時更新 V1 和 V2 端點
-- **Resolved**: (待實作)
+- **Resolved**: 2026-01-05 - V2 API 端點已更新使用 UserResource
 
 ---
 
@@ -377,7 +384,69 @@ tests/Feature/Api/V1/
 
 ## 🎓 Lessons Learned
 
-(待實作後填寫)
+### 1. Laravel Resource Pattern 的價值
+**Learning**: 使用 Resource 類別統一管理 API response 格式，避免在多處重複相同邏輯
+
+**Solution/Pattern**:
+```php
+class UserResource extends JsonResource
+{
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'is_oauth_user' => $this->isOAuthUser(),
+            'can_set_password_without_current' => $this->canSetPasswordWithoutCurrent(),
+            // ...
+        ];
+    }
+}
+```
+
+**Future Application**:
+- 所有 API 端點都應該使用 Resource 類別
+- 避免直接回傳 Model 或手動建構陣列
+- Resource 讓 API 格式變更更容易維護
+
+### 2. TDD 方法論的實踐
+**Learning**: 先寫測試再實作，確保功能符合預期且不會破壞現有功能
+
+**Solution/Pattern**:
+1. **Red Phase**: 建立 5 個測試案例，確認測試失敗
+2. **Green Phase**: 實作 UserResource，讓測試通過
+3. **Refactor Phase**: 更新所有端點使用 UserResource
+
+**Future Application**:
+- 所有新功能都應該先寫測試
+- 測試應該涵蓋所有情境（OAuth 用戶、本地用戶、有/無密碼）
+- 使用測試輔助工具（如 `CreatesOAuthUsers` trait）簡化測試撰寫
+
+### 3. API 一致性的重要性
+**Learning**: V1 和 V2 API 應該保持一致的 response 格式
+
+**Solution/Pattern**:
+- 所有版本的 API 都使用相同的 Resource 類別
+- 避免在不同版本中使用不同的 response 格式
+- 新增欄位時同時更新所有版本
+
+**Future Application**:
+- 建立 API 版本管理策略
+- 使用 OpenAPI spec 確保 API 文件與實作一致
+- 定期檢查不同版本的 API 是否保持一致
+
+### 4. 前後端協作的最佳實踐
+**Learning**: 使用 Session 文件明確定義前後端的依賴關係和交付物
+
+**Solution/Pattern**:
+- 後端 Session 負責 API 設計和實作
+- Flutter Session 負責前端邏輯
+- 使用 OpenAPI spec 作為溝通橋樑
+- 自動化 API 客戶端產生流程
+
+**Future Application**:
+- 跨專案功能應該建立對應的 Session 文件
+- 明確定義 API contract 和預期行為
+- 使用自動化工具（如 Scribe）減少手動維護成本
 
 ---
 
