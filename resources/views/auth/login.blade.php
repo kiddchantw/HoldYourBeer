@@ -2,12 +2,12 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-6" :status="session('status')" />
 
+    <x-slot name="heading">
+        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('Start Your Beer Collection') }}</h3>
+        <p class="text-sm text-gray-600 max-w-xs mx-auto">{{ __('Begin tracking your favorite beers and discover new ones!') }}</p>
+    </x-slot>
+
     <div class="w-full max-w-md">
-        <!-- Header -->
-        <div class="text-center mb-8">
-            <h3 class="text-lg font-medium text-gray-900 mb-2">{{ __('Start Your Beer Collection') }}</h3>
-            <p class="text-sm text-gray-500 mb-6">{{ __('Begin tracking your favorite beers and discover new ones!') }}</p>
-        </div>
 
         @php
             $loginPostRoute = request()->route()->getName() === 'localized.login' ? 'localized.login' : 'login';
@@ -83,7 +83,7 @@
             </div>
 
             <!-- Divider -->
-            <div class="relative my-8">
+            <div class="relative my-6">
                 <div class="absolute inset-0 flex items-center">
                     <div class="w-full border-t border-gray-300"></div>
                 </div>
@@ -118,7 +118,7 @@
             </div>
 
             <!-- Sign Up Link -->
-            <div class="text-center pt-6">
+            <div class="text-center pt-2">
                 <p class="text-sm text-gray-600">
                     {{ __('Don\'t have an account?') }}
                     @php

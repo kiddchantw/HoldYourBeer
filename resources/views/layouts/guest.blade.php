@@ -19,7 +19,7 @@
         @livewireStyles
     </head>
     <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 relative overflow-hidden">
+        <div class="min-h-screen flex flex-col justify-center items-center pt-0 pb-16 relative">
             <x-background />
 
             <!-- Logo with enhanced styling -->
@@ -29,8 +29,14 @@
                 </a>
             </div>
 
+            @if (isset($heading))
+                <div class="relative z-20 mb-3 text-center px-4">
+                    {{ $heading }}
+                </div>
+            @endif
+
             <!-- Form container with enhanced styling -->
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white/95 backdrop-blur-sm shadow-xl overflow-hidden sm:rounded-xl relative z-20 border border-white/30">
+            <div class="w-[90%] sm:max-w-md mt-3 mb-6 px-6 py-4 bg-white/95 backdrop-blur-sm shadow-xl overflow-hidden rounded-2xl relative z-20 border border-white/30">
                 <div class="flex justify-end mb-3">
                     <x-language-switcher />
                 </div>
@@ -40,7 +46,7 @@
         </div>
 
         <!-- Fixed Footer -->
-        <x-footer />
+        <x-footer class="!bg-transparent !backdrop-blur-none !border-none" />
 
         <!-- Cookie Consent Banner -->
         <x-cookie-consent />
