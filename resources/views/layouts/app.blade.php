@@ -128,7 +128,9 @@
         </div>
 
         <!-- Fixed Footer -->
-        <x-footer />
+        @unless(isset($hideFooter) && $hideFooter)
+            <x-footer />
+        @endunless
 
         <!-- Cookie Consent Banner -->
         <x-cookie-consent />

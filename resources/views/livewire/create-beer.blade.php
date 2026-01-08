@@ -38,7 +38,7 @@
                             autocomplete="off"
                         />
                         @if(count($brand_suggestions) > 0)
-                            <ul class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                            <ul class="absolute z-[60] w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
                                 @foreach($brand_suggestions as $index => $suggestion)
                                     <li
                                         wire:key="brand-sugg-{{ $index }}"
@@ -65,7 +65,7 @@
                             autocomplete="off"
                         />
                         @if(count($beer_suggestions) > 0)
-                            <ul class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                            <ul class="absolute z-[60] w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
                                 @foreach($beer_suggestions as $index => $suggestion)
                                     <li
                                         wire:key="beer-sugg-{{ $index }}"
@@ -155,7 +155,7 @@
                             autocomplete="off"
                         />
                         @if(count($shop_suggestions) > 0)
-                            <ul class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                            <ul class="absolute z-[60] w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
                                 @foreach($shop_suggestions as $index => $suggestion)
                                     <li
                                         wire:key="shop-sugg-{{ $index }}"

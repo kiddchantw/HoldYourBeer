@@ -11,13 +11,15 @@ class AppLayout extends Component
      * Get the view / contents that represents the component.
      */
     public $withFooterPadding;
+    public $hideFooter;
 
     /**
      * Create a new component instance.
      */
-    public function __construct($withFooterPadding = true)
+    public function __construct($withFooterPadding = true, $hideFooter = false)
     {
         $this->withFooterPadding = $withFooterPadding;
+        $this->hideFooter = $hideFooter;
     }
 
     /**

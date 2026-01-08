@@ -22,6 +22,27 @@ function getTranslations() {
 // 動態獲取 Dashboard 導覽步驟
 function getDashboardSteps() {
     const t = getTranslations().steps;
+    const isMobile = window.innerWidth < 640; // Tailwind's sm breakpoint
+
+    // 根據螢幕大小決定新增啤酒的步驟
+    const addBeerStep = isMobile ? {
+        element: '.shrink-0.flex.items-center',
+        popover: {
+            title: t.add_beer.title,
+            description: '點擊左上角的啤酒圖示來新增啤酒<br><br><span style="font-size: 2em;">🍺 ➕</span>',
+            side: 'bottom',
+            align: 'start'
+        }
+    } : {
+        element: '#add-beer-button',
+        popover: {
+            title: t.add_beer.title,
+            description: t.add_beer.description + '<br><br><span style="font-size: 2em;">➕</span>',
+            side: 'bottom',
+            align: 'start'
+        }
+    };
+
     return [
         {
             element: '#beer-list',
@@ -32,15 +53,7 @@ function getDashboardSteps() {
                 align: 'start'
             }
         },
-        {
-            element: '#add-beer-button',
-            popover: {
-                title: t.add_beer.title,
-                description: t.add_beer.description + '<br><br><span style="font-size: 2em;">➕</span>',
-                side: 'bottom',
-                align: 'start'
-            }
-        },
+        addBeerStep,
         {
             element: '.beer-counter',
             popover: {
@@ -115,10 +128,17 @@ export function startDashboardTour() {
         steps = steps.filter(step => !step.element.includes('.beer-counter'));
 
         // 如果是空狀態，更新新增按鈕的說明
-        const addBtnStep = steps.find(step => step.element === '#add-beer-button');
+        const isMobile = window.innerWidth < 640;
+        const addBtnStep = steps.find(step =>
+            step.element === (isMobile ? '.shrink-0.flex.items-center' : '#add-beer-button')
+        );
         if (addBtnStep) {
-            const t = getTranslations().steps.add_beer;
-            addBtnStep.popover.description = t.description_empty + '<br><br><span style="font-size: 2em;">🍺 ✨</span>';
+            if (isMobile) {
+                addBtnStep.popover.description = '點擊左上角的啤酒圖示開始追蹤第一支啤酒<br><br><span style="font-size: 2em;">🍺 ✨</span>';
+            } else {
+                const t = getTranslations().steps.add_beer;
+                addBtnStep.popover.description = t.description_empty + '<br><br><span style="font-size: 2em;">🍺 ✨</span>';
+            }
         }
     }
 

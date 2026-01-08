@@ -1,12 +1,32 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
+        <div class="flex justify-between h-16 relative">
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center mr-4 sm:mr-6">
-                    <a href="{{ route('localized.dashboard', ['locale' => app()->getLocale() ?: 'en']) }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                    @if(request()->routeIs('localized.dashboard'))
+                        <!-- Mobile: Open Bottom Sheet -->
+                        <button type="button" @click="$dispatch('open-add-beer')" class="sm:hidden focus:outline-none focus:ring-2 focus:ring-amber-500 rounded">
+                            <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                        </button>
+                        <!-- Desktop: Link to Dashboard -->
+                        <a href="{{ route('localized.dashboard', ['locale' => app()->getLocale() ?: 'en']) }}" class="hidden sm:block focus:outline-none focus:ring-2 focus:ring-amber-500 rounded">
+                            <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                        </a>
+                    @else
+                        <!-- Other pages: Always link to Dashboard -->
+                        <a href="{{ route('localized.dashboard', ['locale' => app()->getLocale() ?: 'en']) }}" class="focus:outline-none focus:ring-2 focus:ring-amber-500 rounded">
+                            <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                        </a>
+                    @endif
+                </div>
+
+                <!-- Center Brand Text (Mobile Only) - Absolutely Centered -->
+                <div class="absolute left-1/2 transform -translate-x-1/2 h-16 flex items-center sm:hidden">
+                    <a href="{{ route('localized.dashboard', ['locale' => app()->getLocale() ?: 'en']) }}" 
+                       class="text-lg font-bold text-amber-600 hover:text-amber-700 transition-colors">
+                        HoldYourBeers
                     </a>
                 </div>
 

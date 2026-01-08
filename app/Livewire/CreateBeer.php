@@ -144,7 +144,7 @@ class CreateBeer extends Component
                 'beer_name' => $beer->name,
                 'brand_name' => $brand->name,
                 'count' => $userBeerCount->count,
-                'last_tasted_at' => $userBeerCount->last_tasted_at?->format('Y-m-d'),
+                'last_tasted_at' => $userBeerCount->last_tasted_at ? $userBeerCount->last_tasted_at->format('Y-m-d') : null,
             ];
         }
     }
@@ -240,6 +240,16 @@ class CreateBeer extends Component
 
             DB::commit();
 
+            // Reset form state
+            $this->reset(['brand_name', 'name', 'shop_name', 'note', 'quantity', 'currentStep']);
+            $this->quantity = 1;
+            $this->currentStep = 1;
+
+            // Dispatch events for Bottom Sheet
+            $this->dispatch('close-add-beer');
+            $this->dispatch('beer-saved');
+
+            // Redirect to refresh the page
             return redirect()->route('localized.dashboard', ['locale' => app()->getLocale() ?: 'en'])
                 ->with('success', __('Beer saved successfully!'));
 
