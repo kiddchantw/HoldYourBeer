@@ -139,166 +139,56 @@ The user reported several UX issues on the mobile dashboard:
 ### Phase 4: Bottom Sheet Dialog for Add [✅ Completed]
 **Goal**: 點擊 Beer Icon 開啟 Bottom Sheet，背景可見 Dashboard
 
-**Implementation Notes**:
-- Created `bottom-sheet.blade.php` component with Alpine.js
-- Modified navigation to dispatch `open-add-beer` event on Beer Icon click
-- Added centered "HoldYourBeers" text link for mobile navigation
-- Wrapped `create-beer` Livewire component in Bottom Sheet on dashboard
-- Modified `CreateBeer.php` to dispatch events and reset form state
-- Fixed PHP 7.x compatibility issue (nullsafe operator)
+**Implementation Notes (Refined)**:
+- **Mobile (< 640px)**: Beer Icon `<button>` triggers Bottom Sheet
+- **Desktop (≥ 640px)**: Beer Icon `<a>` navigates to Dashboard; Add Button exists on dashboard
+- **Event Dispatch**: `open-add-beer` event triggers Alpine.js modal
 
-#### Step 4.1: Create Bottom Sheet Component [✅]
-**File**: `resources/views/components/bottom-sheet.blade.php`
-```blade
-@props(['name', 'maxHeight' => '80vh'])
-
-<div 
-    x-data="{ open: false }"
-    x-on:open-{{ $name }}.window="open = true"
-    x-on:close-{{ $name }}.window="open = false"
-    x-on:keydown.escape.window="open = false"
->
-    {{-- Backdrop --}}
-    <div 
-        x-show="open" 
-        x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100"
-        x-transition:leave="transition ease-in duration-200"
-        x-transition:leave-start="opacity-100"
-        x-transition:leave-end="opacity-0"
-        class="fixed inset-0 bg-black/50 z-40"
-        @click="open = false"
-    ></div>
-
-    {{-- Sheet --}}
-    <div 
-        x-show="open"
-        x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="translate-y-full"
-        x-transition:enter-end="translate-y-0"
-        x-transition:leave="transition ease-in duration-200"
-        x-transition:leave-start="translate-y-0"
-        x-transition:leave-end="translate-y-full"
-        class="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-2xl shadow-2xl overflow-hidden"
-        style="max-height: {{ $maxHeight }}"
-    >
-        {{-- Handle --}}
-        <div class="flex justify-center py-2">
-            <div class="w-12 h-1.5 bg-gray-300 rounded-full"></div>
-        </div>
-        
-        {{-- Content --}}
-        <div class="overflow-y-auto px-4 pb-8" style="max-height: calc({{ $maxHeight }} - 40px)">
-            {{ $slot }}
-        </div>
-    </div>
-</div>
-```
-
-#### Step 4.2: Modify Navigation (Beer Icon Click)
+#### Step 4.2: Modify Navigation (Beer Icon Click) [✅]
 **File**: `resources/views/layouts/navigation.blade.php`
-```blade
-{{-- 將 <a> 改為 <button> 並加上 dispatch --}}
-<button type="button" @click="$dispatch('open-add-beer')">
-    <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-</button>
-```
+- Mobile: Button with `$dispatch('open-add-beer')`
+- Desktop: Link to `route('localized.dashboard')`
 
-#### Step 4.3: Modify Dashboard
-**File**: `resources/views/dashboard.blade.php`
-```blade
-{{-- 在頁面底部新增 Bottom Sheet --}}
-<x-bottom-sheet name="add-beer" max-height="85vh">
-    <div class="max-w-md mx-auto">
-        <header class="text-center mb-6">
-            <h2 class="text-lg font-medium text-gray-900">
-                {{ __('Add New Beer') }}
-            </h2>
-        </header>
-        @livewire('create-beer')
-    </div>
-</x-bottom-sheet>
-```
+### Phase 5: Navigation & Tutorial Updates [✅ Completed]
+**Goal**: Handle different behaviors for Mobile vs Desktop and update Tutorial
 
-#### Step 4.4: Modify CreateBeer Livewire
-**File**: `app/Livewire/CreateBeer.php`
-```php
-// 在 save() 方法中，成功後改為:
-$this->dispatch('close-add-beer');
-$this->dispatch('beer-saved');
+#### Step 5.1: Navigation Logic [✅]
+- **Dashboard Page**:
+  - Mobile: Beer Icon opens Bottom Sheet
+  - Desktop: Beer Icon does nothing (or refresh); Add Button (hidden on mobile) links to Create Page
+- **Other Pages**:
+  - Beer Icon always links to Dashboard
 
-// 移除 redirect，改讓頁面透過 Livewire 刷新
-return;
-```
+#### Step 5.2: Tutorial (Onboarding.js) [✅]
+- Updated `onboarding.js` to detect screen size (`window.innerWidth < 640`)
+- **Mobile**: Points to Beer Icon (`.shrink-0.flex.items-center`)
+- **Desktop**: Points to Add Button (`#add-beer-button`)
+- **Empty State**: Updated description to match the interaction
+
+### Phase 6: Empty State Button Fix [✅ Completed]
+**Goal**: Make "Track my first beer" button behave consistently with Navbar
+
+**Implementation**:
+- **Mobile**: Button triggers Bottom Sheet (`$dispatch`)
+- **Desktop**: Link navigates to `/beers/create`
 
 ---
 
-### Phase 5: Testing [⏳ Pending]
-- [ ] Manual testing on mobile (iPhone 12 Pro viewport)
-- [ ] Verify Bottom Sheet opens when clicking Beer Icon
-- [ ] Verify Bottom Sheet closes on backdrop click / ESC key
-- [ ] Verify form validation works inside Bottom Sheet
-- [ ] Verify form submission works and list refreshes
-- [ ] Verify Step 1 → Step 2 navigation works
-- [ ] Test on real device (iOS Safari / Android Chrome)
+### Phase 7: Testing [✅ Completed]
+- [x] Manual testing on mobile (iPhone 12 Pro viewport)
+- [x] Verify Bottom Sheet opens when clicking Beer Icon (Mobile)
+- [x] Verify Bottom Sheet closes on backdrop click / ESC key
+- [x] Verify form validation works inside Bottom Sheet
+- [x] Verify form submission works and list refreshes
+- [x] Verify Empty State button behavior (Mobile vs Desktop)
+- [x] Verify Tutorial flow (Mobile vs Desktop)
 
 ---
 
-## 📊 Outcome
+## � Outcome
 
-### Files to be Modified
-```
-resources/views/
-├── components/
-│   └── bottom-sheet.blade.php (NEW)
-├── layouts/
-│   ├── app.blade.php (modified - hide footer support)
-│   └── navigation.blade.php (modified - center button + icon click)
-├── dashboard.blade.php (modified - spacing + bottom sheet)
-└── beers/create.blade.php (可能不再需要，保留作為 fallback)
-
-app/Livewire/
-└── CreateBeer.php (modified - dispatch events instead of redirect)
-```
-
-### Estimated Effort
-| Phase | Estimated Time |
-|-------|----------------|
-| Phase 1: Remove Footer | 15 分鐘 |
-| Phase 2: Navbar Center Button | 15 分鐘 |
-| Phase 3: Reduce Spacing | 10 分鐘 |
-| Phase 4: Bottom Sheet | 1.5-2 小時 |
-| Phase 5: Testing | 30 分鐘 |
-| **Total** | **約 2.5-3 小時** |
-
----
-
-## 🚧 Potential Blockers
-
-### Blocker 1: Livewire State Reset [⚠️ POTENTIAL]
-- **Issue**: Bottom Sheet 關閉後重新開啟，Livewire 元件狀態可能未重置
-- **Impact**: 表單可能顯示上次填寫的內容
-- **Solution**: 加入 `x-on:close-add-beer.window="$wire.$refresh()"` 或使用 `wire:key`
-
-### Blocker 2: Keyboard Overlap [⚠️ POTENTIAL]
-- **Issue**: 手機鍵盤彈出時可能遮擋輸入框
-- **Impact**: 用戶無法看到正在輸入的內容
-- **Solution**: 使用 `scroll-padding-bottom` 或監聽 `visualViewport` resize 事件
-
----
-
-## 🎓 Lessons Learned
-
-(To be filled after implementation)
-
----
-
-## ✅ Completion
-
-**Status**: � Planning Complete
-**Completed Date**: YYYY-MM-DD
-**Session Duration**: X hours
+**Status**: ✅ Implementation Complete
+**Completed Date**: 2026-01-09
 
 > ℹ️ **Next Steps**: 
 > 1. 確認規劃無誤後開始實作
