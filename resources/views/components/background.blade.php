@@ -1,11 +1,11 @@
 <!-- Main background with lighter logo-inspired colors -->
-<div class="absolute inset-0 bg-gradient-to-b from-orange-50 via-amber-100 to-orange-200"></div>
+<div class="fixed inset-0 bg-gradient-to-b from-orange-50 via-amber-100 to-orange-200 -z-10"></div>
 
 <!-- Secondary gradient layer -->
-<div class="absolute inset-0 bg-gradient-to-b from-orange-100/20 via-amber-200/30 to-orange-300/40"></div>
+<div class="fixed inset-0 bg-gradient-to-b from-orange-100/20 via-amber-200/30 to-orange-300/40 -z-10"></div>
 
 <!-- Floating beer bubbles effect 啤酒泡泡效果-->
-<div class="absolute inset-0 overflow-hidden pointer-events-none">
+<div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
     <!-- Large bubbles -->
     <div class="absolute top-16 left-16 w-20 h-20 bg-amber-300/40 rounded-full blur-sm animate-pulse"></div>
     <div class="absolute top-32 right-24 w-16 h-16 bg-orange-300/45 rounded-full blur-s animate-pulse" style="animation-delay: 1s;"></div>
@@ -25,9 +25,9 @@
 </div>
 
 <!-- Subtle pattern overlay for texture  點狀圖案-->
-<div class="absolute inset-0 opacity-3">
+<div class="fixed inset-0 opacity-3 -z-10">
     <div class="absolute inset-0" style="background-image: radial-gradient(circle at 25% 25%, rgba(255,255,255,0.2) 1px, transparent 1px), radial-gradient(circle at 75% 75%, rgba(255,255,255,0.2) 1px, transparent 1px); background-size: 80px 80px;"></div>
 </div>
 
 <!-- Warm glow effect behind the form -->
-<div class="absolute inset-0 bg-gradient-radial from-orange-200/20 via-transparent to-transparent"></div>
+<div class="fixed inset-0 bg-gradient-radial from-orange-200/20 via-transparent to-transparent -z-10"></div>

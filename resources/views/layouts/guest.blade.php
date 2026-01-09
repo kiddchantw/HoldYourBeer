@@ -18,8 +18,8 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col justify-center items-center pt-0 pb-32 relative" style="padding-bottom: max(8rem, env(safe-area-inset-bottom) + 8rem);">
+    <body class="font-sans text-gray-900 antialiased bg-orange-50">
+        <div class="min-h-screen flex flex-col justify-center items-center pt-0 pb-12 relative">
             <x-background />
 
             <!-- Logo with enhanced styling -->
@@ -43,10 +43,12 @@
                 {{ $slot }}
             </div>
 
-        </div>
+            <!-- Copyright Text (Previously in Footer) -->
+            <div class="relative z-20 text-center text-sm text-gray-500/80 mt-2 pb-6">
+                <p>&copy; 2025-{{ date('Y') }} HoldYourBeers</p>
+            </div>
 
-        <!-- Fixed Footer -->
-        <x-footer class="!bg-transparent !backdrop-blur-none !border-none" />
+        </div>
 
         <!-- Cookie Consent Banner -->
         <x-cookie-consent />
