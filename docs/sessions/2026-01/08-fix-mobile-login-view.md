@@ -47,6 +47,16 @@ The analysis revealed that:
 - [x] Increase bottom padding to `pb-32` (8rem) with dynamic calculation
 - [x] Use inline style: `padding-bottom: max(8rem, env(safe-area-inset-bottom) + 8rem)`
 
+### Phase 4: UI Refinement & Full Background [✅ Completed]
+- [x] **Remove Fixed Footer**: Deleted `<x-footer />` to eliminate overlap issues completely.
+- [x] **Inline Copyright**: Moved copyright text to be inline below the login form.
+- [x] **Full Background**: Changed `background.blade.php` to use `fixed inset-0 -z-10` to cover the entire viewport and stay fixed during scrolling.
+- [x] **Overscroll Color**: Added `bg-orange-50` to `<body>` to ensure Safari overscroll areas (top/bottom) are not white.
+
+### Phase 5: Dashboard Navigation Fix (Regression) [✅ Completed]
+- [x] **Issue**: The `fixed -z-10` background in `dashboard.blade.php` (via `x-background`) caused the Navigation Bar (which lacked a z-index) to be visually obscured or rendered incorrectly in the stacking context.
+- [x] **Fix**: Added `relative z-50` to the `<nav>` element in `resources/views/layouts/navigation.blade.php`. This ensures the navigation bar creates a new stacking context and sits above any background elements.
+
 ---
 
 ## 📊 Outcome
@@ -54,15 +64,14 @@ The analysis revealed that:
 ### Files Modified
 ```
 resources/views/layouts/guest.blade.php (modified)
+resources/views/components/background.blade.php (modified)
+resources/views/layouts/navigation.blade.php (modified)
 ```
 
 ### Solution Details
-The final solution uses a combination of:
-1. **Tailwind class**: `pb-32` as fallback (8rem = 128px)
-2. **CSS env()**: `env(safe-area-inset-bottom)` to respect iOS safe areas
-3. **Dynamic padding**: `max(8rem, env(safe-area-inset-bottom) + 8rem)` ensures at least 8rem of space above the footer, plus any additional safe area needed by iOS Safari
-
-This ensures the footer does not overlap the "Sign up" content on any mobile device, including iPhone 17 with Safari's dynamic toolbar.
+1. **Background**: By using `fixed inset-0`, the gradient background now acts like a native app background, covering the screen even when browser bars retract/expand.
+2. **Footer**: Moving the footer inline solves the "blocked button" issue permanently without relying on fragile padding calculations.
+3. **Safe Areas**: The `min-h-screen` flex layout naturally respects safe areas for the main content without complex `env()` math needed for the footer.
 
 ### Phase 3: Testing [✅ | 🔄 | ⏳]
 - [ ] Unit tests (單元測試)
