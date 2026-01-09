@@ -172,6 +172,23 @@ The user reported several UX issues on the mobile dashboard:
 - **Mobile**: Button triggers Bottom Sheet (`$dispatch`)
 - **Desktop**: Link navigates to `/beers/create`
 
+### Phase 8: Asset Reorganization [✅ Completed]
+**Goal**: Organize public image assets into `public/images/` directory
+**Actions**:
+- Moved `beer_no_bg.png`, `beer_white_bg.jpg`, `favicon.ico`, `icon_v1.jpg`, `icon_v1_removed_bg.png` to `public/images/`
+- Updated asset paths in:
+  - `layouts/guest.blade.php`
+  - `components/application-logo.blade.php`
+  - `welcome.blade.php`
+  - Added favicon link to `layouts/app.blade.php` to fix missing icon issue
+
+### Phase 9: Visual Refinements [✅ Completed]
+**Goal**: Update Dashboard Empty State UI
+**Actions**:
+- **Empty State Icon**: Replaced style-broken SVG with `images/icon_v1_removed_bg.png`
+- Removed gray circle background container for a cleaner look
+- (Reverted) Onboarding Modal Icon: Decided to keep the 🍺 Emoji instead of using the Logo image for better visual impact
+
 ---
 
 ### Phase 7: Testing [✅ Completed]

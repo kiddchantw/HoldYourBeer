@@ -14,6 +14,8 @@
         <!-- Google Analytics -->
         <x-google-analytics />
 
+        <link rel="icon" href="{{ asset('images/favicon.ico') }}">
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
@@ -23,9 +25,9 @@
             <x-background />
 
             <!-- Logo with enhanced styling -->
-            <div class="relative z-20 mb-6">
-                <a href="/" class="block transform hover:scale-105 transition-transform duration-300">
-                    <img src="{{ asset('icon_v1_removed_bg.png') }}" alt="Logo" class="w-20 h-20 drop-shadow-lg">
+            <div class="mb-4 relative z-10 transition-transform hover:scale-105 duration-300">
+                <a href="/" class="block bg-white p-4 rounded-full shadow-xl ring-4 ring-orange-100/50">
+                    <img src="{{ asset('images/icon_v1_removed_bg.png') }}" alt="Logo" class="w-20 h-20 drop-shadow-lg">
                 </a>
             </div>
 

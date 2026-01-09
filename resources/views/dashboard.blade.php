@@ -25,12 +25,10 @@
                 <div class="p-6">
                     @if($trackedBeers->isEmpty())
                         <!-- Empty State -->
-                        <div class="text-center py-12">
+                        <div class="text-center py-12" x-data>
                             <div class="max-w-md mx-auto">
-                                <div class="mx-auto flex items-center justify-center h-24 w-24 rounded-full bg-gray-100 mb-4">
-                                    <svg class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 5H7a2 2 0 00-2 2v6a2 2 0 002 2h2m0 0h2M9 5a2 2 0 012 2v6a2 2 0 01-2 2m0 0V9a2 2 0 012-2h2a2 2 0 012 2v10.1M9 16.1L9 5"/>
-                                    </svg>
+                                <div class="mx-auto flex items-center justify-center mb-6">
+                                    <img src="{{ asset('images/icon_v1_removed_bg.png') }}" alt="Start Collection" class="h-32 w-32 object-contain drop-shadow-md">
                                 </div>
                                 <h3 class="text-lg font-medium text-gray-900 mb-2">{{ __('Start Your Beer Collection') }}</h3>
                                 <p class="text-sm text-gray-500 mb-6">{{ __('Begin tracking your favorite beers and discover new ones!') }}</p>

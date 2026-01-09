@@ -14,6 +14,8 @@
         <!-- Google Analytics -->
         <x-google-analytics />
 
+        <link rel="icon" href="{{ asset('images/favicon.ico') }}">
+
         <!-- Scripts -->
         <script>
             window.onboardingTranslations = {
