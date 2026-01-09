@@ -42,6 +42,11 @@ The analysis revealed that:
 - [x] Increase padding to `pb-32` in `resources/views/layouts/guest.blade.php`
 - [x] Add `mb-6` to the form container for extra spacing
 
+### Phase 3: iOS Safari Safe-Area Fix [✅ Completed]
+- [x] Add `env(safe-area-inset-bottom)` support for iOS devices
+- [x] Increase bottom padding to `pb-32` (8rem) with dynamic calculation
+- [x] Use inline style: `padding-bottom: max(8rem, env(safe-area-inset-bottom) + 8rem)`
+
 ---
 
 ## 📊 Outcome
@@ -49,10 +54,15 @@ The analysis revealed that:
 ### Files Modified
 ```
 resources/views/layouts/guest.blade.php (modified)
-resources/views/auth/login.blade.php (modified)
 ```
 
-The login page should now have significant bottom padding (128px), ensuring the footer does not overlap the "Sign up" content.
+### Solution Details
+The final solution uses a combination of:
+1. **Tailwind class**: `pb-32` as fallback (8rem = 128px)
+2. **CSS env()**: `env(safe-area-inset-bottom)` to respect iOS safe areas
+3. **Dynamic padding**: `max(8rem, env(safe-area-inset-bottom) + 8rem)` ensures at least 8rem of space above the footer, plus any additional safe area needed by iOS Safari
+
+This ensures the footer does not overlap the "Sign up" content on any mobile device, including iPhone 17 with Safari's dynamic toolbar.
 
 ### Phase 3: Testing [✅ | 🔄 | ⏳]
 - [ ] Unit tests (單元測試)

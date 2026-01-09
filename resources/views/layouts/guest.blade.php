@@ -19,7 +19,7 @@
         @livewireStyles
     </head>
     <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col justify-center items-center pt-0 pb-16 relative">
+        <div class="min-h-screen flex flex-col justify-center items-center pt-0 pb-32 relative" style="padding-bottom: max(8rem, env(safe-area-inset-bottom) + 8rem);">
             <x-background />
 
             <!-- Logo with enhanced styling -->
