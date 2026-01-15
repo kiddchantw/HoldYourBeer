@@ -10,6 +10,8 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 class SocialLoginController extends Controller
 {
@@ -21,6 +23,16 @@ class SocialLoginController extends Controller
         // If called from localized route, $locale is the locale and $provider is in second param
         // If called from non-localized route, $locale is the provider
         $actualProvider = $provider ?? $locale;
+        $targetLocale = ($provider !== null) ? $locale : 'en';
+
+        // 💾 Store locale in session for OAuth callback
+        Session::put('oauth_redirect_locale', $targetLocale);
+        
+        Log::info('OAuth Redirect: Storing locale in session', [
+            'provider' => $actualProvider,
+            'locale' => $targetLocale,
+            'session_id' => Session::getId(),
+        ]);
 
         // Use stateless mode and explicitly set redirect URL
         return Socialite::driver($actualProvider)
@@ -36,11 +48,32 @@ class SocialLoginController extends Controller
         // If called from localized route, $locale is the locale and $provider is in second param
         // If called from non-localized route, $locale is the provider
         $actualProvider = $provider ?? $locale;
-        $targetLocale = ($provider !== null) ? $locale : 'en';
+        
+        // 🔄 Retrieve locale from session (set during redirect)
+        // Priority: Session > URL parameter > Default
+        $sessionLocale = Session::get('oauth_redirect_locale');
+        $urlLocale = ($provider !== null) ? $locale : null;
+        $targetLocale = $sessionLocale ?? $urlLocale ?? 'en';
+        
+        Log::info('OAuth Callback: Retrieved locale', [
+            'provider' => $actualProvider,
+            'session_locale' => $sessionLocale,
+            'url_locale' => $urlLocale,
+            'final_locale' => $targetLocale,
+            'session_id' => Session::getId(),
+        ]);
+        
+        // 🧹 Clean up session
+        Session::forget('oauth_redirect_locale');
 
         try {
             $socialUser = Socialite::driver($actualProvider)->stateless()->user();
         } catch (\Exception $e) {
+            Log::error('OAuth Callback: Failed to get user from provider', [
+                'provider' => $actualProvider,
+                'error' => $e->getMessage(),
+            ]);
+            
             $loginRoute = ($provider !== null)
                 ? route('localized.login', ['locale' => $targetLocale])
                 : route('login');
@@ -61,7 +94,7 @@ class SocialLoginController extends Controller
                     : route('login');
 
                 return redirect($loginRoute)->withErrors([
-                    'social_login' => '此 email 已註冊但尚未驗證。請先完成 email 驗證，或使用密碼登入。'
+                    'social_login' => '此 email 已註冊但尚未驗證。請先完成 email 驗證,或使用密碼登入。'
                 ]);
             }
 
@@ -107,6 +140,11 @@ class SocialLoginController extends Controller
             event(new Registered($user));
             Auth::login($user, true);
         }
+
+        Log::info('OAuth Callback: Login successful, redirecting to dashboard', [
+            'user_id' => $user->id,
+            'locale' => $targetLocale,
+        ]);
 
         // Redirect to dashboard with proper locale
         return redirect()->route('localized.dashboard', ['locale' => $targetLocale]);
