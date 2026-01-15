@@ -6,6 +6,7 @@ use App\Http\Controllers\CookieConsentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\NewsController;
 use App\Http\Controllers\SocialLoginController;
 use Illuminate\Support\Facades\Route;
 
@@ -80,6 +81,9 @@ Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale'], 'where' => 
         // Onboarding routes
         Route::post('/onboarding/complete', [OnboardingController::class, 'complete'])->name('onboarding.complete');
         Route::get('/onboarding/restart', [OnboardingController::class, 'restart'])->name('onboarding.restart');
+
+        // News route
+        Route::get('/news', [NewsController::class, 'index'])->name('news.index');
     });
 
     Route::middleware(['auth.locale', 'auth'])->group(function () {
@@ -188,6 +192,9 @@ Route::middleware('auth')->group(function () {
 
     // Charts
     Route::get('/charts', [ChartsController::class, 'index'])->name('charts.fallback');
+
+    // News fallback
+    Route::get('/news', [NewsController::class, 'index'])->name('news.index.fallback');
 
     // Tasting actions
     Route::post('/tasting/{id}/increment', [\App\Http\Controllers\TastingController::class, 'increment'])->name('tasting.increment.fallback');

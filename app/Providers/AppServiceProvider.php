@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Brand;
+use App\Models\User;
 use App\Observers\BrandObserver;
+use App\Observers\UserObserver;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -46,6 +48,9 @@ class AppServiceProvider extends ServiceProvider
 
         // 註冊品牌觀察者
         Brand::observe(BrandObserver::class);
+
+        // 註冊用戶觀察者（Slack 通知）
+        User::observe(UserObserver::class);
 
         // Set locale based on URL segments
         $this->app->booted(function () {

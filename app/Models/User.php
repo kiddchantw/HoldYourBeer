@@ -178,4 +178,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->getAuthMethodsCount() > 1;
     }
+
+    /**
+     * Route notifications for the Slack channel.
+     */
+    public function routeNotificationForSlack($notification): string
+    {
+        return '#holdyourbeer-users';
+    }
 }

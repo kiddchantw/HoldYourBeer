@@ -40,6 +40,13 @@ return [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
+        'webhooks' => [
+            'errors' => env('SLACK_WEBHOOK_ERRORS'),
+            'users' => env('SLACK_WEBHOOK_USERS'),
+            'feedback' => env('SLACK_WEBHOOK_FEEDBACK'),
+            'security' => env('SLACK_WEBHOOK_SECURITY'),
+        ],
+        'enabled' => env('SLACK_NOTIFICATIONS_ENABLED', false),
     ],
 
     'google' => [

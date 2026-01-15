@@ -35,6 +35,9 @@
                     <x-nav-link :href="route('localized.dashboard', ['locale' => app()->getLocale() ?: 'en'])" :active="request()->routeIs('localized.dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('news.index', ['locale' => app()->getLocale() ?: 'en'])" :active="request()->routeIs('news.index')">
+                        News
+                    </x-nav-link>
                     <x-nav-link :href="route('charts', ['locale' => app()->getLocale() ?: 'en'])" :active="request()->routeIs('charts')">
                         {{ __('Charts') }}
                     </x-nav-link>
@@ -84,6 +87,9 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('localized.dashboard', ['locale' => app()->getLocale() ?: 'en'])" :active="request()->routeIs('localized.dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('news.index', ['locale' => app()->getLocale() ?: 'en'])" :active="request()->routeIs('news.index')">
+                News
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('charts', ['locale' => app()->getLocale() ?: 'en'])" :active="request()->routeIs('charts')">
                 {{ __('Charts') }}

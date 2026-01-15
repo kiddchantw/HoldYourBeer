@@ -75,10 +75,10 @@ return [
 
         'slack' => [
             'driver' => 'slack',
-            'url' => env('LOG_SLACK_WEBHOOK_URL'),
-            'username' => env('LOG_SLACK_USERNAME', 'Laravel Log'),
-            'emoji' => env('LOG_SLACK_EMOJI', ':boom:'),
-            'level' => env('LOG_LEVEL', 'critical'),
+            'url' => env('SLACK_WEBHOOK_ERRORS'),
+            'username' => 'HoldYourBeer Bot (' . env('APP_ENV') . ')',
+            'emoji' => ':rotating_light:',
+            'level' => 'error',
             'replace_placeholders' => true,
         ],
 
