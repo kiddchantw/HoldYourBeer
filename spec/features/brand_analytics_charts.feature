@@ -13,6 +13,8 @@ Feature: Brand Analytics Charts and Consumption Patterns
 # | Chart canvas and script are present on charts page | DONE          | chart_canvas_and_script_are_present_on_charts_page | DONE| DONE    |
 # | Chart displays correct data for user consumption | DONE          | chart_displays_correct_data_for_user_consumption | DONE| DONE    |
 # | Chart handles empty data gracefully | DONE          | chart_handles_empty_data_gracefully | DONE| DONE    |
+# | Chart supports different chart types | DONE          | api_returns_brand_analytics_with_*_chart_type | DONE| DONE    |
+# | Chart is responsive and mobile-friendly | DONE          | api_limits_data_points_when_limit_parameter_provided | DONE| DONE    |
 
 
   Background:

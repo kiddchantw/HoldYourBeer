@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ChartAnalyticsRequest;
 use App\Models\UserBeerCount;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class ChartsController extends Controller
 {
@@ -13,11 +13,15 @@ class ChartsController extends Controller
      * Get brand analytics data for charts
      *
      * @queryParam month string Filter by month in YYYY-MM format (e.g., 2025-12). Example: 2025-12
+     * @queryParam type string Chart type (bar, pie, line). Defaults to bar. Example: bar
+     * @queryParam limit integer Limit number of data points returned (1-100). Example: 10
+     * @queryParam device string Device type (mobile, tablet, desktop). Example: mobile
      */
-    public function brandAnalytics(Request $request): JsonResponse
+    public function brandAnalytics(ChartAnalyticsRequest $request): JsonResponse
     {
         $user = $request->user();
-        $month = $request->query('month');
+        $month = $request->validated('month');
+        $limit = $request->validated('limit');
 
         // Build base query
         $query = UserBeerCount::where('user_id', $user->id);
@@ -43,7 +47,15 @@ class ChartsController extends Controller
             })
             ->map(function ($counts) {
                 return $counts->sum();
+            })
+            ->sortByDesc(function ($count) {
+                return $count;
             });
+
+        // Apply limit if provided (for responsive design / mobile optimization)
+        if ($limit) {
+            $brandData = $brandData->take($limit);
+        }
 
         // Convert to the format expected by Flutter app
         $chartData = $brandData->map(function ($totalConsumption, $brandName) {
