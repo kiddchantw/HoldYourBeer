@@ -2,11 +2,13 @@
 
 namespace App\Exceptions;
 
+use App\Services\GoogleAnalyticsService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -50,7 +52,17 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            //
+            // Track error to Google Analytics
+            // Only track exceptions that should be reported (not in dontReport list)
+            if ($this->shouldReport($e)) {
+                $analytics = app(GoogleAnalyticsService::class);
+
+                $errorType = class_basename($e);
+                $errorMessage = $e->getMessage();
+                $userId = Auth::id();
+
+                $analytics->trackError($errorType, $errorMessage, $userId);
+            }
         });
     }
 

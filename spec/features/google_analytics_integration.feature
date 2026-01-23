@@ -3,7 +3,7 @@ Feature: Google Analytics Integration
   As a system administrator
   I want to integrate Google Analytics for comprehensive analytics
 
-  # 1. Status: PHASE_2_COMPLETE (Core Event Tracking Integrated)
+  # 1. Status: PHASE_3_COMPLETE (Search & Error Tracking Integrated)
   # 2. Design: docs/sessions/2026-01/23-google-analytics-integration-planning.md
   # 3. Test: tests/Feature/GoogleAnalyticsIntegrationTest.php
   # 4. Scenario Status Tracking:
@@ -15,8 +15,8 @@ Feature: Google Analytics Integration
   # | User authentication tracking     | DONE          | Integrated in Auth Controllers | N/A | DONE    |
   # | Beer creation tracking           | DONE          | Integrated in TastingService   | N/A | DONE    |
   # | Beer count increment tracking    | DONE          | Integrated in TastingService   | N/A | DONE    |
-  # | Search behavior tracking         | INFRA_READY   | N/A (Service method ready)     | TODO| PENDING |
-  # | Error tracking                   | INFRA_READY   | N/A (Service method ready)     | TODO| PENDING |
+  # | Search behavior tracking         | DONE          | Integrated in V2 BeerController| N/A | DONE    |
+  # | Error tracking                   | DONE          | Integrated in Exception Handler| N/A | DONE    |
   # | User engagement tracking         | LATER         | N/A                            | TODO| TODO    |
   # | Conversion funnel tracking       | LATER         | N/A                            | TODO| TODO    |
   # | Performance monitoring           | LATER         | N/A                            | TODO| TODO    |

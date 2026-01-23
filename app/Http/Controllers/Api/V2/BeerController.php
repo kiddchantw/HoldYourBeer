@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api\V2;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BeerResource;
 use App\Models\Beer;
+use App\Services\GoogleAnalyticsService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @group V2 - Global Beer Search
@@ -42,7 +44,7 @@ class BeerController extends Controller
      *   ]
      * }
      */
-    public function index(Request $request)
+    public function index(Request $request, GoogleAnalyticsService $analytics)
     {
         $validated = $request->validate([
             'search' => ['nullable', 'string', 'min:1'],
@@ -69,6 +71,17 @@ class BeerController extends Controller
 
         $limit = $validated['limit'] ?? 20;
 
-        return BeerResource::collection($query->limit($limit)->get());
+        $results = $query->limit($limit)->get();
+
+        // Track search event if search query was provided
+        if (isset($validated['search'])) {
+            $analytics->trackSearch(
+                Auth::id(),
+                $validated['search'],
+                $results->count()
+            );
+        }
+
+        return BeerResource::collection($results);
     }
 }
