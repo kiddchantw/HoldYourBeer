@@ -183,33 +183,43 @@ composer require thedevdojo/analytics
 
 ## 📋 實作範圍規劃
 
-### Phase 1: 基礎設定與頁面追蹤 [優先級: 🔴 High]
+### Phase 1: 基礎設定與頁面追蹤 [優先級: 🔴 High] ✅
 
 **目標**：建立 GA4 基礎架構，實現頁面瀏覽追蹤
 
 #### 1.1 GA4 帳號設定
-- [ ] 建立 Google Analytics 4 屬性
-- [ ] 取得 Measurement ID（G-XXXXXXXXXX）
-- [ ] 設定資料串流（Web）
+- [x] 建立 Google Analytics 4 屬性
+- [x] 取得 Measurement ID（G-XXXXXXXXXX）
+- [x] 設定資料串流（Web）
 
 #### 1.2 前端整合
-- [ ] 在 `layouts/app.blade.php` 加入 gtag.js
-- [ ] 建立 Analytics Blade Component
-- [ ] 實作頁面瀏覽事件追蹤
-- [ ] 測試：確認事件正確傳送到 GA4
+- [x] 在 `layouts/app.blade.php` 加入 gtag.js
+- [x] 建立 Analytics Blade Component
+- [x] 實作頁面瀏覽事件追蹤
+- [x] 測試：確認事件正確傳送到 GA4
 
 #### 1.3 環境變數配置
 ```env
 # .env
-GOOGLE_ANALYTICS_ID=G-XXXXXXXXXX
+GOOGLE_ANALYTICS_ID=G-5PHSTV2BTS
 GOOGLE_ANALYTICS_ENABLED=true
 ```
 
-**預估時間**: 1 天
+#### 1.4 Cookie Consent 整合
+- [x] 建立 Cookie Consent Blade Component
+- [x] 實作 Cookie Consent Controller
+- [x] GDPR 合規機制（同意後才載入 GA）
+
+#### 1.5 測試
+- [x] GoogleAnalyticsIntegrationTest (13 tests, 33 assertions)
+- [x] Cookie consent 機制測試
+- [x] GDPR 合規測試
+
+**實際時間**: 1 天
 
 ---
 
-### Phase 2: 用戶認證事件追蹤 [優先級: 🔴 High]
+### Phase 2: 用戶認證事件追蹤 [優先級: 🔴 High] ✅
 
 **目標**：追蹤用戶註冊、登入、登出事件
 
@@ -235,98 +245,61 @@ gtag('event', 'logout');
 ```
 
 #### 2.2 Laravel 端實作
-- [ ] 在 `RegisterController` 觸發註冊事件
-- [ ] 在 `LoginController` 觸發登入事件
-- [ ] 在 `SocialLoginController` 觸發 OAuth 事件
-- [ ] 測試：確認所有認證事件正確追蹤
+- [x] 在 `RegisteredUserController` 觸發註冊事件
+- [x] 在 `AuthenticatedSessionController` 觸發登入/登出事件
+- [x] 在 `SocialLoginController` 觸發 OAuth 註冊/登入事件
+- [x] 測試：確認所有認證事件正確追蹤
 
-**預估時間**: 1 天
+#### 2.3 啤酒互動事件追蹤
+- [x] 在 `TastingService@addBeerToTracking` 觸發啤酒建立事件
+- [x] 在 `TastingService@addCount` 觸發品飲計數增加事件
+- [x] 在 `TastingService@deleteCount` 觸發品飲計數減少事件
 
----
-
-### Phase 3: 啤酒建立與互動追蹤 [優先級: 🟡 Medium]
-
-**目標**：追蹤用戶建立啤酒、品飲記錄等核心功能使用
-
-#### 3.1 事件定義
-```javascript
-// 建立啤酒
-gtag('event', 'create_beer', {
-    brand: 'Brand Name',
-    style: 'IPA'
-});
-
-// 品飲記錄
-gtag('event', 'add_tasting', {
-    beer_id: 123,
-    action: 'increment' // or 'decrement'
-});
-
-// 查看品飲歷史
-gtag('event', 'view_tasting_history', {
-    beer_id: 123
-});
-```
-
-#### 3.2 Laravel 端實作
-- [ ] 在 `BeerController@store` 觸發建立事件
-- [ ] 在 `TastingController@increment` 觸發品飲事件
-- [ ] 測試：確認核心功能事件正確追蹤
-
-**預估時間**: 1-2 天
+**實際時間**: 1 天
 
 ---
 
-### Phase 4: 搜尋行為分析 [優先級: 🟡 Medium]
+### Phase 3: 搜尋與錯誤追蹤 [優先級: 🟡 Medium] ✅
 
-**目標**：追蹤用戶搜尋行為，了解搜尋關鍵字與結果
+**目標**：追蹤用戶搜尋行為與系統錯誤
 
-#### 4.1 事件定義
-```javascript
-// 搜尋事件
-gtag('event', 'search', {
-    search_term: '搜尋關鍵字',
-    results_count: 10
-});
-```
+#### 3.1 搜尋事件追蹤
+- [x] 在 `V2/BeerController@index` 整合搜尋追蹤
+- [x] 記錄搜尋關鍵字與結果數量
+- [x] 測試：確認搜尋事件正確記錄
 
-#### 4.2 實作
-- [ ] 在搜尋功能加入事件追蹤
-- [ ] 記錄搜尋關鍵字與結果數量
-- [ ] 測試：確認搜尋事件正確追蹤
+#### 3.2 錯誤事件追蹤
+- [x] 在 `Handler@register` 整合全域錯誤追蹤
+- [x] 捕獲錯誤類型、訊息與用戶 ID
+- [x] 遵守 `$dontReport` 清單
+- [x] 測試：確認錯誤事件正確記錄
 
-**預估時間**: 0.5 天
+#### 3.3 測試基礎設施修復
+- [x] TestCase 新增全域 `Notification::fake()`
+- [x] 修復 Slack 通知測試失敗問題
+
+**實際時間**: 1 天
 
 ---
 
-### Phase 5: 錯誤追蹤 [優先級: 🟡 Medium]
+### Phase 4: 啤酒建立與互動追蹤 [優先級: 🟡 Medium] ⏭️ (已併入 Phase 2)
 
-**目標**：自動追蹤前端與後端錯誤
+**說明**：此階段已在 Phase 2 中一併完成，無需額外實作。
 
-#### 5.1 前端錯誤追蹤
-```javascript
-window.addEventListener('error', function(event) {
-    gtag('event', 'exception', {
-        description: event.message,
-        fatal: false
-    });
-});
-```
+**實際完成項目**：
+- ✅ 啤酒建立事件 (`TastingService@addBeerToTracking`)
+- ✅ 品飲計數增加 (`TastingService@addCount`)
+- ✅ 品飲計數減少 (`TastingService@deleteCount`)
 
-#### 5.2 Laravel 錯誤追蹤
-```php
-// app/Exceptions/Handler.php
-public function report(Throwable $exception)
-{
-    if (app()->bound('analytics')) {
-        app('analytics')->trackException($exception);
-    }
+---
 
-    parent::report($exception);
-}
-```
+### Phase 5: 錯誤追蹤 [優先級: 🟡 Medium] ⏭️ (已併入 Phase 3)
 
-**預估時間**: 1 天
+**說明**：後端錯誤追蹤已在 Phase 3 完成，前端錯誤追蹤待後續實作。
+
+**已完成項目**：
+- ✅ Laravel 後端錯誤追蹤 (`Handler@register`)
+- ⏸️ 前端 JavaScript 錯誤追蹤（待後續實作）
 
 ---
 
@@ -438,21 +411,15 @@ gtag('event', 'experiment_impression', {
 
 ---
 
-### Phase 10: GDPR 合規與 Cookie 同意 [優先級: 🔴 High]
+### Phase 10: GDPR 合規與 Cookie 同意 [優先級: 🔴 High] ⏭️ (已併入 Phase 1)
 
-**目標**：實現 GDPR 合規機制
+**說明**：GDPR 合規機制已在 Phase 1 中一併完成。
 
-#### 10.1 Cookie 同意橫幅
-```blade
-{{-- Cookie Consent Banner --}}
-@if(!session('cookie_consent'))
-<div id="cookie-consent-banner">
-    <p>We use cookies to improve your experience.
-    <a href="/privacy-policy">Learn more</a></p>
-    <button onclick="acceptCookies()">Accept</button>
-    <button onclick="rejectCookies()">Reject</button>
-</div>
-@endif
+**已完成項目**：
+- ✅ Cookie Consent Blade Component
+- ✅ CookieConsentController (儲存同意狀態)
+- ✅ GDPR 合規測試
+- ✅ 同意前不載入 GA4 的機制
 ```
 
 #### 10.2 選擇性追蹤
@@ -553,12 +520,14 @@ if (getCookieConsent()) {
 
 ### 測試 Checklist
 
-- [ ] 頁面瀏覽事件正確觸發
-- [ ] 認證事件正確追蹤（註冊、登入、登出）
-- [ ] 核心功能事件正確追蹤（建立啤酒、品飲）
-- [ ] Cookie 同意橫幅正常顯示
-- [ ] 拒絕 Cookie 後 GA 不載入
-- [ ] IP 匿名化生效
+- [x] 頁面瀏覽事件正確觸發
+- [x] 認證事件正確追蹤（註冊、登入、登出）
+- [x] 核心功能事件正確追蹤（建立啤酒、品飲）
+- [x] 搜尋事件正確追蹤
+- [x] 錯誤事件正確追蹤
+- [x] Cookie 同意橫幅正常顯示
+- [x] 拒絕 Cookie 後 GA 不載入
+- [x] IP 匿名化生效（透過 GA4 配置）
 - [ ] 所有事件參數格式正確
 
 ---
