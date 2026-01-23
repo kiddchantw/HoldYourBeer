@@ -6,6 +6,7 @@ use App\Models\Brand;
 use App\Models\User;
 use App\Observers\BrandObserver;
 use App\Observers\UserObserver;
+use App\Services\GoogleAnalyticsService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -18,7 +19,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Register Google Analytics Service as singleton
+        $this->app->singleton(GoogleAnalyticsService::class, function ($app) {
+            return new GoogleAnalyticsService();
+        });
     }
 
     /**

@@ -3,21 +3,23 @@ Feature: Google Analytics Integration
   As a system administrator
   I want to integrate Google Analytics for comprehensive analytics
 
-  # 1. Status: TODO
-  # 2. Design: docs/diagrams/google-analytics-integration-flow.md
+  # 1. Status: MVP_COMPLETE (Infrastructure Ready, Event Integration Pending)
+  # 2. Design: docs/sessions/2026-01/23-google-analytics-integration-planning.md
   # 3. Test: tests/Feature/GoogleAnalyticsIntegrationTest.php
   # 4. Scenario Status Tracking:
   # | Scenario Name                    | Status        | Test Method                    | UI  | Backend |
   # |----------------------------------|---------------|--------------------------------|-----|---------|
-  # | Page view tracking               | TODO          | test_page_view_tracking        | TODO| TODO    |
-  # | User authentication tracking     | TODO          | test_user_authentication_tracking| TODO| TODO    |
-  # | Beer creation tracking           | TODO          | test_beer_creation_tracking    | TODO| TODO    |
-  # | Beer count increment tracking   | TODO          | test_beer_count_increment_tracking| TODO| TODO    |
-  # | Search behavior tracking         | TODO          | test_search_behavior_tracking  | TODO| TODO    |
-  # | Error tracking                   | TODO          | test_error_tracking            | TODO| TODO    |
-  # | User engagement tracking         | TODO          | test_user_engagement_tracking | TODO| TODO    |
-  # | Conversion funnel tracking       | TODO          | test_conversion_funnel_tracking| TODO| TODO    |
-  # | Performance monitoring           | TODO          | test_performance_monitoring    | TODO| TODO    |
+  # | Page view tracking               | DONE          | page_view_tracking_is_enabled_by_default | DONE| DONE    |
+  # | Cookie consent mechanism         | DONE          | cookie_consent_can_be_accepted | DONE| DONE    |
+  # | Privacy compliance               | DONE          | google_analytics_is_not_loaded_without_cookie_consent | DONE| DONE    |
+  # | User authentication tracking     | INFRA_READY   | N/A (Service method ready)     | TODO| PENDING |
+  # | Beer creation tracking           | INFRA_READY   | N/A (Service method ready)     | TODO| PENDING |
+  # | Beer count increment tracking    | INFRA_READY   | N/A (Service method ready)     | TODO| PENDING |
+  # | Search behavior tracking         | INFRA_READY   | N/A (Service method ready)     | TODO| PENDING |
+  # | Error tracking                   | INFRA_READY   | N/A (Service method ready)     | TODO| PENDING |
+  # | User engagement tracking         | LATER         | N/A                            | TODO| TODO    |
+  # | Conversion funnel tracking       | LATER         | N/A                            | TODO| TODO    |
+  # | Performance monitoring           | LATER         | N/A                            | TODO| TODO    |
 
   Background:
     Given Google Analytics is properly configured
