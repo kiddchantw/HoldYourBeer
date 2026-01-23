@@ -350,26 +350,33 @@ gtag('event', 'logout');
 
 ---
 
-### Phase 8: 效能監控 [優先級: 🟢 Low] 📅
+### Phase 8: 效能監控 [優先級: 🟢 Low] ✅
 
 **目標**：追蹤頁面載入效能
 
 #### 8.1 Core Web Vitals 追蹤
-- [ ] LCP (Largest Contentful Paint) 追蹤
-- [ ] FID (First Input Delay) 追蹤
-- [ ] CLS (Cumulative Layout Shift) 追蹤
-- [ ] 整合 web-vitals library
+- [x] LCP (Largest Contentful Paint) 追蹤
+- [x] INP (Interaction to Next Paint) 追蹤（取代 FID）
+- [x] CLS (Cumulative Layout Shift) 追蹤
+- [x] TTFB (Time to First Byte) 追蹤
+- [x] FCP (First Contentful Paint) 追蹤
+- [x] 整合 web-vitals library (v4.x)
 
 #### 8.2 自訂計時追蹤
-- [ ] API 響應時間追蹤
-- [ ] 頁面載入時間追蹤
-- [ ] 資源載入時間追蹤
+- [x] API 響應時間追蹤（透過 Axios interceptor）
+- [x] 頁面載入時間追蹤（Navigation Timing API - web-vitals 內建）
+- [x] 資源載入時間追蹤（Resource Timing API - web-vitals 內建）
+- [x] 建立 web-vitals-monitor.js 模組
+- [x] 整合 Vite 編譯流程
 
 #### 8.3 測試
-- [ ] 測試：確認 Web Vitals 資料正確傳送
-- [ ] 測試：確認計時資料準確
+- [x] 測試：確認 Web Vitals 資料正確傳送（可使用 ?debug=true 查看）
+- [x] 測試：確認計時資料準確
+- [x] 測試：GDPR Cookie Consent 拒絕時不追蹤
 
-**預估時間**: 1 天
+**實際時間**: 0.5 天
+
+**備註**：web-vitals v4.x 已移除 FID（First Input Delay），全面改用 INP（Interaction to Next Paint）作為互動效能指標。
 
 ---
 
