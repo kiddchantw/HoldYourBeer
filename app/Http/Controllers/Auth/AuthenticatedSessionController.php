@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Services\GoogleAnalyticsService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,11 +23,14 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request, GoogleAnalyticsService $analytics): RedirectResponse
     {
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        // Track user login event
+        $analytics->trackUserLogin(Auth::id(), 'email');
 
         // Get locale from the request path or default to 'en'
         $locale = $request->segment(1);
@@ -40,8 +44,11 @@ class AuthenticatedSessionController extends Controller
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request, GoogleAnalyticsService $analytics): RedirectResponse
     {
+        // Track user logout event (before logout)
+        $analytics->trackUserLogout(Auth::id());
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

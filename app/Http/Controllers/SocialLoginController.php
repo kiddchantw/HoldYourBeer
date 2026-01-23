@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\UserOAuthProvider;
+use App\Services\GoogleAnalyticsService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
@@ -43,7 +44,7 @@ class SocialLoginController extends Controller
     /**
      * Handle the OAuth provider callback
      */
-    public function handleProviderCallback($locale = null, $provider = null): RedirectResponse
+    public function handleProviderCallback($locale = null, $provider = null, GoogleAnalyticsService $analytics = null): RedirectResponse
     {
         // If called from localized route, $locale is the locale and $provider is in second param
         // If called from non-localized route, $locale is the provider
@@ -118,6 +119,9 @@ class SocialLoginController extends Controller
             );
 
             Auth::login($user, true);
+
+            // Track OAuth login for existing user
+            $analytics->trackUserLogin($user->id, $actualProvider);
         } else {
             // Create new user with OAuth provider info
             $user = User::create([
@@ -139,6 +143,9 @@ class SocialLoginController extends Controller
 
             event(new Registered($user));
             Auth::login($user, true);
+
+            // Track OAuth registration for new user
+            $analytics->trackUserRegistration($user->id, $actualProvider);
         }
 
         Log::info('OAuth Callback: Login successful, redirecting to dashboard', [

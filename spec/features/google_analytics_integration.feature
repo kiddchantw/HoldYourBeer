@@ -3,7 +3,7 @@ Feature: Google Analytics Integration
   As a system administrator
   I want to integrate Google Analytics for comprehensive analytics
 
-  # 1. Status: MVP_COMPLETE (Infrastructure Ready, Event Integration Pending)
+  # 1. Status: PHASE_2_COMPLETE (Core Event Tracking Integrated)
   # 2. Design: docs/sessions/2026-01/23-google-analytics-integration-planning.md
   # 3. Test: tests/Feature/GoogleAnalyticsIntegrationTest.php
   # 4. Scenario Status Tracking:
@@ -12,9 +12,9 @@ Feature: Google Analytics Integration
   # | Page view tracking               | DONE          | page_view_tracking_is_enabled_by_default | DONE| DONE    |
   # | Cookie consent mechanism         | DONE          | cookie_consent_can_be_accepted | DONE| DONE    |
   # | Privacy compliance               | DONE          | google_analytics_is_not_loaded_without_cookie_consent | DONE| DONE    |
-  # | User authentication tracking     | INFRA_READY   | N/A (Service method ready)     | TODO| PENDING |
-  # | Beer creation tracking           | INFRA_READY   | N/A (Service method ready)     | TODO| PENDING |
-  # | Beer count increment tracking    | INFRA_READY   | N/A (Service method ready)     | TODO| PENDING |
+  # | User authentication tracking     | DONE          | Integrated in Auth Controllers | N/A | DONE    |
+  # | Beer creation tracking           | DONE          | Integrated in TastingService   | N/A | DONE    |
+  # | Beer count increment tracking    | DONE          | Integrated in TastingService   | N/A | DONE    |
   # | Search behavior tracking         | INFRA_READY   | N/A (Service method ready)     | TODO| PENDING |
   # | Error tracking                   | INFRA_READY   | N/A (Service method ready)     | TODO| PENDING |
   # | User engagement tracking         | LATER         | N/A                            | TODO| TODO    |

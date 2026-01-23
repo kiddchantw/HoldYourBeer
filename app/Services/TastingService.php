@@ -13,6 +13,12 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class TastingService
 {
     /**
+     * The Google Analytics service instance.
+     */
+    public function __construct(
+        private GoogleAnalyticsService $analytics
+    ) {}
+    /**
      * Add the tasting count for a beer.
      *
      * @param int $userId
@@ -29,6 +35,8 @@ class TastingService
                 ->lockForUpdate()
                 ->firstOrFail();
 
+            $previousCount = $userBeerCount->count;
+
             $userBeerCount->count += 1;
             $userBeerCount->last_tasted_at = now();
             $userBeerCount->save();
@@ -39,6 +47,14 @@ class TastingService
                 'tasted_at' => now(),
                 'note' => $note,
             ]);
+
+            // Track beer count increment event
+            $this->analytics->trackBeerCountIncrement(
+                $userId,
+                $beerId,
+                $previousCount,
+                $userBeerCount->count
+            );
 
             return $userBeerCount->fresh(['beer.brand']);
         });
@@ -70,6 +86,8 @@ class TastingService
                 );
             }
 
+            $previousCount = $userBeerCount->count;
+
             $userBeerCount->count -= 1;
             $userBeerCount->last_tasted_at = now();
             $userBeerCount->save();
@@ -80,6 +98,14 @@ class TastingService
                 'tasted_at' => now(),
                 'note' => $note,
             ]);
+
+            // Track beer count decrement event
+            $this->analytics->trackBeerCountDecrement(
+                $userId,
+                $beerId,
+                $previousCount,
+                $userBeerCount->count
+            );
 
             return $userBeerCount->fresh(['beer.brand']);
         });
@@ -169,13 +195,21 @@ class TastingService
                     'shop_id' => $shop ? $shop->id : null,
                     'note' => $note,
                 ]);
+
+                // Track beer creation event (first time tracking)
+                $this->analytics->trackBeerCreation(
+                    $userId,
+                    $beer->id,
+                    $beer->brand->name ?? 'Unknown',
+                    $beer->name
+                );
             }
 
             // Attach tasting count to beer for API response
             $beer = $beer->fresh('brand'); // Refresh to get latest data
             $beer->tasting_count = $userBeerCount->count;
             $beer->last_tasted_at = $userBeerCount->last_tasted_at;
-            
+
             return $beer;
         });
     }
