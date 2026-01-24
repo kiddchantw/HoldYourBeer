@@ -369,14 +369,194 @@ gtag('event', 'logout');
 - [x] 建立 web-vitals-monitor.js 模組
 - [x] 整合 Vite 編譯流程
 
-#### 8.3 測試
-- [x] 測試：確認 Web Vitals 資料正確傳送（可使用 ?debug=true 查看）
-- [x] 測試：確認計時資料準確
-- [x] 測試：GDPR Cookie Consent 拒絕時不追蹤
+#### 8.3 測試與驗證
+
+##### 驗證方法 1：使用 Debug 模式（Console）
+
+**步驟**：
+1. 訪問任何頁面並加上 `?debug=true` 參數
+   ```
+   http://local.holdyourbeers.com/en/dashboard?debug=true
+   ```
+2. 開啟 Chrome DevTools（F12）→ Console 標籤
+3. 重新載入頁面（F5 或 Cmd+R）
+4. **應該看到**：
+   ```javascript
+   [Web Vitals] FCP 567.8 {name: "FCP", value: 567.8, rating: "good", ...}
+   [Web Vitals] TTFB 123.4 {name: "TTFB", value: 123.4, rating: "good", ...}
+   [Web Vitals] LCP 1234.5 {name: "LCP", value: 1234.5, rating: "good", ...}
+   [Web Vitals] CLS 0.001 {name: "CLS", value: 0.001, rating: "good", ...}
+   [Web Vitals] INP 150 {name: "INP", value: 150, rating: "good", ...}
+   ```
+
+**評級標準**：
+- **"good"** (綠色) - 效能優秀
+- **"needs-improvement"** (橘色) - 需要改善
+- **"poor"** (紅色) - 效能不佳
+
+##### 驗證方法 2：檢查 Network 請求
+
+**步驟**：
+1. 開啟 Chrome DevTools（F12）→ Network 標籤
+2. 在過濾器中輸入 `google-analytics` 或 `collect`
+3. 重新載入頁面
+4. **應該看到**：
+   - 發送到 `www.google-analytics.com/g/collect` 的請求
+   - 請求 Payload 包含 Web Vitals 事件資料
+
+**檢查 Payload**：
+- 點擊請求 → Payload 標籤
+- 查找 `en=LCP`、`en=FCP`、`en=CLS` 等事件名稱
+- 確認 `epn.value` 包含指標數值
+
+##### 驗證方法 3：GA4 DebugView（即時驗證）
+
+**步驟**：
+1. 訪問頁面時加上 `?debug=true`
+2. 前往 [Google Analytics](https://analytics.google.com/)
+3. 選擇專案 → **Admin** → **DebugView**
+4. **應該看到**：
+   - 即時事件流顯示 `LCP`、`FCP`、`CLS`、`INP`、`TTFB` 事件
+   - 每個事件的參數（value、rating、delta）
+   - 用戶的 user_id 和 session_id
+
+**優點**：即時驗證，無需等待數據處理
+
+##### 驗證方法 4：Chrome Lighthouse
+
+**步驟**：
+1. 開啟 Chrome DevTools（F12）→ Lighthouse 標籤
+2. 選擇 **Performance** 類別
+3. 點擊 **Analyze page load**
+4. 比對 Lighthouse 報告與 Console 中的 Web Vitals 數值
+
+**比較指標**：
+- Lighthouse 的 LCP vs Console 的 `[Web Vitals] LCP`
+- Lighthouse 的 CLS vs Console 的 `[Web Vitals] CLS`
+- 數值應該接近（可能有些微差異）
+
+##### 驗證方法 5：GDPR 合規測試
+
+**步驟**：
+1. 訪問登入頁面：`http://local.holdyourbeers.com/en/login`
+2. **拒絕** Cookie Consent
+3. 開啟 Console
+4. **應該看到**：
+   - Console 沒有 `[Web Vitals]` 訊息（gtag 未載入）
+   - Network 沒有 google-analytics.com 請求
+5. **接受** Cookie Consent 並重新載入
+6. **應該看到**：
+   - Console 顯示 `[Web Vitals]` 訊息
+   - Network 顯示 google-analytics.com 請求
+
+**測試結果**：
+- [x] Debug 模式正常顯示 Web Vitals 資料
+- [x] Network 請求成功發送到 GA4
+- [x] DebugView 即時顯示事件
+- [x] GDPR Cookie Consent 拒絕時不追蹤
 
 **實際時間**: 0.5 天
 
 **備註**：web-vitals v4.x 已移除 FID（First Input Delay），全面改用 INP（Interaction to Next Paint）作為互動效能指標。
+
+#### 8.4 如何查看效能數據
+
+##### 方法 1：GA4 內建報表（推薦）⭐
+
+**位置**：Google Analytics 4 後台
+
+**查看步驟**：
+1. 登入 [Google Analytics](https://analytics.google.com/)
+2. 選擇 HoldYourBeer 專案
+3. **左側選單 → Reports → Engagement → Events**
+4. 在事件清單中可以看到：
+   - `LCP` - 最大內容繪製時間
+   - `INP` - 互動響應速度
+   - `CLS` - 累積版面配置位移
+   - `TTFB` - 首位元組時間
+   - `FCP` - 首次內容繪製
+   - `api_response_time` - API 響應時間
+
+**可執行的分析**：
+- 查看各指標的平均值、中位數、分佈
+- 按設備類型篩選（桌面、平板、手機）
+- 按頁面路徑篩選（首頁、啤酒清單、Dashboard）
+- 按日期範圍比較效能趨勢
+- 匯出數據至 CSV 或 Google Sheets
+
+**優點**：
+- ✅ 免費
+- ✅ 資料即時顯示
+- ✅ 不需額外設定
+- ✅ 可以直接篩選、匯出
+
+##### 方法 2：Debug 模式（開發測試用）
+
+在網址加上 `?debug=true` 參數：
+```
+https://holdyourbeers.com/en/dashboard?debug=true
+```
+
+開啟 Chrome Console 會看到：
+```javascript
+[Web Vitals] LCP 2456.78 {name: "LCP", value: 2456.78, rating: "good", ...}
+[Web Vitals] INP 180.45 {name: "INP", value: 180.45, rating: "good", ...}
+[Web Vitals] CLS 85 {name: "CLS", value: 85, rating: "good", ...}
+```
+
+##### 方法 3：GA4 DebugView（即時監控）
+
+**步驟**：
+1. 在網址加上 `?debug=true`
+2. 前往 GA4 → Configure → DebugView
+3. 即時看到所有效能事件觸發
+
+##### 方法 4：Chrome DevTools（開發驗證）
+
+**步驟**：
+1. 開啟網站，按 F12
+2. Network 標籤 → 過濾 `google-analytics.com`
+3. 看到包含 LCP, INP, CLS 的請求
+
+##### 進階視覺化選項（未來可選）
+
+如需建立專業效能儀表板，可使用 **Google Looker Studio**（前身為 Google Data Studio）：
+- 連接 GA4 作為資料來源
+- 建立自訂報表與視覺化圖表
+- 設計效能趨勢圖、分佈圖、比較表
+- 分享給團隊成員
+- 設定自動排程寄送報表
+
+**Looker Studio 能做什麼**：
+1. **Core Web Vitals 總覽儀表板**
+   - 計分卡顯示各指標平均值（帶顏色標示 Good/Needs Improvement/Poor）
+   - 時間序列圖顯示效能趨勢（按週/月）
+   - 效能分佈長條圖（Good/Needs Improvement/Poor 百分比）
+
+2. **API 效能監控儀表板**
+   - 最慢 API 端點排行表
+   - API 響應時間分佈直方圖
+   - 成功率 vs 失敗率比較
+
+3. **設備與頁面比較儀表板**
+   - 桌面/平板/手機效能比較表
+   - 各頁面效能氣泡圖（流量 vs LCP）
+   - 地理位置效能熱圖
+
+4. **自動化功能**
+   - 設定排程自動寄送報表至 Email
+   - 嵌入到內部系統（iframe）
+   - 分享唯讀連結給非 GA4 使用者
+
+**何時需要 Looker Studio**：
+- 需要定期向老闆/團隊報告效能
+- 想要更專業的視覺化呈現
+- 需要結合多個資料來源（GA4 + 其他系統）
+- 需要分享報表給沒有 GA4 權限的人
+
+**參考資源**：
+- Looker Studio 官網：https://lookerstudio.google.com/
+- GA4 與 Looker Studio 整合教學（可自行 Google）
 
 ---
 
