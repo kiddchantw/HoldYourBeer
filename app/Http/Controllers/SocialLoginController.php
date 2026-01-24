@@ -121,7 +121,9 @@ class SocialLoginController extends Controller
             Auth::login($user, true);
 
             // Track OAuth login for existing user
-            $analytics->trackUserLogin($user->id, $actualProvider);
+            if ($analytics) {
+                $analytics->trackUserLogin($user->id, $actualProvider);
+            }
         } else {
             // Create new user with OAuth provider info
             $user = User::create([
@@ -145,7 +147,9 @@ class SocialLoginController extends Controller
             Auth::login($user, true);
 
             // Track OAuth registration for new user
-            $analytics->trackUserRegistration($user->id, $actualProvider);
+            if ($analytics) {
+                $analytics->trackUserRegistration($user->id, $actualProvider);
+            }
         }
 
         Log::info('OAuth Callback: Login successful, redirecting to dashboard', [

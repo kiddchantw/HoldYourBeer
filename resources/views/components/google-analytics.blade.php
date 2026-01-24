@@ -18,7 +18,7 @@
   // 注入用戶屬性到 window 物件，供 analytics.js 使用
   window.userProperties = {
     'user_locale': '{{ app()->getLocale() }}',
-    'total_beers': {{ auth()->user()->beerCounts()->sum('count') ?? 0 }},
+    'total_beers': 0, // TODO: 實作 beerCounts 關聯後再啟用
     'account_age_days': {{ now()->diffInDays(auth()->user()->created_at) }}
   };
   @endauth
