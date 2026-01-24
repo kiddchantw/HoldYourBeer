@@ -7,8 +7,13 @@
                 <div class="shrink-0 flex items-center mr-4 sm:mr-6">
                     @if(request()->routeIs('localized.dashboard'))
                         <!-- Mobile: Open Bottom Sheet -->
-                        <button type="button" @click="$dispatch('open-add-beer')" class="sm:hidden focus:outline-none focus:ring-2 focus:ring-amber-500 rounded">
+                        <button type="button" @click="$dispatch('open-add-beer')" class="relative sm:hidden group focus:outline-none focus:ring-2 focus:ring-amber-500 rounded p-1 -ml-1">
                             <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                            <div class="absolute -bottom-1 -right-1 bg-amber-600 text-white rounded-full w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                            </div>
                         </button>
                         <!-- Desktop: Link to Dashboard -->
                         <a href="{{ route('localized.dashboard', ['locale' => app()->getLocale() ?: 'en']) }}" class="hidden sm:block focus:outline-none focus:ring-2 focus:ring-amber-500 rounded">
@@ -45,17 +50,15 @@
                         {{ __('Profile') }}
                     </x-nav-link>
                     
-                    {{-- 重新看教學按鈕：只在信箱驗證後 30 天內顯示 --}}
-                    @if(Auth::user()->email_verified_at && Auth::user()->email_verified_at->addDays(30)->isFuture())
-                        <x-nav-link :href="route('onboarding.restart', ['locale' => app()->getLocale() ?: 'en'])">
-                            <span class="inline-flex items-center">
-                                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                {{ __('重新看教學') }}
-                            </span>
-                        </x-nav-link>
-                    @endif
+                    {{-- 重新看教學按鈕：永遠顯示 --}}
+                    <x-nav-link :href="route('onboarding.restart', ['locale' => app()->getLocale() ?: 'en'])">
+                        <span class="inline-flex items-center">
+                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            {{ __('重新看教學') }}
+                        </span>
+                    </x-nav-link>
                     
                     @if(Auth::user()->role === 'admin')
                         <x-nav-link :href="route('admin.dashboard', ['locale' => app()->getLocale() ?: 'en'])" :active="request()->routeIs('admin.*')">
@@ -106,23 +109,18 @@
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-            </div>
+            <!-- User info hidden on mobile -->
 
             <div class="mt-3 space-y-1">
-                {{-- 重新看教學按鈕：只在信箱驗證後 30 天內顯示 --}}
-                @if(Auth::user()->email_verified_at && Auth::user()->email_verified_at->addDays(30)->isFuture())
-                    <x-responsive-nav-link :href="route('onboarding.restart', ['locale' => app()->getLocale() ?: 'en'])">
-                        <span class="inline-flex items-center">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            {{ __('重新看教學') }}
-                        </span>
-                    </x-responsive-nav-link>
-                @endif
+                {{-- 重新看教學按鈕：永遠顯示 --}}
+                <x-responsive-nav-link :href="route('onboarding.restart', ['locale' => app()->getLocale() ?: 'en'])">
+                    <span class="inline-flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        {{ __('重新看教學') }}
+                    </span>
+                </x-responsive-nav-link>
                 
 
 

@@ -1,1 +1,1 @@
-<img src="{{ asset('images/beer_white_bg.jpg') }}" alt="HoldYourBeer Logo" {{ $attributes }}>
+<img src="{{ asset('images/beer_add_white.png') }}" alt="HoldYourBeer Logo" {{ $attributes }}>
