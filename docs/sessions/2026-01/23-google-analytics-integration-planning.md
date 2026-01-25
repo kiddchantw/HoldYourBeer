@@ -201,7 +201,7 @@ composer require thedevdojo/analytics
 #### 1.3 環境變數配置
 ```env
 # .env
-GOOGLE_ANALYTICS_ID=G-5PHSTV2BTS
+GOOGLE_ANALYTICS_ID=G-XXXXXXXXXX  # 替換為你的 GA4 Measurement ID
 GOOGLE_ANALYTICS_ENABLED=true
 ```
 
@@ -869,7 +869,7 @@ Duration: 0.92s
 
 雖然 `.env` 已有配置：
 ```env
-GOOGLE_ANALYTICS_ID=G-5PHSTV2BTS
+GOOGLE_ANALYTICS_ID=G-XXXXXXXXXX  # 你的 GA4 Measurement ID
 GOOGLE_ANALYTICS_ENABLED=true
 ```
 
