@@ -11,6 +11,9 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <!-- Material Icons -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
         <!-- Google Analytics -->
         <x-google-analytics />
 
@@ -124,10 +127,13 @@
             @endisset
 
             <!-- Page Content -->
-            <main class="flex-1 flex flex-col {{ $withFooterPadding ? 'pb-14' : '' }}">
+            <main class="flex-1 flex flex-col {{ $withFooterPadding ? 'pb-16' : '' }}">
                 {{ $slot }}
             </main>
         </div>
+
+        <!-- Bottom Navigation Bar -->
+        @include('layouts.bottom-navbar')
 
         <!-- Fixed Footer -->
         @unless(isset($hideFooter) && $hideFooter)
