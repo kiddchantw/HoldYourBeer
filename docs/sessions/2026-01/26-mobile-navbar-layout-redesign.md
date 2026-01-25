@@ -228,22 +228,46 @@
 - [x] 確認路由系統（Laravel routes with locale prefix）
 - [x] 檢查是否需要調整現有頁面 layout（需要：目前 footer padding pb-14，改為 pb-16）
 
-### Phase 3: 實作 - 底部導覽列 [⏳ Pending]
-- [ ] 建立底部導覽列 component/template
-- [ ] 實作 3 個導覽項目
-- [ ] ✅ 加入 Material Icons (CDN 或 npm)
-- [ ] ❌ 確認沒有使用 Emoji 作為 icon
-- [ ] 實作選中狀態樣式（顏色 + 底部指示線）
-- [ ] 實作點擊事件與路由切換
-- [ ] 加入過渡動畫（150-250ms）
-- [ ] 加入 `cursor-pointer` 到所有可點擊元素
-- [ ] 驗證觸控區域至少 48x48px
+### Phase 3: 實作 - 底部導覽列 [✅ Completed]
+- [x] 建立底部導覽列 component/template
+- [x] 實作 3 個導覽項目
+- [x] ✅ 加入 Material Icons (CDN 或 npm)
+- [x] ✅ 確認沒有使用 Emoji 作為 icon
+- [x] 實作選中狀態樣式（顏色 + 底部指示線）
+- [x] 實作點擊事件與路由切換
+- [x] 加入過渡動畫（150-250ms）
+- [x] 加入 `cursor-pointer` 到所有可點擊元素
+- [x] 驗證觸控區域至少 48x48px
 
-### Phase 4: 實作 - 頂部區域調整 [⏳ Pending]
-- [ ] 移除或簡化頂部 navbar
-- [ ] 保留必要的品牌識別（Logo）
-- [ ] 重新安排次要功能（搜尋、通知、設定等）
-- [ ] 確保頂部區域響應式設計
+**Phase 3 完成細節**:
+- 檔案: `resources/views/layouts/bottom-navbar.blade.php` (新建)
+- Material Icons CDN: 加入 `app.blade.php` `<head>` 區塊
+- 導覽項目: 統計 (bar_chart)、我的啤酒 (local_bar)、個人檔案 (person)
+- 顏色規範: 未選中 #616161, 選中 #E65100, 指示線 #FF6F00
+- 觸控目標: 48x48px (min-w-[48px] min-h-[48px])
+- iOS Safe Area: `env(safe-area-inset-bottom)` 支援
+- Accessibility: ARIA labels, focus states, keyboard navigation
+- i18n: 新增繁體中文與英文翻譯
+- Commit: `718e2e4 - feat(navbar): Phase 3 bottom navbar implementation`
+
+### Phase 4: 實作 - 頂部區域調整 [✅ Completed]
+- [x] 移除或簡化頂部 navbar
+- [x] 保留必要的品牌識別（Logo）
+- [x] 重新安排次要功能（搜尋、通知、設定等）
+- [x] 確保頂部區域響應式設計
+
+**Phase 4 完成細節**:
+- 檔案: `resources/views/layouts/navigation.blade.php` (大幅簡化)
+- 移除內容:
+  - 所有導覽連結 (Dashboard, News, Charts, Profile, Tutorial, Admin)
+  - 漢堡選單按鈕及響應式選單
+  - Alpine.js `x-data="{ open: false }"` 依賴
+- 保留內容:
+  - Logo (x-application-logo component)
+  - 品牌文字 "HoldYourBeers" (手機版置中、桌面版靠左)
+  - 語言切換器 (desktop 與 mobile 版本)
+- 從 129 行精簡為 40 行 (減少 70%)
+- Commit: `b9b84ad - refactor(navbar): 簡化頂部導覽列`
 
 ### Phase 5: 頁面 Layout 調整 [⏳ Pending]
 - [ ] 確保內容區域不被底部 navbar 遮擋（`padding-bottom: 64px`）
