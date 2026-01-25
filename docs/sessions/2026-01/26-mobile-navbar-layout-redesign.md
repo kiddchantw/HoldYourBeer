@@ -269,14 +269,33 @@
 - 從 129 行精簡為 40 行 (減少 70%)
 - Commit: `b9b84ad - refactor(navbar): 簡化頂部導覽列`
 
-### Phase 5: 頁面 Layout 調整 [⏳ Pending]
-- [ ] 確保內容區域不被底部 navbar 遮擋（`padding-bottom: 64px`）
-- [ ] 加入 iOS Safe Area 支援（`env(safe-area-inset-bottom)`）
-- [ ] 設定正確的 z-index 層級（navbar: 50）
-- [ ] 調整頁面滾動行為
-- [ ] 檢查所有主要頁面的 layout
-- [ ] 修正任何視覺錯位問題
-- [ ] 驗證 viewport meta tag 包含 `viewport-fit=cover`
+### Phase 5: 頁面 Layout 調整 [✅ Completed]
+- [x] 確保內容區域不被底部 navbar 遮擋（`padding-bottom: 64px`）
+- [x] 加入 iOS Safe Area 支援（`env(safe-area-inset-bottom)`）
+- [x] 設定正確的 z-index 層級（navbar: 50）
+- [x] 調整頁面滾動行為
+- [x] 檢查所有主要頁面的 layout
+- [x] 修正任何視覺錯位問題
+- [x] 驗證 viewport meta tag 包含 `viewport-fit=cover`
+
+**Phase 5 完成細節**:
+- **Padding 調整**:
+  - `app.blade.php` Line 127 已在 Phase 3 設定為 `pb-16` (64px)
+  - 所有使用 `<x-app-layout>` 的頁面自動套用
+- **iOS Safe Area**:
+  - `bottom-navbar.blade.php` Line 3: `padding-bottom: env(safe-area-inset-bottom)`
+  - `@supports` 檢查確保向下相容
+- **Z-Index 層級**:
+  - Top navbar: `z-50`
+  - Bottom navbar: `z-50`
+  - 符合設計規格（navbar: 50, modals: 1000, toasts: 9999）
+- **Viewport Meta Tag**:
+  - 更新為 `width=device-width, initial-scale=1, viewport-fit=cover`
+  - 支援 iPhone X+ 裝置的 notch/Dynamic Island
+- **主要頁面**:
+  - Dashboard, Charts, Profile, History, News 皆使用 app layout
+  - Layout 層級調整，所有頁面自動受益
+- Commit: `dfcb4b3 - feat(layout): 新增 viewport-fit=cover 支援 iOS notch`
 
 ### Phase 6: 響應式設計 [⏳ Pending]
 - [ ] 實作 media queries（手機 < 768px）
