@@ -221,12 +221,12 @@
 - [x] 確認視覺設計規格（顏色、尺寸、字型）
 - [x] 經過 UI/UX Pro Max 審查並修正（移除 Emoji、驗證對比度、補充技術規格）
 
-### Phase 2: 技術規劃 [⏳ Pending]
-- [ ] 確認目前 navbar 的實作位置（Blade template or Vue component）
-- [ ] 評估是否使用前端框架（純 CSS、Tailwind、Bootstrap、Vue/Alpine.js）
-- [ ] 規劃響應式斷點策略
-- [ ] 確認路由系統（Laravel routes）
-- [ ] 檢查是否需要調整現有頁面 layout（避免內容被遮擋）
+### Phase 2: 技術規劃 [✅ Completed]
+- [x] 確認目前 navbar 的實作位置（Blade template + Alpine.js）
+- [x] 評估是否使用前端框架（✅ Tailwind CSS + Alpine.js）
+- [x] 規劃響應式斷點策略（使用 Tailwind `md:` 斷點 = 768px）
+- [x] 確認路由系統（Laravel routes with locale prefix）
+- [x] 檢查是否需要調整現有頁面 layout（需要：目前 footer padding pb-14，改為 pb-16）
 
 ### Phase 3: 實作 - 底部導覽列 [⏳ Pending]
 - [ ] 建立底部導覽列 component/template
@@ -299,6 +299,164 @@
 
 ---
 
+## 🔍 Phase 2: 技術發現 (Technical Discovery)
+
+### 目前系統架構
+
+**前端技術堆疊**:
+- **Framework**: Laravel 12.x with Blade Templates
+- **CSS Framework**: Tailwind CSS 3.x
+- **JavaScript**: Alpine.js 3.4.2 (輕量級互動)
+- **Build Tool**: Vite 7.x
+- **Icons**: 目前未使用 icon 庫（需新增）
+
+**Navbar 實作**:
+- **檔案位置**: `resources/views/layouts/navigation.blade.php`
+- **Layout**: `resources/views/layouts/app.blade.php`
+- **實作方式**:
+  - Blade template 渲染
+  - Alpine.js 處理漢堡選單開關 (`x-data="{ open: false }"`)
+  - Tailwind classes 控制響應式樣式
+  - 桌面版使用 `hidden sm:flex`，手機版使用漢堡選單
+
+**現有導覽結構**:
+
+| 頁面 | 桌面版顯示 | 手機版顯示 | 路由 |
+|------|-----------|-----------|------|
+| Dashboard | ✅ | ✅ (漢堡選單) | `/dashboard` |
+| News | ✅ | ✅ (漢堡選單) | `/news` |
+| Charts | ✅ | ✅ (漢堡選單) | `/charts` |
+| Profile | ✅ | ✅ (漢堡選單) | `/profile` |
+| 重新看教學 | ✅ | ✅ (漢堡選單) | `/onboarding/restart` |
+| Admin | ✅ (條件) | ✅ (條件，漢堡選單) | `/admin/dashboard` |
+
+**路由系統**:
+- 使用 locale prefix: `/{locale}/dashboard`
+- 主要路由定義在 `routes/web.php`
+- Named routes: `localized.dashboard`, `charts`, `profile.edit`
+- 已有完整的多語系支援（`app()->getLocale()`）
+
+**現有響應式設計**:
+- **斷點**: Tailwind 預設 `sm: 640px`, `md: 768px`, `lg: 1024px`
+- **手機版**: `< 640px` 使用漢堡選單
+- **桌面版**: `≥ 640px` 顯示完整導覽連結
+
+**Layout 配置**:
+- **Main content**: `<main class="flex-1 flex flex-col {{ $withFooterPadding ? 'pb-14' : '' }}">`
+- **Footer**: 固定底部，某些頁面會設定 `hide-footer="true"`
+- **Current padding**: `pb-14` (56px) 用於 footer 預留空間
+- **需要調整**: 改為 `pb-16` (64px) 以配合新的 navbar 高度
+
+**需要新增的資源**:
+
+1. **Material Icons CDN**:
+   ```html
+   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+   ```
+   加入位置: `resources/views/layouts/app.blade.php` 的 `<head>` 區塊
+
+2. **底部導覽 Blade 模板**:
+   - 新增: `resources/views/layouts/bottom-navbar.blade.php`
+   - 或 `resources/views/components/bottom-navbar.blade.php` (Blade Component)
+
+3. **CSS 檔案** (可選):
+   - `resources/css/navbar.css` 或直接使用 Tailwind utilities
+
+4. **JavaScript 狀態管理** (可選):
+   - Alpine.js 處理選中狀態
+   - 或使用 Laravel 的 `request()->routeIs()` 判斷
+
+### 技術選擇決策
+
+**選擇**: ✅ **Tailwind CSS + Blade Template + Alpine.js**
+
+**理由**:
+1. **一致性**: 與現有專案架構完全一致
+2. **簡單性**: 不需要引入新的依賴或學習新工具
+3. **效能**: Blade SSR 渲染，Alpine.js 輕量級（15KB）
+4. **維護性**: 團隊已熟悉的技術堆疊
+
+**不選擇 Vue/React 的原因**:
+- 專案已使用 Blade + Alpine.js，沒有 Vue/React
+- 導覽列不需要複雜的狀態管理
+- 避免增加 bundle size 和複雜度
+
+### 響應式斷點策略
+
+**決策**: ✅ **所有裝置統一使用底部導覽**（Option A）
+
+**斷點計畫**:
+```css
+/* 不需要 media queries，所有裝置都顯示底部導覽 */
+.bottom-navbar {
+  display: flex; /* 所有裝置都顯示 */
+}
+
+.top-navbar {
+  /* 簡化頂部，只保留 Logo */
+}
+```
+
+**如果未來需要桌面版不同設計（Option C）**:
+```html
+<!-- 手機版底部導覽 -->
+<nav class="bottom-navbar md:hidden">...</nav>
+
+<!-- 桌面版頂部導覽 -->
+<nav class="top-navbar hidden md:flex">...</nav>
+```
+
+**Tailwind 斷點對映**:
+- `< 768px`: 手機版（底部導覽）
+- `≥ 768px`: 平板/桌面版（目前也使用底部導覽）
+
+### Layout 調整計畫
+
+**需要修改的檔案**:
+
+1. **app.blade.php** (Line 127):
+   ```php
+   <!-- Before -->
+   <main class="flex-1 flex flex-col {{ $withFooterPadding ? 'pb-14' : '' }}">
+
+   <!-- After -->
+   <main class="flex-1 flex flex-col {{ $withFooterPadding ? 'pb-16' : '' }}">
+   <!-- pb-16 = 64px，配合新的 navbar 高度 -->
+   ```
+
+2. **navigation.blade.php**:
+   - 簡化頂部 navbar（移除導覽連結，保留 Logo）
+   - 或完全移除，在 bottom-navbar 中包含 Logo
+
+3. **新增 bottom-navbar.blade.php**:
+   - 固定底部定位 (`fixed bottom-0`)
+   - z-index 50
+   - Safe area padding for iOS
+
+### 路由與狀態管理
+
+**選中狀態判斷** (使用 Blade):
+```php
+<a href="{{ route('localized.dashboard', ['locale' => app()->getLocale()]) }}"
+   class="navbar-item {{ request()->routeIs('localized.dashboard') ? 'active' : '' }}">
+    <span class="material-icons">bar_chart</span>
+    <span>統計</span>
+</a>
+```
+
+**路由對映表**:
+
+| 導覽項目 | Route Name | URL Pattern | Active Check |
+|---------|-----------|-------------|--------------|
+| 統計 | `localized.dashboard` | `/{locale}/dashboard` | `request()->routeIs('localized.dashboard')` |
+| 我的啤酒 | 待新增 | `/{locale}/my-beers` | 待新增路由 |
+| 個人檔案 | `profile.edit` | `/{locale}/profile` | `request()->routeIs('profile.edit')` |
+
+**需要新增的路由**:
+- 「我的啤酒」頁面目前可能不存在，需要確認或新增
+
+---
+
 ## 🚧 Blockers & Solutions
 
 ### Blocker 1: 設計方案未確定 [✅ RESOLVED]
@@ -307,11 +465,11 @@
 - **Solution**: 用戶確認採用 Option A: 完全採用底部導覽
 - **Resolved**: 2026-01-26 - ✅ 已選擇 Option A
 
-### Blocker 2: 不確定目前 navbar 實作方式 [⏸️ PENDING]
+### Blocker 2: 不確定目前 navbar 實作方式 [✅ RESOLVED]
 - **Issue**: 不清楚目前的 navbar 是用 Blade template、Vue component 或其他方式實作
 - **Impact**: 影響重構策略與工具選擇
-- **Solution**: 檢查 `resources/views/layouts/` 和 `resources/js/` 目錄
-- **Resolved**: [待解決]
+- **Solution**: 已檢查專案結構
+- **Resolved**: 2026-01-26 - ✅ 已確認使用 Blade + Tailwind + Alpine.js
 
 ### Blocker 3: 次要功能的重新安排 [⏸️ PENDING]
 - **Issue**: 如果採用 Option A，原本頂部的搜尋、通知、設定等功能需要重新安排位置
