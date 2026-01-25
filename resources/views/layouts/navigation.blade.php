@@ -6,15 +6,10 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center mr-4 sm:mr-6">
                     @if(request()->routeIs('localized.dashboard'))
-                        <!-- Mobile: Open Bottom Sheet -->
-                        <button type="button" @click="$dispatch('open-add-beer')" class="relative sm:hidden group focus:outline-none focus:ring-2 focus:ring-amber-500 rounded p-1 -ml-1">
+                        <!-- Mobile: Link to Dashboard (removed add button) -->
+                        <a href="{{ route('localized.dashboard', ['locale' => app()->getLocale() ?: 'en']) }}" class="sm:hidden focus:outline-none focus:ring-2 focus:ring-amber-500 rounded">
                             <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                            <div class="absolute -bottom-1 -right-1 bg-amber-600 text-white rounded-full w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path>
-                                </svg>
-                            </div>
-                        </button>
+                        </a>
                         <!-- Desktop: Link to Dashboard -->
                         <a href="{{ route('localized.dashboard', ['locale' => app()->getLocale() ?: 'en']) }}" class="hidden sm:block focus:outline-none focus:ring-2 focus:ring-amber-500 rounded">
                             <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />

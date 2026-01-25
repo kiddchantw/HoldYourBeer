@@ -7,8 +7,8 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ $beer->brand->name }} {{ $beer->name }}
             </h2>
-            <div class="text-gray-600 font-medium">
-                {{ __('Current Count') }}: <span x-text="currentCount">{{ $userBeerCount->count }}</span>
+            <div class="text-gray-800 font-semibold text-lg">
+                {{ __('Total Count') }}: <span x-text="currentCount" class="text-amber-600">{{ $userBeerCount->count }}</span>
             </div>
         </div>
     </x-slot>
