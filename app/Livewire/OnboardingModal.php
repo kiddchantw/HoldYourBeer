@@ -26,8 +26,11 @@ class OnboardingModal extends Component
 
     public function skipOnboarding()
     {
-        // 不更新 onboarding_completed_at
-        // 只關閉 Modal，下次登入還會再問
+        // 記錄使用者已跳過導覽,避免重複顯示
+        $user = Auth::user();
+        if ($user) {
+            $user->update(['onboarding_completed_at' => now()]);
+        }
         $this->show = false;
     }
 
