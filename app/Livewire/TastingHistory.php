@@ -146,7 +146,7 @@ class TastingHistory extends Component
 
         // Clear success message after 3 seconds
         $this->dispatch('clear-success-message');
-        $this->dispatch('count-updated', ['count' => $this->userBeerCount->count]);
+        $this->dispatch('count-updated', count: $this->userBeerCount->count);
     }
 
     /**
@@ -174,7 +174,7 @@ class TastingHistory extends Component
         $this->userBeerCount = $this->userBeerCount->fresh();
         $this->successMessage = __('Added 1 unit!');
         $this->dispatch('clear-success-message');
-        $this->dispatch('count-updated', ['count' => $this->userBeerCount->count]);
+        $this->dispatch('count-updated', count: $this->userBeerCount->count);
     }
 
     /**
@@ -205,7 +205,7 @@ class TastingHistory extends Component
         $this->userBeerCount = $this->userBeerCount->fresh();
         $this->successMessage = __('Removed 1 unit!');
         $this->dispatch('clear-success-message');
-        $this->dispatch('count-updated', ['count' => $this->userBeerCount->count]);
+        $this->dispatch('count-updated', count: $this->userBeerCount->count);
     }
 
     /**
