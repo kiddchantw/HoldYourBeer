@@ -297,11 +297,27 @@
   - Layout 層級調整，所有頁面自動受益
 - Commit: `dfcb4b3 - feat(layout): 新增 viewport-fit=cover 支援 iOS notch`
 
-### Phase 6: 響應式設計 [⏳ Pending]
-- [ ] 實作 media queries（手機 < 768px）
+### Phase 6: 響應式設計 [✅ Completed]
+- [x] 實作 media queries（手機 < 768px）
+- [x] 桌面版隱藏底部導覽（≥ 768px）
+- [x] 調整 padding 響應式策略
 - [ ] 測試不同裝置尺寸（iPhone SE, iPhone 12, iPad, Desktop）
 - [ ] 確認橫屏模式的顯示
-- [ ] 桌面版導覽策略（如果採用 Option C）
+
+**Phase 6 完成細節**:
+- **響應式斷點**: Tailwind `md:` 斷點 (768px)
+- **手機版（< 768px）**:
+  - 顯示底部導覽列
+  - Main content `pb-16` (64px padding)
+  - 完整底部導覽功能
+- **桌面版（≥ 768px）**:
+  - 隱藏底部導覽列 (`md:hidden`)
+  - Main content `md:pb-0` (移除底部 padding)
+  - 保留簡化後的頂部導覽（Logo + 品牌 + 語言切換）
+- **實作方式**:
+  - `bottom-navbar.blade.php`: 加入 `md:hidden` class
+  - `app.blade.php`: Padding 改為 `pb-16 md:pb-0`
+- Commit: `d12453b - feat(navbar): 桌面版隱藏底部導覽列`
 
 ### Phase 7: 可及性與測試 [⏳ Pending]
 - [ ] 加入 `aria-labels` 到所有導覽項目
