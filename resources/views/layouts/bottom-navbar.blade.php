@@ -1,5 +1,5 @@
-{{-- Bottom Navigation Bar --}}
-<nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-[0_-2px_8px_rgba(0,0,0,0.1)]"
+{{-- Bottom Navigation Bar - Hidden on Desktop (md:hidden) --}}
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-[0_-2px_8px_rgba(0,0,0,0.1)]"
      style="height: 64px; padding-bottom: env(safe-area-inset-bottom);"
      role="navigation"
      aria-label="{{ __('主要導覽') }}">

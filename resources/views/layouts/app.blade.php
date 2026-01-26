@@ -127,7 +127,7 @@
             @endisset
 
             <!-- Page Content -->
-            <main class="flex-1 flex flex-col {{ $withFooterPadding ? 'pb-16' : '' }}">
+            <main class="flex-1 flex flex-col {{ $withFooterPadding ? 'pb-16 md:pb-0' : '' }}">
                 {{ $slot }}
             </main>
         </div>
