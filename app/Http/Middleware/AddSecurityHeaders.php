@@ -48,17 +48,29 @@ class AddSecurityHeaders
      */
     protected function setContentSecurityPolicy(Response $response): void
     {
+        // Check if running in local environment with Vite dev server
+        $isLocal = app()->environment('local');
+
         $csp = [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://*.googletagmanager.com",
-            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://fonts.bunny.net",
             "img-src 'self' data: https: blob:",
-            "font-src 'self' data: https://cdn.jsdelivr.net https://fonts.bunny.net",
-            "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com " . env('API_URL', config('app.url')),
             "frame-ancestors 'none'",
             "base-uri 'self'",
             "form-action 'self'",
         ];
+
+        // Script sources - add localhost:5173 for Vite in local env
+        if ($isLocal) {
+            $csp[] = "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:5173 https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://*.googletagmanager.com";
+            $csp[] = "style-src 'self' 'unsafe-inline' http://localhost:5173 https://cdn.jsdelivr.net https://unpkg.com https://fonts.bunny.net https://fonts.googleapis.com";
+            $csp[] = "font-src 'self' data: http://localhost:5173 https://cdn.jsdelivr.net https://fonts.bunny.net https://fonts.gstatic.com";
+            $csp[] = "connect-src 'self' ws://localhost:5173 http://localhost:5173 https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com " . env('API_URL', config('app.url'));
+        } else {
+            $csp[] = "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://*.googletagmanager.com";
+            $csp[] = "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://fonts.bunny.net https://fonts.googleapis.com";
+            $csp[] = "font-src 'self' data: https://cdn.jsdelivr.net https://fonts.bunny.net https://fonts.gstatic.com";
+            $csp[] = "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com " . env('API_URL', config('app.url'));
+        }
 
         $response->headers->set('Content-Security-Policy', implode('; ', $csp));
     }
