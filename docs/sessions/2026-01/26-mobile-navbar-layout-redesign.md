@@ -1,1097 +1,200 @@
-# Session: 手機版網頁導覽列改版 - 採用底部導覽設計
+# 手機版與桌面版導航列重設計 (2026-01-26)
 
-**Date**: 2026-01-26
-**Status**: 🔄 Planning
-**Duration**: TBD
-**Issue**: N/A
-**Contributors**: @kiddchan, Claude AI
+## 概述
 
-**Tags**: #product, #ui-ux, #refactor
+重新設計了 HoldYourBeer 應用的導航結構，統一手機版和桌面版的導航菜單，並調整了教學按鈕的位置以優化用戶體驗。
 
-**Categories**: UI/UX Design, Mobile Web, Navigation
+## 主要變更
 
----
+### 1. 登入頁面 Logo 背景移除
+**檔案**: `resources/views/layouts/guest.blade.php`
 
-## 📋 Overview
+**變更內容**:
+- 移除 logo 的白色圓形背景 (`bg-white p-4 rounded-full shadow-xl ring-4 ring-orange-100/50`)
+- logo 圖片現在直接顯示，背景完全透明
+- 保留 `drop-shadow-lg` 以維持視覺深度
 
-### Goal
-將手機版網頁的頂部導覽列（navbar）改為底部導覽列設計，參考 Flutter 端的 bottom navigation bar 配置。
-
-### Related Documents
-- **Flutter 參考實作**: `HoldYourBeer-Flutter/lib/core/widgets/bottom_navigation.dart`
-- **相關 Session**:
-  - [03-navbar-customization.md](03-navbar-customization.md)
-  - [14-navbar-news-feature.md](14-navbar-news-feature.md)
-
-### Screenshots
-- **Flutter 端參考**: 底部導覽包含三個項目（首頁、我的啤酒、個人檔案）
-- **目前網頁端**: 頂部 navbar 配置
-
-### Commits
-- [待補充]
-
----
-
-## 🎯 Context
-
-### Problem
-目前手機版網頁使用頂部導覽列（top navbar），但這與 Flutter 行動應用的使用者體驗不一致。行動裝置使用者更習慣底部導覽列的操作方式，拇指更容易觸及。
-
-### User Story
-> 作為一個使用手機瀏覽網頁的用戶，我希望導覽列位於底部，這樣我可以更輕鬆地單手操作，並且與行動應用的體驗保持一致。
-
-### Current State
-**手機版網頁端**:
-- 導覽列位於頂部
-- 包含 Logo、漢堡選單、主要功能連結
-- 可能包含搜尋、通知等功能
-
-**Flutter 端**:
-- 底部導覽包含 3 個主要項目：
-  1. 首頁 (Home)
-  2. 我的啤酒 (My Beers)
-  3. 個人檔案 (Profile)
-- 使用 icon + label 的設計
-- 當前選中項目有視覺回饋（高亮、顏色變化）
-
-**Gap**:
-- 網頁端與 Flutter 端導覽位置不一致
-- 行動裝置操作不夠友善
-- 視覺設計與品牌體驗不統一
-
----
-
-## 💡 Planning
-
-### Approach Analysis
-
-#### Option A: 完全採用底部導覽 [✅ 已選擇]
-將手機版網頁的主導覽完全移至底部，與 Flutter 端保持一致。
-
-**設計要點**:
-- 底部固定 3 個主要項目（與 Flutter 端一致）
-- 使用 icon + 文字標籤
-- 選中狀態使用品牌色（橘色 #FF9800）
-- 頂部保留品牌 logo 或標題
-- 次要功能（設定、通知）移至各自的頁面或 profile 頁
-
-**Pros**:
-- 與 Flutter 端體驗完全一致
-- 符合行動裝置使用習慣
-- 拇指操作區域友善
-- 視覺焦點集中，更直觀
-
-**Cons**:
-- 需要重新設計頂部區域
-- 原本頂部的次要功能需要重新安排
-- 可能需要調整現有頁面的 layout（避免內容被底部 navbar 遮擋）
-
-#### Option B: 混合式設計 [❌ 未採用]
-保留頂部的品牌識別區域，在底部新增主要導覽功能。
-
-**設計要點**:
-- 頂部：Logo + 搜尋/通知等次要功能
-- 底部：主要導覽 3 項目
-- 頂部可設定為非固定，滾動時隱藏
-
-**Pros**:
-- 保留頂部品牌識別
-- 次要功能不需要重新安排
-- 漸進式改版，風險較低
-
-**Cons**:
-- 佔用更多螢幕空間
-- 可能造成視覺混亂
-- 與 Flutter 端體驗不完全一致
-
-#### Option C: 響應式設計 - 桌面版保留頂部，手機版改底部 [❌ 未採用]
-根據裝置類型調整導覽位置。
-
-**設計要點**:
-- 手機版（< 768px）：底部導覽
-- 平板/桌面版（≥ 768px）：頂部導覽或側邊欄
-- 使用 CSS media queries 實現
-
-**Pros**:
-- 針對不同裝置最佳化
-- 桌面版不受影響
-- 符合響應式設計原則
-
-**Cons**:
-- 需要維護兩套導覽邏輯
-- 開發與測試成本較高
-- 可能增加程式碼複雜度
-
-**Decision Rationale**:
-
-選擇 **Option A: 完全採用底部導覽** 的原因：
-
-1. **與 Flutter 端體驗一致** ✅
-   - 前後端使用者體驗完全統一
-   - 降低使用者學習成本
-   - 品牌體驗一致性
-
-2. **符合行動裝置使用習慣** ✅
-   - 底部導覽位於拇指操作區域（Thumb Zone）
-   - 單手操作更友善
-   - 符合 Material Design 與 iOS HIG 指引
-
-3. **視覺焦點更集中** ✅
-   - 主要功能在底部，視線自然下移
-   - 內容區域更完整
-   - 減少視覺干擾
-
-4. **未來擴充性佳** ✅
-   - 可輕鬆轉換為 PWA
-   - 與原生 App 體驗更接近
-   - 為未來功能擴充預留空間
-
-**捨棄 Option B/C 的原因**:
-- Option B: 佔用過多螢幕空間，手機螢幕寸土寸金
-- Option C: 需要維護兩套導覽邏輯，增加開發與測試成本
-
----
-
-## 🎯 設計規格（初步）
-
-### 底部導覽項目（參考 Flutter 端）
-
-| 項目 | Icon (Material Icons) | Icon (Heroicons) | 文字 | 路由 | 說明 |
-|------|---------------------|------------------|------|------|------|
-| 統計 | `bar_chart` | `chart-bar` | 統計 | `/` 或 `/dashboard` | 統計資料、圖表分析 |
-| 我的啤酒 | `local_bar` | `beaker` 或 Custom SVG | 我的啤酒 | `/my-beers` | 個人收藏、追蹤清單 |
-| 個人檔案 | `person` | `user` | 個人 | `/profile` | 用戶設定、帳號管理 |
-
-**推薦**: 使用 Material Icons (與 Flutter 端保持一致) ✅
-
-### 視覺設計要求
-
-**配色（經過對比度驗證）**:
-- 未選中狀態：
-  - Icon/文字：`#616161` (灰色，對比度 7:1 ✅ WCAG AAA)
-  - 背景：透明或 `#FFFFFF`
-
-- 選中狀態：
-  - Icon/文字：`#E65100` (深橘色，對比度 4.8:1 ✅ WCAG AA)
-  - 背景：`#FFF3E0` (淡橘色，可選)
-  - 指示器：`#FF6F00` (底部 2-3px 線條)
-
-- 導覽列背景：`#FFFFFF` + `box-shadow: 0 -2px 8px rgba(0,0,0,0.1)`
-- 分隔線：`#E0E0E0` (對比度 1.5:1，裝飾性可接受)
-
-**對比度驗證工具**: WebAIM Contrast Checker
-**目標**: WCAG AA Level (4.5:1 for normal text)
-
-**尺寸**:
-- 導覽列高度：64px (更充裕的空間)
-- Icon 大小：24x24px (視覺尺寸)
-- Icon 可點擊區域：48x48px (包含 padding)
-- 文字大小：11-12px
-- Icon 與文字間距：4px
-- 整體觸控區域：48x64px (寬x高) ✅ 符合最小 44px 要求
-- 項目間距：均分剩餘空間
-
-**互動**:
-- 點擊回饋：150ms ease-out (顏色過渡)
-- 選中狀態切換：200ms ease-in-out
-- Ripple effect：300ms (如果使用 Material Design)
-- 頁面切換：250ms ease-out (淡入淡出，optional)
-- 選中項目保持高亮狀態
-
-**效能優化**:
-- 使用 `transform` 和 `opacity` 進行動畫 (GPU 加速)
-- 避免 `width`, `height`, `top`, `left` 動畫
-- 尊重 `prefers-reduced-motion` 設定 (無障礙)
-
-**可及性 (Accessibility)**:
-- 足夠的對比度（WCAG AA 標準）
-- 明確的 aria-label
-- 鍵盤導覽支援
-- 觸控區域至少 48x48px
-
----
-
-## ✅ Implementation Checklist
-
-### Phase 1: 設計確認 [✅ Completed]
-- [x] 截圖參考 Flutter 端設計
-- [x] 建立 session 文件
-- [x] 與用戶確認設計方案（✅ Option A: 完全採用底部導覽）
-- [x] 確認導覽項目與路由對映（統計/我的啤酒/個人檔案）
-- [x] 確認視覺設計規格（顏色、尺寸、字型）
-- [x] 經過 UI/UX Pro Max 審查並修正（移除 Emoji、驗證對比度、補充技術規格）
-
-### Phase 2: 技術規劃 [✅ Completed]
-- [x] 確認目前 navbar 的實作位置（Blade template + Alpine.js）
-- [x] 評估是否使用前端框架（✅ Tailwind CSS + Alpine.js）
-- [x] 規劃響應式斷點策略（使用 Tailwind `md:` 斷點 = 768px）
-- [x] 確認路由系統（Laravel routes with locale prefix）
-- [x] 檢查是否需要調整現有頁面 layout（需要：目前 footer padding pb-14，改為 pb-16）
-
-### Phase 3: 實作 - 底部導覽列 [✅ Completed]
-- [x] 建立底部導覽列 component/template
-- [x] 實作 3 個導覽項目
-- [x] ✅ 加入 Material Icons (CDN 或 npm)
-- [x] ✅ 確認沒有使用 Emoji 作為 icon
-- [x] 實作選中狀態樣式（顏色 + 底部指示線）
-- [x] 實作點擊事件與路由切換
-- [x] 加入過渡動畫（150-250ms）
-- [x] 加入 `cursor-pointer` 到所有可點擊元素
-- [x] 驗證觸控區域至少 48x48px
-
-**Phase 3 完成細節**:
-- 檔案: `resources/views/layouts/bottom-navbar.blade.php` (新建)
-- Material Icons CDN: 加入 `app.blade.php` `<head>` 區塊
-- 導覽項目: 統計 (bar_chart)、我的啤酒 (local_bar)、個人檔案 (person)
-- 顏色規範: 未選中 #616161, 選中 #E65100, 指示線 #FF6F00
-- 觸控目標: 48x48px (min-w-[48px] min-h-[48px])
-- iOS Safe Area: `env(safe-area-inset-bottom)` 支援
-- Accessibility: ARIA labels, focus states, keyboard navigation
-- i18n: 新增繁體中文與英文翻譯
-- Commit: `718e2e4 - feat(navbar): Phase 3 bottom navbar implementation`
-
-### Phase 4: 實作 - 頂部區域調整 [✅ Completed]
-- [x] 移除或簡化頂部 navbar
-- [x] 保留必要的品牌識別（Logo）
-- [x] 重新安排次要功能（搜尋、通知、設定等）
-- [x] 確保頂部區域響應式設計
-
-**Phase 4 完成細節**:
-- 檔案: `resources/views/layouts/navigation.blade.php` (大幅簡化)
-- 移除內容:
-  - 所有導覽連結 (Dashboard, News, Charts, Profile, Tutorial, Admin)
-  - 漢堡選單按鈕及響應式選單
-  - Alpine.js `x-data="{ open: false }"` 依賴
-- 保留內容:
-  - Logo (x-application-logo component)
-  - 品牌文字 "HoldYourBeers" (手機版置中、桌面版靠左)
-  - 語言切換器 (desktop 與 mobile 版本)
-- 從 129 行精簡為 40 行 (減少 70%)
-- Commit: `b9b84ad - refactor(navbar): 簡化頂部導覽列`
-
-### Phase 5: 頁面 Layout 調整 [✅ Completed]
-- [x] 確保內容區域不被底部 navbar 遮擋（`padding-bottom: 64px`）
-- [x] 加入 iOS Safe Area 支援（`env(safe-area-inset-bottom)`）
-- [x] 設定正確的 z-index 層級（navbar: 50）
-- [x] 調整頁面滾動行為
-- [x] 檢查所有主要頁面的 layout
-- [x] 修正任何視覺錯位問題
-- [x] 驗證 viewport meta tag 包含 `viewport-fit=cover`
-
-**Phase 5 完成細節**:
-- **Padding 調整**:
-  - `app.blade.php` Line 127 已在 Phase 3 設定為 `pb-16` (64px)
-  - 所有使用 `<x-app-layout>` 的頁面自動套用
-- **iOS Safe Area**:
-  - `bottom-navbar.blade.php` Line 3: `padding-bottom: env(safe-area-inset-bottom)`
-  - `@supports` 檢查確保向下相容
-- **Z-Index 層級**:
-  - Top navbar: `z-50`
-  - Bottom navbar: `z-50`
-  - 符合設計規格（navbar: 50, modals: 1000, toasts: 9999）
-- **Viewport Meta Tag**:
-  - 更新為 `width=device-width, initial-scale=1, viewport-fit=cover`
-  - 支援 iPhone X+ 裝置的 notch/Dynamic Island
-- **主要頁面**:
-  - Dashboard, Charts, Profile, History, News 皆使用 app layout
-  - Layout 層級調整，所有頁面自動受益
-- Commit: `dfcb4b3 - feat(layout): 新增 viewport-fit=cover 支援 iOS notch`
-
-### Phase 6: 響應式設計 [✅ Completed]
-- [x] 實作 media queries（手機 < 768px）
-- [x] 桌面版隱藏底部導覽（≥ 768px）
-- [x] 調整 padding 響應式策略
-- [ ] 測試不同裝置尺寸（iPhone SE, iPhone 12, iPad, Desktop）
-- [ ] 確認橫屏模式的顯示
-
-**Phase 6 完成細節**:
-- **響應式斷點**: Tailwind `md:` 斷點 (768px)
-- **手機版（< 768px）**:
-  - 顯示底部導覽列
-  - Main content `pb-16` (64px padding)
-  - 完整底部導覽功能
-- **桌面版（≥ 768px）**:
-  - 隱藏底部導覽列 (`md:hidden`)
-  - Main content `md:pb-0` (移除底部 padding)
-  - 保留簡化後的頂部導覽（Logo + 品牌 + 語言切換）
-- **實作方式**:
-  - `bottom-navbar.blade.php`: 加入 `md:hidden` class
-  - `app.blade.php`: Padding 改為 `pb-16 md:pb-0`
-- Commit: `d12453b - feat(navbar): 桌面版隱藏底部導覽列`
-
-### Phase 7: 可及性與測試 [⏳ Pending]
-- [ ] 加入 `aria-labels` 到所有導覽項目
-- [ ] 加入 `aria-current="page"` 到當前頁面
-- [ ] Icon 設定 `aria-hidden="true"`
-- [ ] 測試鍵盤導覽（Tab 順序正確）
-- [ ] 加入 `:focus-visible` 樣式
-- [ ] 測試螢幕閱讀器相容性（VoiceOver/TalkBack）
-- [ ] 使用 WebAIM Contrast Checker 驗證顏色對比度
-- [ ] 觸控區域測試（至少 48x48px）
-- [ ] 加入 `prefers-reduced-motion` 支援
-
-### Phase 8: 瀏覽器測試 [⏳ Pending]
-- [ ] iOS Safari (iPhone SE, 12, 14 Pro, 15 Pro Max)
-- [ ] 測試 iOS Safe Area (有 notch/Dynamic Island 的機型)
-- [ ] 測試橫屏模式
-- [ ] Android Chrome (小/中/大螢幕)
-- [ ] Chrome Desktop (響應式模式)
-- [ ] Firefox (桌面 & Android)
-- [ ] Safari Desktop
-- [ ] 測試 PWA 全螢幕模式（如果適用）
-
-### Phase 9: 整合測試 [⏳ Pending]
-- [ ] 測試路由切換
-- [ ] 測試頁面重整後狀態保持
-- [ ] 測試深層連結（direct URL access）
-- [ ] 測試登入/登出狀態下的導覽
-- [ ] 效能測試（動畫流暢度）
-
-### Phase 10: 部署與監控 [⏳ Pending]
-- [ ] 建立功能分支
-- [ ] Code review
-- [ ] 合併至開發分支
-- [ ] 部署至測試環境
-- [ ] 收集用戶回饋
-- [ ] 修正問題
-- [ ] 部署至正式環境
-
----
-
-## 🔍 Phase 2: 技術發現 (Technical Discovery)
-
-### 目前系統架構
-
-**前端技術堆疊**:
-- **Framework**: Laravel 12.x with Blade Templates
-- **CSS Framework**: Tailwind CSS 3.x
-- **JavaScript**: Alpine.js 3.4.2 (輕量級互動)
-- **Build Tool**: Vite 7.x
-- **Icons**: 目前未使用 icon 庫（需新增）
-
-**Navbar 實作**:
-- **檔案位置**: `resources/views/layouts/navigation.blade.php`
-- **Layout**: `resources/views/layouts/app.blade.php`
-- **實作方式**:
-  - Blade template 渲染
-  - Alpine.js 處理漢堡選單開關 (`x-data="{ open: false }"`)
-  - Tailwind classes 控制響應式樣式
-  - 桌面版使用 `hidden sm:flex`，手機版使用漢堡選單
-
-**現有導覽結構**:
-
-| 頁面 | 桌面版顯示 | 手機版顯示 | 路由 |
-|------|-----------|-----------|------|
-| Dashboard | ✅ | ✅ (漢堡選單) | `/dashboard` |
-| News | ✅ | ✅ (漢堡選單) | `/news` |
-| Charts | ✅ | ✅ (漢堡選單) | `/charts` |
-| Profile | ✅ | ✅ (漢堡選單) | `/profile` |
-| 重新看教學 | ✅ | ✅ (漢堡選單) | `/onboarding/restart` |
-| Admin | ✅ (條件) | ✅ (條件，漢堡選單) | `/admin/dashboard` |
-
-**路由系統**:
-- 使用 locale prefix: `/{locale}/dashboard`
-- 主要路由定義在 `routes/web.php`
-- Named routes: `localized.dashboard`, `charts`, `profile.edit`
-- 已有完整的多語系支援（`app()->getLocale()`）
-
-**現有響應式設計**:
-- **斷點**: Tailwind 預設 `sm: 640px`, `md: 768px`, `lg: 1024px`
-- **手機版**: `< 640px` 使用漢堡選單
-- **桌面版**: `≥ 640px` 顯示完整導覽連結
-
-**Layout 配置**:
-- **Main content**: `<main class="flex-1 flex flex-col {{ $withFooterPadding ? 'pb-14' : '' }}">`
-- **Footer**: 固定底部，某些頁面會設定 `hide-footer="true"`
-- **Current padding**: `pb-14` (56px) 用於 footer 預留空間
-- **需要調整**: 改為 `pb-16` (64px) 以配合新的 navbar 高度
-
-**需要新增的資源**:
-
-1. **Material Icons CDN**:
-   ```html
-   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-   ```
-   加入位置: `resources/views/layouts/app.blade.php` 的 `<head>` 區塊
-
-2. **底部導覽 Blade 模板**:
-   - 新增: `resources/views/layouts/bottom-navbar.blade.php`
-   - 或 `resources/views/components/bottom-navbar.blade.php` (Blade Component)
-
-3. **CSS 檔案** (可選):
-   - `resources/css/navbar.css` 或直接使用 Tailwind utilities
-
-4. **JavaScript 狀態管理** (可選):
-   - Alpine.js 處理選中狀態
-   - 或使用 Laravel 的 `request()->routeIs()` 判斷
-
-### 技術選擇決策
-
-**選擇**: ✅ **Tailwind CSS + Blade Template + Alpine.js**
-
-**理由**:
-1. **一致性**: 與現有專案架構完全一致
-2. **簡單性**: 不需要引入新的依賴或學習新工具
-3. **效能**: Blade SSR 渲染，Alpine.js 輕量級（15KB）
-4. **維護性**: 團隊已熟悉的技術堆疊
-
-**不選擇 Vue/React 的原因**:
-- 專案已使用 Blade + Alpine.js，沒有 Vue/React
-- 導覽列不需要複雜的狀態管理
-- 避免增加 bundle size 和複雜度
-
-### 響應式斷點策略
-
-**決策**: ✅ **所有裝置統一使用底部導覽**（Option A）
-
-**斷點計畫**:
-```css
-/* 不需要 media queries，所有裝置都顯示底部導覽 */
-.bottom-navbar {
-  display: flex; /* 所有裝置都顯示 */
-}
-
-.top-navbar {
-  /* 簡化頂部，只保留 Logo */
-}
+**前後對比**:
+```
+❌ 舊版：<a class="block bg-white p-4 rounded-full shadow-xl ring-4 ring-orange-100/50">
+✅ 新版：<a class="block">
 ```
 
-**如果未來需要桌面版不同設計（Option C）**:
-```html
-<!-- 手機版底部導覽 -->
-<nav class="bottom-navbar md:hidden">...</nav>
+---
 
-<!-- 桌面版頂部導覽 -->
-<nav class="top-navbar hidden md:flex">...</nav>
+### 2. 手機版底部導航列寬度平均化
+**檔案**: `resources/views/layouts/bottom-navbar.blade.php`
+
+**變更內容**:
+- 移除容器的 `justify-around px-4` 約束
+- 為每個導航項目新增 `flex-1` class，使其平均分配寬度
+- 三個 icon 區塊現在平均分配整個底部導航列的寬度
+
+**代碼變化**:
+```blade
+❌ 舊版：<div class="h-full flex items-center justify-around px-4">
+✅ 新版：<div class="h-full flex items-center">
+         <a class="... flex-1 ...">...</a>
 ```
 
-**Tailwind 斷點對映**:
-- `< 768px`: 手機版（底部導覽）
-- `≥ 768px`: 平板/桌面版（目前也使用底部導覽）
+---
 
-### Layout 調整計畫
+### 3. Bottom Sheet 導航時自動關閉
+**檔案**: `resources/views/components/bottom-sheet.blade.php`
 
-**需要修改的檔案**:
+**變更內容**:
+新增三個事件監聽器，防止在頁面導航時新增啤酒 dialog 短暫閃現：
 
-1. **app.blade.php** (Line 127):
-   ```php
-   <!-- Before -->
-   <main class="flex-1 flex flex-col {{ $withFooterPadding ? 'pb-14' : '' }}">
+1. `x-on:beforeunload.window` - 頁面卸載前關閉
+2. `popstate` 事件監聽 - 瀏覽器前進/後退時關閉
+3. `livewire:navigating` 事件監聽 - Livewire 導航開始時關閉
 
-   <!-- After -->
-   <main class="flex-1 flex flex-col {{ $withFooterPadding ? 'pb-16' : '' }}">
-   <!-- pb-16 = 64px，配合新的 navbar 高度 -->
-   ```
+**代碼變化**:
+```blade
+<div
+    x-data="{ open: false }"
+    x-on:open-{{ $name }}.window="open = true"
+    x-on:close-{{ $name }}.window="open = false"
+    x-on:keydown.escape.window="open = false"
+    x-on:beforeunload.window="open = false"  <!-- 新增 -->
+    x-init="
+        window.addEventListener('popstate', () => { open = false });  <!-- 新增 -->
+        document.addEventListener('livewire:navigating', () => { open = false });  <!-- 新增 -->
+    "
+>
+```
 
-2. **navigation.blade.php**:
-   - 簡化頂部 navbar（移除導覽連結，保留 Logo）
-   - 或完全移除，在 bottom-navbar 中包含 Logo
+---
 
-3. **新增 bottom-navbar.blade.php**:
-   - 固定底部定位 (`fixed bottom-0`)
-   - z-index 50
-   - Safe area padding for iOS
+### 4. 導航列路由修正
+**檔案**:
+- `resources/views/layouts/navigation.blade.php` (桌面版)
+- `resources/views/layouts/bottom-navbar.blade.php` (手機版)
 
-### 路由與狀態管理
+#### 問題：
+- 「統計」按鈕連結到 dashboard 而非 charts 頁面
+- 「我的啤酒」按鈕缺少高亮狀態判斷
 
-**選中狀態判斷** (使用 Blade):
-```php
-<a href="{{ route('localized.dashboard', ['locale' => app()->getLocale()]) }}"
-   class="navbar-item {{ request()->routeIs('localized.dashboard') ? 'active' : '' }}">
-    <span class="material-icons">bar_chart</span>
-    <span>統計</span>
+#### 解決方案：
+
+**統計按鈕**:
+- ❌ 舊路由：`route('localized.dashboard')`
+- ✅ 新路由：`route('charts')`
+- ✅ 新增高亮狀態：`request()->routeIs('charts')`
+
+**我的啤酒按鈕**:
+- ✅ 路由正確：`route('localized.dashboard')`
+- ✅ 新增高亮狀態：`request()->routeIs('localized.dashboard')`
+- ✅ 新增底部指示線（active indicator）
+
+---
+
+### 5. 導航菜單結構重組
+**檔案**:
+- `resources/views/layouts/navigation.blade.php` (桌面版)
+- `resources/views/layouts/bottom-navbar.blade.php` (手機版)
+
+#### 新導航結構：
+
+| 項目 | 桌面版 | 手機版 | 路由 | 圖示 |
+|------|--------|--------|------|------|
+| **News** | ✅ 文字 | ✅ icon + 文字 | `news.index` | `article` |
+| **我的啤酒** | ✅ 文字 | ✅ icon + 文字 | `localized.dashboard` | `local_bar` |
+| **統計** | ✅ 文字 | ✅ icon + 文字 | `charts` | `bar_chart` |
+| **個人檔案** | ✅ 文字 | ✅ icon + 文字 | `profile.edit` | `person` |
+| **教學** | ✅ 文字 | ❌ 頂部 icon | `onboarding.restart` | `help_outline` |
+
+**菜單順序**:
+```
+News → My Beers → Statistics → Profile → (Desktop Only: Tutorial)
+```
+
+---
+
+### 6. 教學按鈕位置安排
+
+#### 桌面版：
+- **位置**: 在「個人檔案」之後
+- **顯示**: 文字 "教學"
+- **路由**: `onboarding.restart`
+- **樣式**: 與其他項目一致，hover 時變色
+
+#### 手機版：
+- **位置**: 頂部導航列，logo 右邊（`md:hidden` 隱藏於桌面）
+- **顯示**: 圖示按鈕 `help_outline` (問號圓圈)
+- **樣式**: 圓形按鈕 (w-9 h-9)，橘色圖示 (text-amber-600)
+- **路由**: `onboarding.restart`
+- **Aria Label**: `{{ __('教學') }}`
+
+**代碼實現**:
+```blade
+<!-- Desktop: Text Link -->
+<a href="{{ route('onboarding.restart', ...) }}">{{ __('教學') }}</a>
+
+<!-- Mobile: Icon Button (md:hidden) -->
+<a href="{{ route('onboarding.restart', ...) }}" class="md:hidden">
+    <span class="material-icons help_outline"></span>
 </a>
 ```
 
-**路由對映表**:
+---
 
-| 導覽項目 | Route Name | URL Pattern | Active Check |
-|---------|-----------|-------------|--------------|
-| 統計 | `localized.dashboard` | `/{locale}/dashboard` | `request()->routeIs('localized.dashboard')` |
-| 我的啤酒 | 待新增 | `/{locale}/my-beers` | 待新增路由 |
-| 個人檔案 | `profile.edit` | `/{locale}/profile` | `request()->routeIs('profile.edit')` |
+## 受影響的檔案
 
-**需要新增的路由**:
-- 「我的啤酒」頁面目前可能不存在，需要確認或新增
+1. ✅ `resources/views/layouts/guest.blade.php` - Logo 背景移除
+2. ✅ `resources/views/layouts/navigation.blade.php` - 導航結構、教學按鈕
+3. ✅ `resources/views/layouts/bottom-navbar.blade.php` - 導航結構、寬度平均化
+4. ✅ `resources/views/components/bottom-sheet.blade.php` - 自動關閉邏輯
+
+## 測試清單
+
+- [ ] 手機版：logo 背景透明顯示正確
+- [ ] 手機版：底部導航 4 個按鈕平均寬度
+- [ ] 手機版：點擊導航按鈕不會閃現新增啤酒 dialog
+- [ ] 手機版：點擊 News 按鈕能跳轉到 news.index
+- [ ] 手機版：點擊 My Beers 按鈕能跳轉到 localized.dashboard
+- [ ] 手機版：點擊 Statistics 按鈕能跳轉到 charts
+- [ ] 手機版：點擊 Profile 按鈕能跳轉到 profile.edit
+- [ ] 手機版：頂部 logo 右邊教學按鈕顯示正確
+- [ ] 手機版：點擊教學按鈕能跳轉到 onboarding.restart
+- [ ] 桌面版：導航列順序正確 (News → My Beers → Statistics → Profile → Tutorial)
+- [ ] 桌面版：統計按鈕連結到 charts 頁面
+- [ ] 桌面版：所有按鈕高亮狀態判斷正確
+- [ ] 桌面版：點擊教學按鈕能跳轉到 onboarding.restart
+- [ ] 兩個版本：active 狀態顯示橘色 (#E65100) 和底部指示線
+
+## 注意事項
+
+1. **教學按鈕不同位置**:
+   - 桌面版：導航菜單中的文字連結
+   - 手機版：頂部導航列的圖示按鈕
+   - 保持底部導航列為 4 個項目，不引入視覺擁擠
+
+2. **Icon 使用**:
+   - 所有 icon 使用 Material Icons (`material-icons` class)
+   - News: `article`
+   - My Beers: `local_bar`
+   - Statistics: `bar_chart`
+   - Profile: `person`
+   - Tutorial: `help_outline`
+
+3. **路由狀態判斷**:
+   - 使用 `request()->routeIs()` 判斷當前頁面
+   - News: `news.index`
+   - My Beers: `localized.dashboard`
+   - Statistics: `charts`
+   - Profile: `profile.edit`
+   - Tutorial: (無 active 狀態判斷)
+
+## 後續改進建議
+
+1. 考慮為教學按鈕新增 tooltip 說明
+2. 監測用戶在教學按鈕的點擊率
+3. 評估手機版頂部按鈕的可發現性
+4. 考慮在首次使用時自動開啟教學，而不需點擊按鈕
 
 ---
 
-## 🚧 Blockers & Solutions
-
-### Blocker 1: 設計方案未確定 [✅ RESOLVED]
-- **Issue**: 需要確認採用 Option A/B/C 哪個方案
-- **Impact**: 無法開始技術規劃與實作
-- **Solution**: 用戶確認採用 Option A: 完全採用底部導覽
-- **Resolved**: 2026-01-26 - ✅ 已選擇 Option A
-
-### Blocker 2: 不確定目前 navbar 實作方式 [✅ RESOLVED]
-- **Issue**: 不清楚目前的 navbar 是用 Blade template、Vue component 或其他方式實作
-- **Impact**: 影響重構策略與工具選擇
-- **Solution**: 已檢查專案結構
-- **Resolved**: 2026-01-26 - ✅ 已確認使用 Blade + Tailwind + Alpine.js
-
-### Blocker 3: 次要功能的重新安排 [⏸️ PENDING]
-- **Issue**: 如果採用 Option A，原本頂部的搜尋、通知、設定等功能需要重新安排位置
-- **Impact**: 可能需要額外的設計與開發工作
-- **Solution**:
-  - 搜尋：移至首頁頂部或獨立頁面
-  - 通知：加入 badge 到 profile icon 或獨立頁面
-  - 設定：放在 profile 頁面內
-- **Resolved**: [待解決]
-
----
-
-## 🎨 設計參考
-
-### Flutter 端實作檔案位置
-```
-HoldYourBeer-Flutter/
-└── lib/
-    └── core/
-        └── widgets/
-            └── bottom_navigation.dart
-```
-
-### 可能的技術選型
-
-#### 前端實作方式
-1. **純 HTML/CSS + Blade Template** (最簡單)
-   - 適合靜態導覽
-   - 使用 CSS `position: fixed; bottom: 0;`
-   - Laravel routes 處理頁面切換
-
-2. **Tailwind CSS** (如果專案已使用)
-   - 快速建立響應式設計
-   - 豐富的 utility classes
-
-3. **Alpine.js** (輕量級互動)
-   - 加入簡單的狀態管理
-   - 處理選中狀態切換
-
-4. **Vue.js Component** (如果專案已使用 Vue)
-   - 完整的元件化設計
-   - 易於管理狀態與互動
-
-#### Icon 選擇
-
-**推薦順序** (⚠️ 禁止使用 Emoji):
-
-1. **Material Icons** ✅ 推薦
-   - 與 Flutter Material Design 完全一致
-   - 支援 filled/outlined 兩種風格
-   - CDN: `https://fonts.googleapis.com/icon?family=Material+Icons`
-
-2. **Heroicons** (Tailwind 官方推薦)
-   - 現代、清晰的設計
-   - Solid/Outline 兩種風格
-   - 輕量級 SVG
-
-3. **Lucide Icons** (現代替代方案)
-   - Fork from Feather Icons
-   - 一致性高、可自訂性強
-
-4. **Custom SVG Icons** (最靈活)
-   - 可完全客製化
-   - 但需要管理檔案與版本控制
-
-**❌ 禁止使用**:
-- Emoji (🏠 🍺 👤) - 平台渲染不一致、無法控制顏色、影響可及性
-
----
-
-## 🎨 技術實作規格（詳細）
-
-### Icon 系統實作
-
-**選擇**: Material Icons (與 Flutter 端一致) ✅
-
-**導覽 Icons 對映**:
-
-| 功能 | Material Icon | 狀態 | 備註 |
-|------|---------------|------|------|
-| 統計 | `bar_chart` | filled/outlined | 長條圖樣式 |
-| 我的啤酒 | `local_bar` | filled/outlined | 雞尾酒杯，可代表飲品 |
-| 個人檔案 | `person` | filled/outlined | 人物圖示 |
-
-**實作方式**:
-
-```html
-<!-- Material Icons CDN -->
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-<!-- 導覽項目範例 -->
-<a href="/dashboard" class="navbar-item active">
-  <span class="material-icons">bar_chart</span>
-  <span class="navbar-label">統計</span>
-</a>
-```
-
-**狀態切換 CSS**:
-
-```css
-.navbar-item {
-  color: #616161; /* 未選中 */
-  transition: color 200ms ease-in-out;
-}
-
-.navbar-item.active {
-  color: #E65100; /* 選中 */
-}
-
-.navbar-item.active .navbar-label {
-  font-weight: 600;
-}
-```
-
----
-
-### 固定定位與 Layout 系統
-
-**底部導覽固定定位**:
-
-```css
-.bottom-navbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 50; /* 確保在內容之上，低於 modal (z-index: 100) */
-  height: 64px;
-  padding-bottom: env(safe-area-inset-bottom); /* iOS 安全區域 */
-  background: #FFFFFF;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
-```
-
-**內容區域調整 (避免遮擋)**:
-
-```css
-.main-content {
-  padding-bottom: calc(64px + env(safe-area-inset-bottom));
-  /* 導覽列高度 + iOS 安全區域 */
-}
-
-/* 如果使用 Tailwind */
-.main-content {
-  @apply pb-16; /* 64px = 16 * 4px */
-  padding-bottom: calc(theme('spacing.16') + env(safe-area-inset-bottom));
-}
-```
-
-**Z-Index 管理**:
-
-| 元素 | Z-Index | 說明 |
-|------|---------|------|
-| 一般內容 | 0-9 | 預設層級 |
-| Sticky Header | 10 | 固定頂部元素 |
-| Bottom Navbar | 50 | 底部導覽 ✅ |
-| Dropdown/Menu | 100 | 下拉選單 |
-| Modal/Dialog | 1000 | 彈窗 |
-| Toast/Notification | 9999 | 通知訊息 |
-
----
-
-### 顏色系統 (CSS Variables)
-
-```css
-:root {
-  /* 底部導覽配色 */
-  --navbar-bg: #FFFFFF;
-  --navbar-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-  --navbar-border: #E0E0E0;
-
-  /* Icon & 文字顏色 */
-  --navbar-inactive: #616161; /* 對比度 7:1 ✅ WCAG AAA */
-  --navbar-active: #E65100;   /* 對比度 4.8:1 ✅ WCAG AA */
-  --navbar-active-bg: #FFF3E0; /* 可選的選中背景 */
-  --navbar-indicator: #FF6F00; /* 底部指示線 */
-}
-
-/* Dark Mode (如果需要) */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --navbar-bg: #1F1F1F;
-    --navbar-shadow: 0 -2px 8px rgba(0, 0, 0, 0.5);
-    --navbar-inactive: #B0B0B0;
-    --navbar-active: #FFB74D; /* 淺橘色，對比度足夠 */
-  }
-}
-```
-
-**使用方式**:
-
-```css
-.bottom-navbar {
-  background: var(--navbar-bg);
-  box-shadow: var(--navbar-shadow);
-}
-
-.navbar-item {
-  color: var(--navbar-inactive);
-}
-
-.navbar-item.active {
-  color: var(--navbar-active);
-}
-```
-
----
-
-### 動畫與過渡系統
-
-**CSS Transitions**:
-
-```css
-.navbar-item {
-  transition: color 200ms ease-in-out,
-              transform 150ms ease-out;
-}
-
-.navbar-item:hover {
-  transform: translateY(-2px); /* 微妙的上移效果 */
-}
-
-.navbar-item:active {
-  transform: translateY(0); /* 點擊時回彈 */
-}
-
-/* 選中狀態的指示線 */
-.navbar-item::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%) scaleX(0);
-  width: 32px;
-  height: 3px;
-  background: var(--navbar-indicator);
-  border-radius: 2px 2px 0 0;
-  transition: transform 250ms ease-out;
-}
-
-.navbar-item.active::after {
-  transform: translateX(-50%) scaleX(1);
-}
-```
-
-**尊重使用者偏好 (無障礙)**:
-
-```css
-@media (prefers-reduced-motion: reduce) {
-  .navbar-item,
-  .navbar-item::after {
-    transition: none;
-  }
-}
-```
-
----
-
-### iOS Safari 特殊處理
-
-**Safe Area Insets (iPhone X 及以上)**:
-
-```css
-.bottom-navbar {
-  /* 基礎高度 64px + 底部安全區域 */
-  height: calc(64px + env(safe-area-inset-bottom));
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
-/* 或使用 Tailwind plugin */
-.bottom-navbar {
-  @apply h-16 pb-safe;
-}
-```
-
-**Viewport Meta Tag**:
-
-```html
-<meta name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover">
-```
-
-**PWA 全螢幕支援**:
-
-```css
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-  .bottom-navbar {
-    padding-bottom: max(16px, env(safe-area-inset-bottom));
-    /* 至少 16px padding，或更大的安全區域 */
-  }
-}
-```
-
-**測試裝置重點**:
-- iPhone SE (小螢幕)
-- iPhone 12/13 (標準 notch)
-- iPhone 14 Pro (Dynamic Island)
-- iPhone 15 Pro Max (最大尺寸)
-- iPad Mini (平板模式切換)
-
----
-
-### 響應式斷點策略
-
-**斷點定義** (如果採用 Option C):
-
-```css
-/* 手機版 - 底部導覽 */
-@media (max-width: 767px) {
-  .bottom-navbar {
-    display: flex; /* 顯示底部導覽 */
-  }
-
-  .top-navbar {
-    display: none; /* 隱藏頂部導覽 */
-  }
-}
-
-/* 平板/桌面版 - 頂部或側邊導覽 */
-@media (min-width: 768px) {
-  .bottom-navbar {
-    display: none; /* 隱藏底部導覽 */
-  }
-
-  .top-navbar {
-    display: flex; /* 顯示頂部導覽 */
-  }
-}
-```
-
-**Tailwind 實作** (推薦):
-
-```html
-<nav class="bottom-navbar md:hidden">
-  <!-- 手機版底部導覽 -->
-</nav>
-
-<nav class="top-navbar hidden md:flex">
-  <!-- 桌面版頂部導覽 -->
-</nav>
-```
-
----
-
-### 可及性 (Accessibility) 實作
-
-**ARIA Labels**:
-
-```html
-<nav class="bottom-navbar" role="navigation" aria-label="主要導覽">
-  <a href="/dashboard"
-     class="navbar-item active"
-     aria-label="統計頁面"
-     aria-current="page">
-    <span class="material-icons" aria-hidden="true">bar_chart</span>
-    <span class="navbar-label">統計</span>
-  </a>
-
-  <a href="/my-beers"
-     class="navbar-item"
-     aria-label="我的啤酒">
-    <span class="material-icons" aria-hidden="true">local_bar</span>
-    <span class="navbar-label">我的啤酒</span>
-  </a>
-
-  <a href="/profile"
-     class="navbar-item"
-     aria-label="個人檔案">
-    <span class="material-icons" aria-hidden="true">person</span>
-    <span class="navbar-label">個人</span>
-  </a>
-</nav>
-```
-
-**鍵盤導覽**:
-
-```css
-.navbar-item:focus {
-  outline: 2px solid #E65100;
-  outline-offset: 2px;
-}
-
-.navbar-item:focus:not(:focus-visible) {
-  outline: none; /* 隱藏滑鼠點擊時的 outline */
-}
-
-.navbar-item:focus-visible {
-  outline: 2px solid #E65100;
-  outline-offset: 2px;
-}
-```
-
-**觸控目標尺寸驗證**:
-
-```css
-.navbar-item {
-  min-width: 48px;
-  min-height: 48px;
-  padding: 8px 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
-```
-
----
-
-### 瀏覽器相容性
-
-**目標支援**:
-
-| 瀏覽器 | 版本 | 特殊處理 |
-|--------|------|----------|
-| iOS Safari | 14+ | Safe area insets |
-| Android Chrome | 90+ | 標準支援 |
-| Chrome Desktop | 90+ | 標準支援 |
-| Firefox | 88+ | 標準支援 |
-| Safari Desktop | 14+ | 標準支援 |
-
-**CSS Feature Detection**:
-
-```css
-/* 檢查是否支援 env() */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-  .bottom-navbar {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-}
-
-/* 檢查是否支援 CSS Grid */
-@supports (display: grid) {
-  .bottom-navbar {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* Fallback for older browsers */
-@supports not (display: grid) {
-  .bottom-navbar {
-    display: flex;
-    justify-content: space-around;
-  }
-}
-```
-
----
-
-## 📊 Outcome
-
-### What Will Be Built
-[實作完成後填寫]
-
-### Files To Be Created/Modified
-```
-resources/
-├── views/
-│   ├── layouts/
-│   │   ├── app.blade.php (修改：調整 layout 結構)
-│   │   └── partials/
-│   │       ├── bottom-navbar.blade.php (新增：底部導覽)
-│   │       └── top-header.blade.php (修改：簡化頂部)
-│   └── components/
-│       └── navbar-item.blade.php (新增：導覽項目元件)
-├── css/
-│   └── navbar.css (新增或修改：導覽樣式)
-└── js/
-    └── navbar.js (可選：互動邏輯)
-```
-
-### Metrics
-- **預估修改檔案數**: 5-10 個
-- **預估新增行數**: 200-300 行
-- **預估測試時間**: 2-3 小時
-- **預估開發時間**: 4-6 小時
-
----
-
-## 🎓 Lessons Learned
-
-### 1. [待實作後補充]
-**Learning**:
-
-**Solution/Pattern**:
-
-**Future Application**:
-
----
-
-## ✅ Completion
-
-**Status**: 🔄 Planning
-**Completed Date**: TBD
-**Session Duration**: TBD
-
----
-
-## 🔮 Future Improvements
-
-### Not Implemented (Intentional)
-- ⏳ 桌面版側邊欄設計（先專注於手機版）
-- ⏳ 進階動畫效果（頁面切換、手勢操作）
-- ⏳ PWA 整合（底部導覽與 app-like 體驗）
-
-### Potential Enhancements
-- 📌 加入第 4 個導覽項目（例如：探索、社群）
-- 📌 導覽列自適應隱藏（向下滾動時隱藏，向上滾動時顯示）
-- 📌 長按導覽項目顯示快捷選單
-- 📌 底部導覽的通知 badge（未讀訊息、更新提醒）
-
-### Technical Debt
-- 🔧 需要確保與現有認證系統（Sanctum）的整合
-- 🔧 可能需要調整 middleware 或 route guards
-- 🔧 確保 SEO 友善（雖然是 SPA-like 但仍需考慮）
-
----
-
-## 🔗 References
-
-### Related Work
-- [Material Design - Bottom Navigation](https://m3.material.io/components/navigation-bar/overview)
-- [iOS Human Interface Guidelines - Tab Bars](https://developer.apple.com/design/human-interface-guidelines/tab-bars)
-
-### External Resources
-- [Mobile UX Best Practices](https://www.nngroup.com/articles/mobile-navigation-patterns/)
-- [Responsive Navigation Patterns](https://bradfrost.com/blog/web/responsive-nav-patterns/)
-
-### Team Discussions
-- [待補充]
-
----
-
-## 🤔 Questions for User
-
-1. **設計方案選擇**: 你偏好哪個方案？
-   - A: 完全底部導覽（推薦）
-   - B: 混合式設計
-   - C: 響應式設計
-
-2. **導覽項目確認**: 是否確認使用 Flutter 端的 3 項目配置？
-   - 首頁 / 我的啤酒 / 個人檔案
-   - 或需要調整/新增項目？
-
-3. **次要功能處理**: 原本頂部的功能（搜尋、通知、設定）如何處理？
-   - 移至各自的頁面？
-   - 保留在頂部簡化版？
-   - 整合到 profile 頁面？
-
-4. **視覺風格**: 是否完全參考 Flutter 端的視覺設計？
-   - 顏色、字型、icon 風格
-   - 或需要調整以符合網頁端品牌識別？
-
-5. **開發優先級**: 此改版的優先級如何？
-   - 高（立即開始）
-   - 中（1-2 週內）
-   - 低（可排程）
-
-6. **測試範圍**: 是否需要建立自動化測試？
-   - E2E 測試（Cypress/Playwright）
-   - 視覺回歸測試
-   - 或僅手動測試？
+**更新時間**: 2026-01-26
+**異動人員**: Claude Code Assistant
+**優先級**: Medium
