@@ -1,10 +1,15 @@
 @props(['name', 'maxHeight' => '80vh'])
 
-<div 
+<div
     x-data="{ open: false }"
     x-on:open-{{ $name }}.window="open = true"
     x-on:close-{{ $name }}.window="open = false"
     x-on:keydown.escape.window="open = false"
+    x-on:beforeunload.window="open = false"
+    x-init="
+        window.addEventListener('popstate', () => { open = false });
+        document.addEventListener('livewire:navigating', () => { open = false });
+    "
 >
     {{-- Backdrop --}}
     <div 
