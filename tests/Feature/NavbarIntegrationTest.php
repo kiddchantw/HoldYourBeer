@@ -24,7 +24,7 @@ class NavbarIntegrationTest extends TestCase
 
         // Act
         $response = $this->actingAs($user)
-            ->get(route('dashboard', ['locale' => 'en']));
+            ->get(route('localized.dashboard', ['locale' => 'en']));
 
         // Assert
         $response->assertOk();
@@ -57,17 +57,62 @@ class NavbarIntegrationTest extends TestCase
 
         // Act
         $response = $this->actingAs($user)
-            ->get(route('dashboard', ['locale' => 'en']));
+            ->get(route('localized.dashboard', ['locale' => 'en']));
 
         // Assert
         // 驗證 News 在 Dashboard 和 Charts 之間
         // 這比較難直接用 assertSeeInOrder 驗證，因為 HTML 結構複雜
         // 但我們可以驗證這三個連結都存在
-        $response->assertSee('Dashboard');
+        $response->assertSee('My Beers');
         $response->assertSee('News');
-        $response->assertSee('Charts');
+        $response->assertSee('Statistics');
         
         // 簡單驗證順序（基於 HTML 原始碼順序）
-        $response->assertSeeInOrder(['Dashboard', 'News', 'Charts']);
+        $response->assertSeeInOrder(['News', 'My Beers', 'Statistics']);
+    }
+
+    /** @test */
+    public function admin_link_is_visible_for_admin_users()
+    {
+        // Arrange
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        // Act
+        $response = $this->actingAs($admin)
+            ->get(route('localized.dashboard', ['locale' => 'en']));
+
+        // Assert
+        $response->assertSee('Admin');
+    }
+
+    /** @test */
+    public function admin_link_is_not_visible_for_regular_users()
+    {
+        // Arrange
+        $user = User::factory()->create(['role' => 'user']);
+
+        // Act
+        $response = $this->actingAs($user)
+            ->get(route('localized.dashboard', ['locale' => 'en']));
+
+        // Assert
+        $response->assertDontSee('Admin');
+    }
+
+    /** @test */
+    public function tutorial_link_supports_multi_language()
+    {
+        // Arrange
+        $user = User::factory()->create();
+
+        // Act & Assert (English)
+        $this->actingAs($user)
+            ->get(route('localized.dashboard', ['locale' => 'en']))
+            ->assertSee('Tutorial');
+
+        // Act & Assert (Chinese)
+        $this->actingAs($user)
+            ->get(route('localized.dashboard', ['locale' => 'zh-TW']))
+            ->assertSee('教學');
     }
 }

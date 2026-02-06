@@ -39,11 +39,11 @@ class MultilingualSwitchingTest extends TestCase
 
         $this->actingAs($user)
             ->get('/zh-TW/dashboard')
-            ->assertSee('儀表板');
+            ->assertSee('我的啤酒');
 
         $this->actingAs($user)
             ->get('/en/dashboard')
-            ->assertSee('Dashboard');
+            ->assertSee('My Beers');
     }
 
     #[Test]
