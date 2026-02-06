@@ -11,7 +11,7 @@
                 <!-- Tutorial Button (Mobile Only) -->
                 <a href="{{ route('onboarding.restart', ['locale' => app()->getLocale() ?: 'en']) }}"
                    class="md:hidden flex items-center justify-center w-9 h-9 rounded-full hover:bg-amber-50 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500"
-                   aria-label="{{ __('教學') }}">
+                   aria-label="{{ __('Tutorial') }}">
                     <span class="material-icons text-2xl text-amber-600">help_outline</span>
                 </a>
             </div>
@@ -32,19 +32,25 @@
                 </a>
                 <a href="{{ route('localized.dashboard', ['locale' => app()->getLocale() ?: 'en']) }}"
                    class="px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('localized.dashboard') ? 'text-amber-600 bg-amber-50' : 'text-gray-600 hover:text-amber-600 hover:bg-amber-50' }}">
-                    {{ __('我的啤酒') }}
+                    {{ __('My Beers') }}
                 </a>
                 <a href="{{ route('charts', ['locale' => app()->getLocale() ?: 'en']) }}"
                    class="px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('charts') ? 'text-amber-600 bg-amber-50' : 'text-gray-600 hover:text-amber-600 hover:bg-amber-50' }}">
-                    {{ __('統計') }}
+                    {{ __('Statistics') }}
                 </a>
                 <a href="{{ route('profile.edit', ['locale' => app()->getLocale() ?: 'en']) }}"
                    class="px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('profile.edit') ? 'text-amber-600 bg-amber-50' : 'text-gray-600 hover:text-amber-600 hover:bg-amber-50' }}">
-                    {{ __('個人檔案') }}
+                    {{ __('Profile Page') }}
                 </a>
+                @if(auth()->check() && auth()->user()->role === 'admin')
+                    <a href="{{ route('admin.dashboard', ['locale' => app()->getLocale() ?: 'en']) }}"
+                       class="px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('admin.*') ? 'text-amber-600 bg-amber-50' : 'text-gray-600 hover:text-amber-600 hover:bg-amber-50' }}">
+                        {{ __('Admin') }}
+                    </a>
+                @endif
                 <a href="{{ route('onboarding.restart', ['locale' => app()->getLocale() ?: 'en']) }}"
                    class="px-3 py-2 text-sm font-medium rounded-md transition-colors text-gray-600 hover:text-amber-600 hover:bg-amber-50">
-                    {{ __('教學') }}
+                    {{ __('Tutorial') }}
                 </a>
             </div>
 
