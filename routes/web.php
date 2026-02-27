@@ -42,6 +42,15 @@ Route::group(['prefix' => '{locale}', 'middleware' => ['setLocale'], 'where' => 
         return view('privacy-policy');
     })->name('localized.privacy-policy');
 
+    // Embed routes for mobile app WebView (no auth required)
+    Route::get('/privacy-policy/embed', function () {
+        return view('embed.privacy-policy');
+    })->name('localized.privacy-policy.embed');
+
+    Route::get('/terms-of-service/embed', function () {
+        return view('embed.terms-of-service');
+    })->name('localized.terms-of-service.embed');
+
     Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('localized.dashboard');
 
     // Auth routes with locale
