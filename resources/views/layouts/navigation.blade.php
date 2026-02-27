@@ -8,12 +8,14 @@
                    class="focus:outline-none focus:ring-2 focus:ring-amber-500 rounded">
                     <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                 </a>
-                <!-- Tutorial Button (Mobile Only) -->
+                <!-- Tutorial Button (Mobile Only, 統計頁不顯示) -->
+                @unless(request()->routeIs('charts'))
                 <a href="{{ route('onboarding.restart', ['locale' => app()->getLocale() ?: 'en']) }}"
                    class="md:hidden flex items-center justify-center w-9 h-9 rounded-full hover:bg-amber-50 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500"
                    aria-label="{{ __('Tutorial') }}">
                     <span class="material-icons text-2xl text-amber-600">help_outline</span>
                 </a>
+                @endunless
             </div>
 
             <!-- Center Brand Text (Mobile Only) - Absolutely Centered -->
@@ -54,9 +56,18 @@
                 </a>
             </div>
 
-            <!-- Right Side: Language Switcher -->
+            <!-- Right Side -->
             <div class="flex items-center">
-                <x-language-switcher />
+                {{-- Search Button (Mobile Only, 只在我的啤酒頁顯示) --}}
+                @if(request()->routeIs('localized.dashboard'))
+                <button type="button"
+                        x-data
+                        @click="$dispatch('toggle-beer-search')"
+                        class="md:hidden flex items-center justify-center w-9 h-9 rounded-full hover:bg-amber-100 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        aria-label="{{ __('Search') }}">
+                    <span class="material-icons text-xl text-gray-600">search</span>
+                </button>
+                @endif
             </div>
         </div>
     </div>

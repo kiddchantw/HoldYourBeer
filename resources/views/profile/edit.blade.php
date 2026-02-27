@@ -18,8 +18,8 @@
                         </div>
                     </div>
 
-                    <!-- Connected Accounts -->
-                    <div class="p-4 sm:p-8 bg-white/60 backdrop-blur-sm shadow sm:rounded-lg">
+                    <!-- Connected Accounts (Desktop only) -->
+                    <div class="hidden md:block p-4 sm:p-8 bg-white/60 backdrop-blur-sm shadow sm:rounded-lg">
                         <div class="max-w-xl">
                             @include('profile.partials.connected-accounts-form')
                         </div>
@@ -35,6 +35,25 @@
 
                 <!-- Right Column -->
                 <div class="space-y-6">
+                    <!-- Language Settings -->
+                    <div class="p-4 sm:p-8 bg-white/60 backdrop-blur-sm shadow sm:rounded-lg">
+                        <div class="max-w-xl">
+                            <section class="space-y-4">
+                                <header>
+                                    <h2 class="text-lg font-medium text-gray-900">
+                                        {{ __('Language Settings') }}
+                                    </h2>
+                                    <p class="mt-1 text-sm text-gray-600">
+                                        {{ __('Switch the application display language.') }}
+                                    </p>
+                                </header>
+                                <div>
+                                    <x-language-switcher />
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+
                     <!-- Update Password -->
                     <div class="p-4 sm:p-8 bg-white/60 backdrop-blur-sm shadow sm:rounded-lg">
                         <div class="max-w-xl">
