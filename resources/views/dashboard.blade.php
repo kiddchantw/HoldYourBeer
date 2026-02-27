@@ -20,7 +20,22 @@
 
             <!-- Beer Collection Section -->
             <!-- <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg"> -->
-            <div class="bg-white/60 backdrop-blur-sm overflow-hidden shadow-sm sm:rounded-lg" id="beer-list">
+            <div class="bg-white/60 backdrop-blur-sm overflow-hidden shadow-sm sm:rounded-lg" id="beer-list"
+                 x-data="{
+                     searchOpen: false,
+                     searchQuery: '',
+                     toggleSearch() {
+                         this.searchOpen = !this.searchOpen;
+                         if (!this.searchOpen) this.searchQuery = '';
+                         else this.$nextTick(() => this.$refs.beerSearch?.focus());
+                     },
+                     matches(name, brand) {
+                         if (!this.searchQuery.trim()) return true;
+                         const q = this.searchQuery.toLowerCase();
+                         return name.toLowerCase().includes(q) || brand.toLowerCase().includes(q);
+                     }
+                 }"
+                 @toggle-beer-search.window="toggleSearch()">
 
                 <div class="p-6">
                     @if($trackedBeers->isEmpty())
@@ -56,6 +71,18 @@
                     @else
                         <!-- Beer List -->
                         <div class="mb-6">
+                            <!-- Search Bar (Mobile) -->
+                            <div x-show="searchOpen" x-transition class="md:hidden mb-4">
+                                <div class="relative">
+                                    <span class="material-icons absolute left-3 top-2.5 text-gray-400 text-xl">search</span>
+                                    <input type="text"
+                                           x-ref="beerSearch"
+                                           x-model="searchQuery"
+                                           class="w-full pl-10 pr-4 py-2 border border-amber-200 rounded-xl bg-white/80 focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm"
+                                           placeholder="{{ __('Search beers...') }}">
+                                </div>
+                            </div>
+
                             <div class="flex justify-between items-center">
                                 <h3 class="text-lg font-medium text-gray-900">{{ __('My Beer Collection') }}</h3>
                                 <!-- Add Button (Desktop Only) -->
@@ -73,7 +100,8 @@
                         <!-- Beer Cards - Mobile First -->
                         <div class="space-y-4 md:grid md:grid-cols-1 lg:grid-cols-2 md:gap-6 md:space-y-0">
                             @foreach($trackedBeers as $beerCount)
-                                <div class="bg-gray-50 rounded-lg overflow-hidden hover:bg-gray-100 transition duration-150 ease-in-out flex justify-between items-center min-h-[110px] beer-counter">
+                                <div class="bg-gray-50 rounded-lg overflow-hidden hover:bg-gray-100 transition duration-150 ease-in-out flex justify-between items-center min-h-[110px] beer-counter"
+                                     x-show="matches(@js($beerCount->beer->name), @js($beerCount->beer->brand->name))">
                                     <!-- 左側：啤酒資訊 -->
                                     <div class="p-4 flex-1 min-w-0 flex items-center">
                                         <a href="{{ route('beers.history', ['beerId' => $beerCount->beer->id, 'locale' => app()->getLocale() ?: 'en']) }}" class="block w-full">
